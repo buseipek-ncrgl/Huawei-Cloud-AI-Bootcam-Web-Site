@@ -45,7 +45,8 @@ const Login = () => {
     if (!validateForm()) return;
 
     try {
-      const res = await axios.post("http://localhost:5000/api/login", form);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, form);
+
 
       // Token'ı sakla
       localStorage.setItem("token", res.data.token);

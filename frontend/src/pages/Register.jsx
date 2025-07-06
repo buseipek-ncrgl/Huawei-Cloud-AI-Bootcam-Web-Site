@@ -47,7 +47,8 @@ const Register = () => {
     if (!validateForm()) return;
 
     try {
-      await axios.post('http://localhost:5000/api/register', form);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/register`, form);
+
       alert('Kayıt başarılı! Giriş yapabilirsiniz.');
       navigate('/');
     } catch (err) {

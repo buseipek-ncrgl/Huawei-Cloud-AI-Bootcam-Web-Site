@@ -18,7 +18,7 @@ const ParticipantDashboard = () => {
           return;
         }
 
-        const res = await axios.get("http://localhost:5000/api/attendance/sessions", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/sessions`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -46,8 +46,8 @@ const ParticipantDashboard = () => {
   const handleAttend = async (week) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `http://localhost:5000/api/attendance/${week}`,
+     const response = await axios.post(
+  `${import.meta.env.VITE_API_URL}/api/attendance/${week}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -11,12 +11,12 @@ const InstructorDashboard = () => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
       try {
-        const [summaryRes, profileRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/attendance/summary", {
+        await Promise.all([
+  axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/summary`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:5000/api/profile", {
-            headers: { Authorization: `Bearer ${token}` },
+          axios.get(`${import.meta.env.VITE_API_URL}/api/profile`, {
+    headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
         setSummary(summaryRes.data);
@@ -32,7 +32,7 @@ const InstructorDashboard = () => {
     const token = localStorage.getItem("token");
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/attendance/details/${week}`,
+  `${import.meta.env.VITE_API_URL}/api/attendance/details/${week}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setDetails(res.data);
@@ -46,7 +46,7 @@ const InstructorDashboard = () => {
     const token = localStorage.getItem("token");
     try {
       await axios.post(
-        `http://localhost:5000/api/sessions/${week}/start`,
+  `${import.meta.env.VITE_API_URL}/api/sessions/${week}/start`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -61,7 +61,7 @@ const InstructorDashboard = () => {
     const token = localStorage.getItem("token");
     try {
       await axios.post(
-        `http://localhost:5000/api/sessions/${week}/stop`,
+  `${import.meta.env.VITE_API_URL}/api/sessions/${week}/stop`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -112,7 +112,7 @@ return (
             const week = e.target.week.value;
             const token = localStorage.getItem("token");
             try {
-              await axios.post("http://localhost:5000/api/sessions/create", { week }, {
+              await axios.post(`${import.meta.env.VITE_API_URL}/api/sessions/create`, { week }, {
                 headers: { Authorization: `Bearer ${token}` }
               });
               alert(`${week}. hafta oluşturuldu ✅`);
