@@ -10,7 +10,8 @@ const app = express();
 const corsOptions = {
   origin: "https://huawei-cloud-ai-bootcamp.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 };
 app.use(cors(corsOptions));
 
@@ -25,7 +26,10 @@ app.use('/api', require('./routes/authRoutes'));
 app.get('/', (req, res) => res.send('API Çalışıyor'));
 
 // DB bağlantısı
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, {
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+})
   .then(() => console.log('✅ MongoDB Bağlandı'))
   .catch((err) => console.error('❌ MongoDB Hatası:', err));
 
