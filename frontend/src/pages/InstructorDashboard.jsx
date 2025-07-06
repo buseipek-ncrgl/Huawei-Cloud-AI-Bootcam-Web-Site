@@ -11,14 +11,15 @@ const InstructorDashboard = () => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
       try {
-        await Promise.all([
+        const [summaryRes, profileRes] = await Promise.all([
   axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/summary`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get(`${import.meta.env.VITE_API_URL}/api/profile`, {
     headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
+  }),
+  axios.get(`${import.meta.env.VITE_API_URL}/api/profile`, {
+    headers: { Authorization: `Bearer ${token}` },
+  }),
+]);
+
         setSummary(summaryRes.data);
         setFullName(profileRes.data.fullName);
       } catch (err) {
