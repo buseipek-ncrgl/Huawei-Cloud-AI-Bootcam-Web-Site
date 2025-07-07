@@ -41,6 +41,7 @@ const ResetPassword = () => {
             onChange={(e) => setNewPassword(e.target.value)}
             className="p-2 rounded text-black"
             required
+             minLength={6}
           />
           <button
             type="submit"
