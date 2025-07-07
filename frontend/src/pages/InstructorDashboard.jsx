@@ -214,7 +214,7 @@ const InstructorDashboard = () => {
         {showGeneralSummary && generalSummary.length > 0 && (
           <div className="mt-10 bg-white/10 border border-white/20 rounded-xl p-6 w-full max-w-7xl">
             <h3 className="text-lg font-bold mb-4 text-white text-center">
-              📊 Genel Katılım Özeti - Tüm Kullanıcılar
+              📊 Genel Katılım Özeti - Tüm Katılımcılar
             </h3>
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm text-left text-white border border-white/20">
