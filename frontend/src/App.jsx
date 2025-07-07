@@ -4,6 +4,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ParticipantDashboard from './pages/ParticipantDashboard';
 import InstructorDashboard from './pages/InstructorDashboard'; // 👈 bunu da ekle
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import axios from "axios";
 
 // Token'ı localStorage'dan al ve axios'a varsayılan olarak ayarla
