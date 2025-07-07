@@ -149,7 +149,12 @@ const Login = () => {
             >
               Giriş Yap
             </button>
-
+            <p className="text-sm text-center mt-3 text-gray-300">
+  Şifreni mi unuttun?{" "}
+  <Link to="/forgot-password" className="text-yellow-300 hover:underline">
+    Şifreyi Sıfırla
+  </Link>
+</p>
             <p className="text-sm text-center mt-4 text-gray-300">
               Hesabın yok mu?{" "}
               <Link to="/register" className="text-yellow-300 hover:underline">

@@ -16,6 +16,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/participant" element={<ParticipantDashboard />} />
         <Route path="/instructor" element={<InstructorDashboard />} /> {/* 👈 eksik olan burası */}
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+
       </Routes>
     </Router>
   );
