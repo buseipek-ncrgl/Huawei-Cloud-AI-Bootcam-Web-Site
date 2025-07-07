@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema({
     enum: ['participant', 'instructor'],
     default: 'participant',
   },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
