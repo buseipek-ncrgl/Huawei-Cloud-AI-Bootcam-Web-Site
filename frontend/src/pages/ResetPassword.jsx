@@ -22,7 +22,7 @@ const ResetPassword = () => {
         { newPassword }
       );
       setMessage(res.data.message);
-      setTimeout(() => navigate("/login"), 3000);
+      setTimeout(() => navigate("/"), 3000);
     } catch (err) {
       setError(err.response?.data?.error || "İşlem sırasında hata oluştu.");
     } finally {
