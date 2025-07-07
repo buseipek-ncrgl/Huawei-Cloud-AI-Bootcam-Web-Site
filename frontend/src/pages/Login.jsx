@@ -11,8 +11,8 @@ const Login = () => {
   });
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // 🔄 loading state
 
-  // Sayfa ilk yüklendiğinde eski token'ı temizle
   useEffect(() => {
     localStorage.removeItem('token');
   }, []);
@@ -41,24 +41,28 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true); // 🔄 animasyonu başlat
 
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      setLoading(false);
+      return;
+    }
 
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, form);
-
-
-      // Token'ı sakla
       localStorage.setItem("token", res.data.token);
 
-      // Sayfayı tamamen yenileyerek token'ı sıfırdan yükle
-      if (res.data.role === "participant") {
-        window.location.href = "/participant";
-      } else if (res.data.role === "instructor") {
-        window.location.href = "/instructor";
-      }
+      // 0.5 saniye gecikmeli yönlendirme
+      setTimeout(() => {
+        if (res.data.role === "participant") {
+          window.location.href = "/participant";
+        } else if (res.data.role === "instructor") {
+          window.location.href = "/instructor";
+        }
+      }, 500);
     } catch (err) {
       setError("Giriş başarısız. E-posta veya şifre hatalı.");
+      setLoading(false); // ❌ hata varsa animasyonu durdur
     }
   };
 
@@ -79,85 +83,87 @@ const Login = () => {
           </h1>
         </div>
 
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="w-full max-w-md bg-white/10 border border-white/20 rounded-xl p-6 text-white shadow-lg text-sm sm:text-base"
-        >
-          <h2 className="text-2xl font-semibold text-center mb-4">Giriş Yap</h2>
+        {/* Yükleniyor animasyonu veya Form */}
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-yellow-400"></div>
+          </div>
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            className="w-full max-w-md bg-white/10 border border-white/20 rounded-xl p-6 text-white shadow-lg text-sm sm:text-base"
+          >
+            <h2 className="text-2xl font-semibold text-center mb-4">Giriş Yap</h2>
 
-          {error && <p className="text-red-500 text-sm mb-3 text-center">{error}</p>}
+            {error && <p className="text-red-500 text-sm mb-3 text-center">{error}</p>}
 
-          <input
-            type="email"
-            name="email"
-            placeholder="E-posta"
-            onChange={handleChange}
-            required
-            className="w-full mb-3 p-2 rounded bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring focus:ring-yellow-400"
-          />
-
-          {/* Şifre Alanı */}
-          <div className="relative mb-3">
             <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Şifre"
+              type="email"
+              name="email"
+              placeholder="E-posta"
               onChange={handleChange}
               required
-              className="w-full p-2 pr-10 rounded bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring focus:ring-yellow-400"
+              className="w-full mb-3 p-2 rounded bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring focus:ring-yellow-400"
             />
-            <div
-              className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? (
-                <EyeOpenIcon />
-              ) : (
-                <EyeClosedIcon />
-              )}
+
+            {/* Şifre Alanı */}
+            <div className="relative mb-3">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Şifre"
+                onChange={handleChange}
+                required
+                className="w-full p-2 pr-10 rounded bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring focus:ring-yellow-400"
+              />
+              <div
+                className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
+              </div>
             </div>
-          </div>
 
-          {/* Rol Seçimi */}
-          <div className="relative mb-4">
-            <select
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              className="w-full p-2 pr-10 rounded bg-white/20 text-white focus:outline-none focus:ring focus:ring-yellow-400 appearance-none"
-            >
-              <option className="text-black" value="participant">Katılımcı</option>
-              <option className="text-black" value="instructor">Eğitmen</option>
-            </select>
-            <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
+            {/* Rol Seçimi */}
+            <div className="relative mb-4">
+              <select
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+                className="w-full p-2 pr-10 rounded bg-white/20 text-white focus:outline-none focus:ring focus:ring-yellow-400 appearance-none"
+              >
+                <option className="text-black" value="participant">Katılımcı</option>
+                <option className="text-black" value="instructor">Eğitmen</option>
+              </select>
+              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
-          </div>
 
-          {/* Submit */}
-          <button
-            type="submit"
-            className="w-full bg-yellow-400 text-black font-semibold py-2 rounded hover:bg-yellow-300 transition"
-          >
-            Giriş Yap
-          </button>
+            {/* Submit */}
+            <button
+              type="submit"
+              className="w-full bg-yellow-400 text-black font-semibold py-2 rounded hover:bg-yellow-300 transition"
+            >
+              Giriş Yap
+            </button>
 
-          <p className="text-sm text-center mt-4 text-gray-300">
-            Hesabın yok mu?{" "}
-            <Link to="/register" className="text-yellow-300 hover:underline">
-              Kayıt Ol
-            </Link>
-          </p>
-        </form>
+            <p className="text-sm text-center mt-4 text-gray-300">
+              Hesabın yok mu?{" "}
+              <Link to="/register" className="text-yellow-300 hover:underline">
+                Kayıt Ol
+              </Link>
+            </p>
+          </form>
+        )}
       </div>
     </div>
   );
 };
 
-// Göz ikonları (şifre görünürlüğü için)
+// Göz ikonları
 const EyeOpenIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
