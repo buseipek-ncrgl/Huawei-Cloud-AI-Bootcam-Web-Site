@@ -217,4 +217,36 @@ router.get('/participants-summary', async (req, res) => {
   }
 });
 
+// Genel katılım özeti - tüm kullanıcılar
+router.get('/general-summary', authenticate, authorize(['instructor']), async (req, res) => {
+  try {
+    const users = await User.find({ role: 'participant' });
+    const sessions = await Session.find();
+    
+    const generalSummary = await Promise.all(
+      users.map(async (user) => {
+        const attendances = await Attendance.find({ user: user._id });
+        const attendedWeeks = attendances.length;
+        const totalWeeks = sessions.length;
+        const rate = totalWeeks > 0 ? Math.round((attendedWeeks / totalWeeks) * 100) : 0;
+        
+        return {
+          id: user._id,
+          name: user.fullName,
+          email: user.email,
+          attended: attendedWeeks,
+          totalWeeks: totalWeeks,
+          rate: rate
+        };
+      })
+    );
+    
+    // Katılım oranına göre sırala (yüksekten düşüğe)
+    generalSummary.sort((a, b) => b.rate - a.rate);
+    
+    res.json(generalSummary);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 module.exports = router;
