@@ -132,34 +132,40 @@ const ParticipantDashboard = () => {
       sessions.map((s) => (
         <div
           key={s.week}
-          className={`relative bg-white/10 border border-white/20 rounded-xl p-4 text-white backdrop-blur-md shadow-md transition transform hover:scale-[1.01]`}
+          className="relative bg-white/5 border border-white/20 rounded-xl p-5 text-white backdrop-blur-md shadow-md transition hover:scale-[1.015] hover:border-yellow-400"
         >
-          <h3 className="text-md font-bold mb-2">{s.week}. Hafta</h3>
+          {/* HAFTA BAŞLIĞI */}
+          <h3 className="text-xl font-bold mb-3 text-yellow-300">{s.week}. Hafta</h3>
 
-          {/* Konu varsa */}
-          {s.topic && (
-            <div className="text-sm text-yellow-300 font-medium mb-1">
-              <span className="block">📌 <span className="font-semibold">Konu:</span> {s.topic}</span>
+          {/* KONULAR (Madde madde) */}
+          {s.topic ? (
+            <div className="mb-3">
+              <p className="text-sm font-semibold mb-1 text-white">📌 Konular:</p>
+              <ul className="list-disc list-inside text-sm text-gray-200 space-y-1">
+                {s.topic.split("\n").map((item, i) => (
+                  <li key={i}>{item.trim()}</li>
+                ))}
+              </ul>
             </div>
-          )}
+          ) : null}
 
-          {/* Video varsa */}
+          {/* VIDEO LİNK */}
           {s.videoUrl && (
-            <div className="mb-2">
+            <div className="mb-3">
               <a
                 href={s.videoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-blue-400 underline"
+                className="inline-block text-blue-400 text-sm underline hover:text-blue-300 transition"
               >
                 📺 Video İzle
               </a>
             </div>
           )}
 
-          {/* Katılım butonu veya durum */}
+          {/* KATILIM DURUMU */}
           {s.attended ? (
-            <span className="text-green-400 font-bold text-sm">✔ Katıldınız</span>
+            <span className="text-green-400 font-semibold text-sm">✔ Katıldınız</span>
           ) : s.active ? (
             <button
               onClick={() => handleAttend(s.week)}
@@ -168,13 +174,14 @@ const ParticipantDashboard = () => {
               Katıldım
             </button>
           ) : (
-            <span className="text-gray-300 text-sm">Katılım Kapalı</span>
+            <span className="text-gray-400 italic text-sm">Katılım Kapalı</span>
           )}
         </div>
       ))
     )}
   </div>
 </div>
+
 
       </div>
     </div>
