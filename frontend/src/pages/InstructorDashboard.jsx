@@ -5,7 +5,7 @@ const InstructorDashboard = () => {
   const [summary, setSummary] = useState([]);
   const [fullName, setFullName] = useState("");
   const [selectedWeek, setSelectedWeek] = useState(null);
-  const [details, setDetails] = useState({ present: [], absent: [] });
+  const [details, setDetails] = useState({ present: [] });
   const [showGeneralSummary, setShowGeneralSummary] = useState(false);
   const [generalSummary, setGeneralSummary] = useState([]);
   const [tempTopics, setTempTopics] = useState({});
@@ -32,6 +32,17 @@ const InstructorDashboard = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const topicState = {};
+    const videoState = {};
+    summary.forEach((s) => {
+      topicState[s.week] = s.topic || "";
+      videoState[s.week] = s.videoUrl || "";
+    });
+    setTempTopics(topicState);
+    setTempVideos(videoState);
+  }, [summary]);
 
   const fetchDetails = async (week) => {
     const token = localStorage.getItem("token");
@@ -114,141 +125,103 @@ const InstructorDashboard = () => {
   };
 
   return (
-    <div
-      className="min-h-screen w-full bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/background1.png')" }}
-    >
-      <div className="min-h-screen bg-black/30 flex flex-col items-center justify-start px-4 py-10">
-        <div className="flex flex-col items-center justify-center mt-2 mb-8">
-          <div className="flex items-center gap-8 mb-2">
-            <img src="/huaweilogo.png" alt="Huawei" className="w-40 sm:w-48" />
-            <img src="/hsdlogo.png" alt="Partner Logo" className="w-40 sm:w-48" />
+    <div className="min-h-screen bg-black bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/background1.png')" }}>
+      <div className="min-h-screen bg-black/30 flex flex-col items-center px-4 py-10">
+        {/* Başlık */}
+        <div className="text-center text-white mb-6">
+          <div className="flex justify-center items-center gap-6 mb-4">
+            <img src="/huaweilogo.png" alt="Huawei" className="w-32 sm:w-40" />
+            <img src="/hsdlogo.png" alt="Partner" className="w-32 sm:w-40" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 text-center">
-            Huawei Cloud AI Bootcamp
-          </h1>
+          <h1 className="text-3xl font-bold text-yellow-400">Huawei Cloud AI Bootcamp</h1>
+          <p className="text-white mt-2">Eğitmen: <strong>{fullName}</strong></p>
         </div>
 
-        <div className="bg-white/10 border border-white/20 px-6 py-3 rounded-xl mb-6 shadow text-white">
-          <p className="text-base sm:text-lg font-medium">
-            Eğitmen: <span className="font-semibold">{fullName}</span>
-          </p>
-        </div>
+        {/* Hafta ekle formu */}
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const week = e.target.week.value;
+            const token = localStorage.getItem("token");
+            try {
+              await axios.post(`${import.meta.env.VITE_API_URL}/api/sessions/create`, { week }, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
+              alert(`${week}. hafta oluşturuldu ✅`);
+              e.target.reset();
+              fetchData();
+            } catch (err) {
+              alert(err.response?.data?.error || "Hafta oluşturulamadı");
+            }
+          }}
+          className="flex flex-col sm:flex-row items-center gap-2 mb-8"
+        >
+          <input type="number" name="week" placeholder="Yeni hafta numarası" required className="p-2 rounded text-black" />
+          <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Hafta Ekle</button>
+        </form>
 
-        <div className="mb-8 w-full max-w-xl text-center">
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const week = e.target.week.value;
-              const token = localStorage.getItem("token");
-              try {
-                await axios.post(
-                  `${import.meta.env.VITE_API_URL}/api/sessions/create`,
-                  { week },
-                  { headers: { Authorization: `Bearer ${token}` } }
-                );
-                alert(`${week}. hafta oluşturuldu ✅`);
-                e.target.reset();
-                fetchData();
-              } catch (err) {
-                alert(err.response?.data?.error || "Hafta oluşturulamadı");
-              }
-            }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-2"
-          >
-            <input
-              type="number"
-              name="week"
-              placeholder="Yeni hafta numarası"
-              className="p-2 rounded text-black w-full sm:w-auto"
-              required
-            />
-            <button type="submit" className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">
-              Hafta Ekle
-            </button>
-          </form>
-        </div>
+        {/* Genel özet butonu */}
+        <button
+          onClick={fetchGeneralSummary}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded mb-8"
+        >
+          📊 Genel Katılım Özeti
+        </button>
 
-        <div className="mb-6">
-          <button
-            onClick={fetchGeneralSummary}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium text-lg shadow-lg"
-          >
-            📊 Genel Katılım Özeti
-          </button>
-        </div>
+        {/* Haftalık kartlar */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-6xl">
+          {summary.map((s) => (
+            <div key={s.week} className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 backdrop-blur p-5 rounded-2xl text-white border border-white/20 shadow-lg">
+              <h3 className="text-xl font-bold mb-1">{s.week}. Hafta</h3>
+              <p>Katılım: <strong>{s.attended}/{s.total}</strong></p>
+              <p>Oran: <span className="text-green-300 font-semibold">{s.rate}%</span></p>
 
-        <div className="w-full max-w-6xl">
-          <h2 className="text-lg font-semibold mb-4 text-center text-white">
-            Haftalık Katılım Özeti
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {summary.map((s) => (
-              <div
-                key={s.week}
-                className="bg-white/10 p-4 rounded-lg border border-white/20 shadow text-center text-white"
-              >
-                <h3 className="text-lg font-semibold mb-2">{s.week}. Hafta</h3>
-                <p className="mb-1">
-                  Katılım: <span className="font-bold">{s.attended}/{s.total}</span>
-                </p>
-                <p className="mb-2">
-                  Oran: <span className="text-green-300 font-semibold">{s.rate}%</span>
-                </p>
-
+              {/* Butonlar */}
+              <div className="flex flex-col sm:flex-row gap-2 mt-3">
                 {s.active ? (
-                  <button
-                    onClick={() => handleStop(s.week)}
-                    className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 mb-2"
-                  >
+                  <button onClick={() => handleStop(s.week)} className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
                     Yoklamayı Bitir
                   </button>
                 ) : (
-                  <button
-                    onClick={() => handleStart(s.week)}
-                    className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 mb-2"
-                  >
+                  <button onClick={() => handleStart(s.week)} className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">
                     Yoklamayı Başlat
                   </button>
                 )}
-
-                <button
-                  onClick={() => fetchDetails(s.week)}
-                  className="mt-2 text-sm underline text-blue-300 hover:text-blue-400"
-                >
+                <button onClick={() => fetchDetails(s.week)} className="text-blue-300 underline text-sm mt-1 sm:mt-0">
                   Katılımcı Detayları
                 </button>
-
-                <input
-                  type="text"
-                  value={tempTopics[s.week] ?? s.topic}
-                  placeholder="Haftanın konusu"
-                  onChange={(e) =>
-                    setTempTopics((prev) => ({ ...prev, [s.week]: e.target.value }))
-                  }
-                  className="w-full mt-2 p-2 rounded text-black"
-                />
-
-                <input
-                  type="text"
-                  value={tempVideos[s.week] ?? s.videoUrl}
-                  placeholder="Video bağlantısı"
-                  onChange={(e) =>
-                    setTempVideos((prev) => ({ ...prev, [s.week]: e.target.value }))
-                  }
-                  className="w-full mt-2 p-2 rounded text-black"
-                />
-
-                <button
-                  onClick={() => handleUpdate(s.week)}
-                  className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1 mt-2 rounded"
-                >
-                  Kaydet
-                </button>
               </div>
-            ))}
-          </div>
+
+              {/* Konu girişi */}
+              <label className="block mt-4 text-sm text-yellow-300 font-semibold">📌 Konu Başlıkları</label>
+              <textarea
+                rows={3}
+                value={tempTopics[s.week]}
+                onChange={(e) => setTempTopics((prev) => ({ ...prev, [s.week]: e.target.value }))}
+                placeholder="Her satıra bir madde yaz"
+                className="w-full mt-1 p-2 rounded text-black"
+              />
+
+              {/* Video */}
+              <label className="block mt-2 text-sm text-yellow-300 font-semibold">🎥 Video Linki</label>
+              <input
+                type="text"
+                value={tempVideos[s.week]}
+                onChange={(e) => setTempVideos((prev) => ({ ...prev, [s.week]: e.target.value }))}
+                placeholder="https://..."
+                className="w-full mt-1 p-2 rounded text-black"
+              />
+
+              <button
+                onClick={() => handleUpdate(s.week)}
+                className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1 rounded"
+              >
+                Kaydet
+              </button>
+            </div>
+          ))}
         </div>
+
         {/* YENİ: GENEL ÖZET TABLOSU */}
         {showGeneralSummary && generalSummary.length > 0 && (
           <div className="mt-10 bg-white/10 border border-white/20 rounded-xl p-6 w-full max-w-7xl">
