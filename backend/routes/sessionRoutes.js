@@ -6,7 +6,7 @@ const {
   createSession,
   startSession,
   stopSession,
-  updateSessionInfo 
+  updateSessionContent 
 } = require('../controllers/sessionController');
 
 // Tüm oturumları getir
@@ -19,5 +19,5 @@ router.post('/create', authenticate, createSession);
 router.post('/:week/start', authenticate, startSession);
 router.post('/:week/stop', authenticate, stopSession);
 
-router.put('/:week/update', authenticate, updateSessionInfo);
+router.put('/:week/update', authenticate, updateSessionContent);
 module.exports = router;

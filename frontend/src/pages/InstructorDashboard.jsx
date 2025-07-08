@@ -227,7 +227,11 @@ const InstructorDashboard = () => {
       onClick={async () => {
         const token = localStorage.getItem("token");
         try {
-          await axios.put(`${API_URL}/api/sessions/${week}`, { topic, videoUrl }, { headers });
+          await axios.put(
+  `${import.meta.env.VITE_API_URL}/api/sessions/${s.week}`,
+  { topic: s.topic, videoUrl: s.videoUrl },
+  { headers: { Authorization: `Bearer ${token}` } }
+);
 
           alert("Konu ve video linki güncellendi ✅");
         } catch (err) {
