@@ -7,7 +7,6 @@ const Login = () => {
   const [form, setForm] = useState({
     email: '',
     password: '',
-    role: 'participant',
   });
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -39,32 +38,35 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true); // 🔄 animasyonu başlat
+  e.preventDefault();
+  setError("");
+  setLoading(true);
 
-    if (!validateForm()) {
-      setLoading(false);
-      return;
-    }
+  if (!validateForm()) {
+    setLoading(false);
+    return;
+  }
 
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, form);
-      localStorage.setItem("token", res.data.token);
+  try {
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, {
+      email: form.email,
+      password: form.password,
+    });
 
-      // 0.5 saniye gecikmeli yönlendirme
-      setTimeout(() => {
-        if (res.data.role === "participant") {
-          window.location.href = "/participant";
-        } else if (res.data.role === "instructor") {
-          window.location.href = "/instructor";
-        }
-      }, 500);
-    } catch (err) {
-      setError("Giriş başarısız. E-posta veya şifre hatalı.");
-      setLoading(false); // ❌ hata varsa animasyonu durdur
-    }
-  };
+    localStorage.setItem("token", res.data.token);
+
+    setTimeout(() => {
+      if (res.data.user?.role === "instructor") {
+        window.location.href = "/instructor";
+      } else {
+        window.location.href = "/participant";
+      }
+    }, 500);
+  } catch (err) {
+    setError("Giriş başarısız. E-posta veya şifre hatalı.");
+    setLoading(false);
+  }
+};
 
   return (
     <div
@@ -125,22 +127,7 @@ const Login = () => {
             </div>
 
             {/* Rol Seçimi */}
-            <div className="relative mb-4">
-              <select
-                name="role"
-                value={form.role}
-                onChange={handleChange}
-                className="w-full p-2 pr-10 rounded bg-white/20 text-white focus:outline-none focus:ring focus:ring-yellow-400 appearance-none"
-              >
-                <option className="text-black" value="participant">Katılımcı</option>
-                
-              </select>
-              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
+            
 
             {/* Submit */}
             <button
@@ -150,11 +137,11 @@ const Login = () => {
               Giriş Yap
             </button>
             <p className="text-sm text-center mt-3 text-gray-300">
-  Şifreni mi unuttun?{" "}
-  <Link to="/forgot-password" className="text-yellow-300 hover:underline">
-    Şifreyi Sıfırla
-  </Link>
-</p>
+              Şifreni mi unuttun?{" "}
+              <Link to="/forgot-password" className="text-yellow-300 hover:underline">
+              Şifreyi Sıfırla
+              </Link>
+              </p>
             <p className="text-sm text-center mt-4 text-gray-300">
               Hesabın yok mu?{" "}
               <Link to="/register" className="text-yellow-300 hover:underline">

@@ -137,27 +137,7 @@ const Register = () => {
           </div>
 
           {/* Rol Seçimi */}
-          <div className="relative mb-4">
-            <select
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              className="w-full p-2 pr-10 rounded bg-white/20 text-white focus:outline-none focus:ring focus:ring-yellow-400 appearance-none"
-            >
-              <option className="text-black" value="participant">Katılımcı</option>
-            </select>
-            <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-              <svg
-                className="w-4 h-4 text-white"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
-          </div>
+          
 
           <button
             type="submit"
