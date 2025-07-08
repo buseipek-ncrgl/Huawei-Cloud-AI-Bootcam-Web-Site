@@ -175,76 +175,77 @@ const InstructorDashboard = () => {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {summary.map((s) => (
-              <div
-                key={s.week}
-                className="bg-white/10 p-4 rounded-lg border border-white/20 shadow text-center text-white backdrop-blur-sm"
-              >
-                <h3 className="text-lg font-semibold mb-2">{s.week}. Hafta</h3>
-                <p className="mb-1">Katılım: <span className="font-bold">{s.attended}/{s.total}</span></p>
-                <p className="mb-2">Oran: <span className="text-green-300 font-semibold">{s.rate}%</span></p>
+  <div
+    key={s.week}
+    className="bg-white/10 p-4 rounded-lg border border-white/20 shadow text-center text-white backdrop-blur-sm"
+  >
+    <h3 className="text-lg font-semibold mb-2">{s.week}. Hafta</h3>
+    <p className="mb-1">Katılım: <span className="font-bold">{s.attended}/{s.total}</span></p>
+    <p className="mb-2">Oran: <span className="text-green-300 font-semibold">{s.rate}%</span></p>
 
-                {s.active ? (
-                  <button
-                    onClick={() => handleStop(s.week)}
-                    className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 mb-2"
-                  >
-                    Yoklamayı Bitir
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleStart(s.week)}
-                    className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 mb-2"
-                  >
-                    Yoklamayı Başlat
-                  </button>
-                  
-                )}
+    {s.active ? (
+      <button
+        onClick={() => handleStop(s.week)}
+        className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700 mb-2"
+      >
+        Yoklamayı Bitir
+      </button>
+    ) : (
+      <button
+        onClick={() => handleStart(s.week)}
+        className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700 mb-2"
+      >
+        Yoklamayı Başlat
+      </button>
+    )}
 
-                <button
-                  onClick={() => fetchDetails(s.week)}
-                  className="mt-2 text-sm underline text-blue-300 hover:text-blue-400"
-                >
-                  Katılımcı Detayları
-                </button>
-              </div>
-              
-            ))}
+    <button
+      onClick={() => fetchDetails(s.week)}
+      className="mt-2 text-sm underline text-blue-300 hover:text-blue-400"
+    >
+      Katılımcı Detayları
+    </button>
+
+    {/* Konu ve video URL güncelleme inputları */}
+    <input
+      type="text"
+      defaultValue={s.topic}
+      placeholder="Haftanın konusu"
+      onBlur={(e) => s.topic = e.target.value}
+      className="w-full mt-2 p-2 rounded text-black"
+    />
+
+    <input
+      type="text"
+      defaultValue={s.videoUrl}
+      placeholder="Video bağlantısı"
+      onBlur={(e) => s.videoUrl = e.target.value}
+      className="w-full mt-2 p-2 rounded text-black"
+    />
+
+    <button
+      onClick={async () => {
+        const token = localStorage.getItem("token");
+        try {
+          await axios.put(
+            `${import.meta.env.VITE_API_URL}/api/sessions/${s.week}/update`,
+            { topic: s.topic, videoUrl: s.videoUrl },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          alert("Konu ve video linki güncellendi ✅");
+        } catch (err) {
+          alert("Güncelleme hatası ❌");
+        }
+      }}
+      className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1 mt-2 rounded"
+    >
+      Kaydet
+    </button>
+  </div>
+))}
+
           </div>
         </div>
-<input
-  type="text"
-  defaultValue={s.topic}
-  placeholder="Haftanın konusu"
-  onBlur={(e) => s.topic = e.target.value}
-  className="w-full mt-2 p-2 rounded text-black"
-/>
-
-<input
-  type="text"
-  defaultValue={s.videoUrl}
-  placeholder="Video bağlantısı"
-  onBlur={(e) => s.videoUrl = e.target.value}
-  className="w-full mt-2 p-2 rounded text-black"
-/>
-
-<button
-  onClick={async () => {
-    const token = localStorage.getItem("token");
-    try {
-      await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/sessions/${s.week}/update`,
-        { topic: s.topic, videoUrl: s.videoUrl },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert("Konu ve video linki güncellendi ✅");
-    } catch (err) {
-      alert("Güncelleme hatası ❌");
-    }
-  }}
-  className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1 mt-2 rounded"
->
-  Kaydet
-</button>
 
         {/* YENİ: GENEL ÖZET TABLOSU */}
         {showGeneralSummary && generalSummary.length > 0 && (
