@@ -169,58 +169,66 @@ const InstructorDashboard = () => {
         </button>
 
         {/* Haftalık kartlar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-6xl">
-          {summary.map((s) => (
-            <div key={s.week} className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 backdrop-blur p-5 rounded-2xl text-white border border-white/20 shadow-lg">
-              <h3 className="text-xl font-bold mb-1">{s.week}. Hafta</h3>
-              <p>Katılım: <strong>{s.attended}/{s.total}</strong></p>
-              <p>Oran: <span className="text-green-300 font-semibold">{s.rate}%</span></p>
+        <div className="bg-white/10 backdrop-blur-md p-5 rounded-2xl shadow-lg border border-white/20 hover:scale-[1.02] transition">
+  <div className="flex items-center justify-between mb-2">
+    <h3 className="text-xl font-bold text-yellow-400">{s.week}. Hafta</h3>
+    {s.active && <span className="text-green-400 font-semibold text-sm">AKTİF ✅</span>}
+  </div>
 
-              {/* Butonlar */}
-              <div className="flex flex-col sm:flex-row gap-2 mt-3">
-                {s.active ? (
-                  <button onClick={() => handleStop(s.week)} className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
-                    Yoklamayı Bitir
-                  </button>
-                ) : (
-                  <button onClick={() => handleStart(s.week)} className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">
-                    Yoklamayı Başlat
-                  </button>
-                )}
-                <button onClick={() => fetchDetails(s.week)} className="text-blue-300 underline text-sm mt-1 sm:mt-0">
-                  Katılımcı Detayları
-                </button>
-              </div>
+  <p className="text-white mb-1">👥 Katılım: <span className="font-semibold">{s.attended}/{s.total}</span></p>
+  <p className="text-white mb-3">📊 Oran: <span className="text-green-300 font-semibold">{s.rate}%</span></p>
 
-              {/* Konu girişi */}
-              <label className="block mt-4 text-sm text-yellow-300 font-semibold">📌 Konu Başlıkları</label>
-              <textarea
-                rows={3}
-                value={tempTopics[s.week]}
-                onChange={(e) => setTempTopics((prev) => ({ ...prev, [s.week]: e.target.value }))}
-                placeholder="Her satıra bir madde yaz"
-                className="w-full mt-1 p-2 rounded text-black"
-              />
+  {/* Konular liste halinde */}
+  <div className="text-white text-sm mb-2">
+    <p className="font-semibold mb-1">📌 Konular:</p>
+    <ul className="list-disc list-inside space-y-1 text-white/90">
+      {(tempTopics[s.week] || "").split("\n").map((item, i) => (
+        <li key={i}>{item}</li>
+      ))}
+    </ul>
+  </div>
 
-              {/* Video */}
-              <label className="block mt-2 text-sm text-yellow-300 font-semibold">🎥 Video Linki</label>
-              <input
-                type="text"
-                value={tempVideos[s.week]}
-                onChange={(e) => setTempVideos((prev) => ({ ...prev, [s.week]: e.target.value }))}
-                placeholder="https://..."
-                className="w-full mt-1 p-2 rounded text-black"
-              />
+  {/* Video URL */}
+  {tempVideos[s.week] && (
+    <div className="mb-3 text-sm text-blue-300">
+      🎥 <a href={tempVideos[s.week]} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-400">
+        Videoyu Aç
+      </a>
+    </div>
+  )}
 
-              <button
-                onClick={() => handleUpdate(s.week)}
-                className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1 rounded"
-              >
-                Kaydet
-              </button>
-            </div>
-          ))}
-        </div>
+  {/* Giriş alanları */}
+  <textarea
+    rows={3}
+    placeholder="Konu başlıkları (her satıra bir)"
+    className="w-full mt-1 mb-2 p-2 rounded text-black"
+    value={tempTopics[s.week]}
+    onChange={(e) => setTempTopics({ ...tempTopics, [s.week]: e.target.value })}
+  />
+  <input
+    type="text"
+    placeholder="Video bağlantısı"
+    className="w-full p-2 rounded text-black mb-3"
+    value={tempVideos[s.week]}
+    onChange={(e) => setTempVideos({ ...tempVideos, [s.week]: e.target.value })}
+  />
+
+  <div className="flex gap-2 justify-between">
+    <button onClick={() => handleUpdate(s.week)} className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">
+      💾 Kaydet
+    </button>
+    {s.active ? (
+      <button onClick={() => handleStop(s.week)} className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
+        ⛔ Durdur
+      </button>
+    ) : (
+      <button onClick={() => handleStart(s.week)} className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">
+        ✅ Başlat
+      </button>
+    )}
+  </div>
+</div>
+
 
         {/* YENİ: GENEL ÖZET TABLOSU */}
         {showGeneralSummary && generalSummary.length > 0 && (
