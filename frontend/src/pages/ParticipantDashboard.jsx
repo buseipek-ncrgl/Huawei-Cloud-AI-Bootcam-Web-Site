@@ -149,19 +149,20 @@ const ParticipantDashboard = () => {
             </div>
           ) : null}
 
-          {/* VIDEO LİNK */}
-          {s.videoUrl && (
-            <div className="mb-3">
-              <a
-                href={s.videoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block text-blue-400 text-sm underline hover:text-blue-300 transition"
-              >
-                📺 Video İzle
-              </a>
-            </div>
-          )}
+          {/* 🎥 Video Link */}
+      {s.videoUrl?.trim() && (
+        <div className="text-white text-sm mb-3">
+          <p className="font-semibold mb-1">🎥 Video Link:</p>
+          <a
+            href={s.videoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+          >
+            İzle
+          </a>
+        </div>
+      )}
 
           {/* KATILIM DURUMU */}
           {s.attended ? (
