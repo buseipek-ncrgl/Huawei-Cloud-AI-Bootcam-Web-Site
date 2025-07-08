@@ -165,11 +165,11 @@ const ParticipantDashboard = () => {
 
           {/* KATILIM DURUMU */}
           {s.attended ? (
-            <span className="text-green-400 font-semibold text-sm">✔ Katıldınız</span>
+            <span className="text-green-400 font-bold text-lg mt-4">✔ Katıldınız</span>
           ) : s.active ? (
             <button
               onClick={() => handleAttend(s.week)}
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+              className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg text-base font-semibold transition mt-4 w-full"
             >
               Katıldım
             </button>
