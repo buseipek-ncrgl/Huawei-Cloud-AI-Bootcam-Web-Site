@@ -145,7 +145,6 @@ const Register = () => {
               className="w-full p-2 pr-10 rounded bg-white/20 text-white focus:outline-none focus:ring focus:ring-yellow-400 appearance-none"
             >
               <option className="text-black" value="participant">Katılımcı</option>
-              <option className="text-black" value="instructor">Eğitmen</option>
             </select>
             <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
               <svg

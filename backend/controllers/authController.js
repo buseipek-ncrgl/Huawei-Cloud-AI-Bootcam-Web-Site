@@ -22,7 +22,7 @@ exports.registerUser = async (req, res) => {
       email,
       phone,
       password: hashedPassword,
-      role,
+      role: "participant"
     });
 
     res.status(201).json({ message: "Kayıt başarılı" });
