@@ -173,7 +173,7 @@ const InstructorDashboard = () => {
   {summary.map((s) => (
     <div
   key={s.week}
-  className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl shadow-lg p-5 transition-transform transform hover:scale-[1.02] hover:shadow-2xl flex flex-col justify-between"
+  className="relative bg-white/5 border border-white/20 rounded-xl p-5 text-white backdrop-blur-md shadow-md transition hover:scale-[1.015] hover:border-yellow-400"
 >
   {s.active && (
     <span className="absolute top-2 right-2 text-green-400 font-bold text-lg">
@@ -181,7 +181,7 @@ const InstructorDashboard = () => {
     </span>
   )}
   <div className="mb-4">
-    <h3 className="text-xl font-semibold text-white mb-1">{s.week}. Hafta</h3>
+    <h3 className="text-xl font-bold mb-3 text-yellow-300">{s.week}. Hafta</h3>
     <p className="text-sm text-white/80 mb-1">Katılım: <strong>{s.attended}/{s.total}</strong></p>
     <p className="text-sm text-white/80 mb-4">Oran: <span className="font-semibold text-green-300">{s.rate}%</span></p>
 
