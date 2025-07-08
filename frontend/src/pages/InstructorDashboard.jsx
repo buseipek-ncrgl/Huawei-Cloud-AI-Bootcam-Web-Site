@@ -169,105 +169,119 @@ const InstructorDashboard = () => {
         </button>
 
         {/* Haftalık kartlar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
   {summary.map((s) => (
     <div
-  key={s.week}
-  className="relative bg-white/5 border border-white/20 rounded-xl p-5 text-white backdrop-blur-md shadow-md transition hover:scale-[1.015] hover:border-yellow-400"
->
-  {s.active && (
-    <span className="absolute top-2 right-2 text-green-400 font-bold text-lg">
-      ✅ Aktif
-    </span>
-  )}
-  <div className="mb-4">
-    <h3 className="text-xl font-bold mb-3 text-yellow-300">{s.week}. Hafta</h3>
-    <p className="text-sm text-white/80 mb-1">Katılım: <strong>{s.attended}/{s.total}</strong></p>
-    <p className="text-sm text-white/80 mb-4">Oran: <span className="font-semibold text-green-300">{s.rate}%</span></p>
-
-    {s.active ? (
-      <button
-        onClick={() => handleStop(s.week)}
-        className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-1 px-4 rounded mb-3"
-      >
-        ⛔ Yoklamayı Bitir
-      </button>
-    ) : (
-      <button
-        onClick={() => handleStart(s.week)}
-        className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-4 rounded mb-3"
-      >
-        ✅ Yoklamayı Başlat
-      </button>
-    )}
-
-    <button
-      onClick={() => fetchDetails(s.week)}
-      className="text-sm text-blue-300 underline hover:text-blue-400 mb-3"
+      key={s.week}
+      className="relative bg-white/5 border border-white/20 rounded-xl p-5 text-white backdrop-blur-md shadow-md transition hover:scale-[1.015] hover:border-yellow-400 min-h-[450px] flex flex-col justify-between"
     >
-      Katılımcı Detayları
-    </button>
-  </div>
-{/* 🎯 Kaydedilmiş Konuların Listesi */}
-  {s.topic?.trim() && (
-    <div className="text-white text-sm mb-4">
-      <p className="font-semibold mb-1">📌 Konular:</p>
-      <ul className="list-disc list-inside space-y-1">
-        {s.topic
-          .split("\n")
-          .filter((line) => line.trim() !== "")
-          .map((item, idx) => (
-            <li key={idx} className="text-white/90">{item}</li>
-          ))}
-      </ul>
-    </div>
-  )}
+      {/* Aktif etiketi */}
+      {s.active && (
+        <span className="absolute top-2 right-2 text-green-400 font-bold text-lg">
+          ✅ Aktif
+        </span>
+      )}
 
-  {/* 🎥 Video Link */}
-  {s.videoUrl?.trim() && (
-    <div className="text-white text-sm mb-4">
-      <p className="font-semibold">🎥 Video Link:</p>
-      <a
-        href={s.videoUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-300 underline break-all"
+      {/* Üst Bilgi */}
+      <div>
+        <h3 className="text-xl font-bold mb-2 text-yellow-300">{s.week}. Hafta</h3>
+        <p className="text-sm text-white/80 mb-1">
+          Katılım: <strong>{s.attended}/{s.total}</strong>
+        </p>
+        <p className="text-sm text-white/80 mb-3">
+          Oran: <span className="font-semibold text-green-300">{s.rate}%</span>
+        </p>
+
+        {s.active ? (
+          <button
+            onClick={() => handleStop(s.week)}
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-1 px-4 rounded mb-3"
+          >
+            ⛔ Yoklamayı Bitir
+          </button>
+        ) : (
+          <button
+            onClick={() => handleStart(s.week)}
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-4 rounded mb-3"
+          >
+            ✅ Yoklamayı Başlat
+          </button>
+        )}
+
+        <button
+          onClick={() => fetchDetails(s.week)}
+          className="text-sm text-blue-300 underline hover:text-blue-400 mb-3"
+        >
+          Katılımcı Detayları
+        </button>
+      </div>
+
+      {/* 📌 Konular */}
+      {s.topic?.trim() && (
+        <div className="text-white text-sm mb-3">
+          <p className="font-semibold mb-1">📌 Konular:</p>
+          <ul className="list-disc list-inside space-y-1">
+            {s.topic
+              .split("\n")
+              .filter((line) => line.trim() !== "")
+              .map((item, idx) => (
+                <li key={idx} className="text-white/90">{item}</li>
+              ))}
+          </ul>
+        </div>
+      )}
+
+      {/* 🎥 Video Link */}
+      {s.videoUrl?.trim() && (
+        <div className="text-white text-sm mb-3">
+          <p className="font-semibold mb-1">🎥 Video Link:</p>
+          <a
+            href={s.videoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+          >
+            İzle
+          </a>
+        </div>
+      )}
+
+      {/* 📋 Güncelleme Alanları */}
+      <div className="text-white text-sm space-y-3">
+        <div>
+          <label className="block font-semibold mb-1">📋 Konuları Güncelle</label>
+          <textarea
+            rows={2}
+            className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm"
+            placeholder="Her satıra bir konu yazın"
+            value={tempTopics[s.week] ?? s.topic}
+            onChange={(e) =>
+              setTempTopics((prev) => ({ ...prev, [s.week]: e.target.value }))
+            }
+          />
+        </div>
+
+        <div>
+          <label className="block font-semibold mb-1">🔗 Video Linki Güncelle</label>
+          <input
+            type="text"
+            className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm"
+            placeholder="https://..."
+            value={tempVideos[s.week] ?? s.videoUrl}
+            onChange={(e) =>
+              setTempVideos((prev) => ({ ...prev, [s.week]: e.target.value }))
+            }
+          />
+        </div>
+      </div>
+
+      <button
+        onClick={() => handleUpdate(s.week)}
+        className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-1 mt-4 rounded w-full"
       >
-        {s.videoUrl}
-      </a>
+        💾 Kaydet
+      </button>
     </div>
-  )}
-  <div className="text-white text-sm space-y-2 mb-3">
-    <label className="block font-semibold text-white">📋 Konuları Güncelle</label>
-    <textarea
-      rows={2}
-      className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm"
-      placeholder="Her satıra bir konu yazın"
-      value={tempTopics[s.week] ?? s.topic}
-      onChange={(e) =>
-        setTempTopics((prev) => ({ ...prev, [s.week]: e.target.value }))
-      }
-    />
-
-    <label className="block font-semibold text-white">🔗 Video Linki Güncelle</label>
-    <input
-      type="text"
-      className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm"
-      placeholder="https://..."
-      value={tempVideos[s.week] ?? s.videoUrl}
-      onChange={(e) =>
-        setTempVideos((prev) => ({ ...prev, [s.week]: e.target.value }))
-      }
-    />
-  </div>
-
-  <button
-    onClick={() => handleUpdate(s.week)}
-    className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-1 mt-2 rounded w-full"
-  >
-    💾 Kaydet
-  </button>
-</div>
   ))}
 </div>
 
