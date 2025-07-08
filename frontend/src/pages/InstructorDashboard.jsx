@@ -169,7 +169,7 @@ const InstructorDashboard = () => {
         </button>
 
         {/* Haftalık kartlar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
   {summary.map((s) => (
     <div
   key={s.week}
@@ -177,11 +177,11 @@ const InstructorDashboard = () => {
 >
    {/* ✅ Aktiflik etiketi */}
   {s.active && (
-    <span className="absolute top-2 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded shadow">
+    <span className="absolute top-2 right-2 text-green-400 font-bold text-lg">
       ✅ Aktif
     </span>
   )}
-  <div className="mb-4">
+  <div className="mb-2">
     <h3 className="text-xl font-semibold text-white mb-1">{s.week}. Hafta</h3>
     <p className="text-sm text-white/80">Katılım: <strong>{s.attended}/{s.total}</strong></p>
     <p className="text-sm text-white/80 mb-3">Oran: <span className="font-semibold text-green-300">{s.rate}%</span></p>
