@@ -118,63 +118,64 @@ const ParticipantDashboard = () => {
         </div>
 
         {/* HAFTALIK KATILIM */}
-        <div className="w-full max-w-4xl">
-          <h2 className="text-lg font-semibold mb-4 text-center text-white">
-            Haftalık Katılım
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {sessions.length === 0 ? (
-              <div className="col-span-full text-center text-gray-200">
-                Yoklama bilgisi bulunamadı
-              </div>
-            ) : (
-              sessions.map((s) => (
-  <div
-    key={s.week}
-    className={`bg-white/10 border rounded-lg p-4 text-center transition text-white backdrop-blur-sm
-      ${s.attended ? "border-green-400" : "border-white/20"}
-    `}
-  >
-    <p className="text-lg font-semibold mb-1">{s.week}. Hafta</p>
+        <div className="w-full max-w-5xl">
+  <h2 className="text-lg font-semibold mb-4 text-center text-white">
+    Haftalık Katılım
+  </h2>
 
-    {/* 🔹 Konu varsa göster */}
-    {s.topic && (
-      <p className="text-sm mb-1 text-yellow-300 font-medium">
-        Konu: {s.topic}
-      </p>
-    )}
-
-    {/* 🔹 Video link varsa göster */}
-    {s.videoUrl && (
-      <a
-        href={s.videoUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-sm text-blue-400 underline block mb-2"
-      >
-        📺 Video İzle
-      </a>
-    )}
-
-    {/* Katılım durumu */}
-    {s.attended ? (
-      <span className="text-green-400 font-bold">✔ Katıldı</span>
-    ) : s.active ? (
-      <button
-        onClick={() => handleAttend(s.week)}
-        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-      >
-        Katıldım
-      </button>
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    {sessions.length === 0 ? (
+      <div className="col-span-full text-center text-gray-200">
+        Yoklama bilgisi bulunamadı
+      </div>
     ) : (
-      <span className="text-gray-300 text-sm">Katılım Kapalı</span>
+      sessions.map((s) => (
+        <div
+          key={s.week}
+          className={`relative bg-white/10 border border-white/20 rounded-xl p-4 text-white backdrop-blur-md shadow-md transition transform hover:scale-[1.01]`}
+        >
+          <h3 className="text-md font-bold mb-2">{s.week}. Hafta</h3>
+
+          {/* Konu varsa */}
+          {s.topic && (
+            <div className="text-sm text-yellow-300 font-medium mb-1">
+              <span className="block">📌 <span className="font-semibold">Konu:</span> {s.topic}</span>
+            </div>
+          )}
+
+          {/* Video varsa */}
+          {s.videoUrl && (
+            <div className="mb-2">
+              <a
+                href={s.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-blue-400 underline"
+              >
+                📺 Video İzle
+              </a>
+            </div>
+          )}
+
+          {/* Katılım butonu veya durum */}
+          {s.attended ? (
+            <span className="text-green-400 font-bold text-sm">✔ Katıldınız</span>
+          ) : s.active ? (
+            <button
+              onClick={() => handleAttend(s.week)}
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+            >
+              Katıldım
+            </button>
+          ) : (
+            <span className="text-gray-300 text-sm">Katılım Kapalı</span>
+          )}
+        </div>
+      ))
     )}
   </div>
-))
+</div>
 
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );
