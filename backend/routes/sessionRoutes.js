@@ -19,5 +19,5 @@ router.post('/create', authenticate, createSession);
 router.post('/:week/start', authenticate, startSession);
 router.post('/:week/stop', authenticate, stopSession);
 
-router.put('/:week/update', authenticate, updateSessionContent);
+router.put('/:week', authenticate, updateSessionContent);
 module.exports = router;
