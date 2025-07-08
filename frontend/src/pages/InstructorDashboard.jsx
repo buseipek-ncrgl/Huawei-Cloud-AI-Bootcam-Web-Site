@@ -169,22 +169,16 @@ const InstructorDashboard = () => {
         </button>
 
         {/* Haftalık kartlar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
   {summary.map((s) => (
     <div
   key={s.week}
   className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl shadow-lg p-5 transition-transform transform hover:scale-[1.02] hover:shadow-2xl flex flex-col justify-between"
 >
-   {/* ✅ Aktiflik etiketi */}
-  {s.active && (
-    <span className="absolute top-2 right-2 text-green-400 font-bold text-lg">
-      ✅ Aktif
-    </span>
-  )}
-  <div className="mb-2">
+  <div className="mb-4">
     <h3 className="text-xl font-semibold text-white mb-1">{s.week}. Hafta</h3>
-    <p className="text-sm text-white/80">Katılım: <strong>{s.attended}/{s.total}</strong></p>
-    <p className="text-sm text-white/80 mb-3">Oran: <span className="font-semibold text-green-300">{s.rate}%</span></p>
+    <p className="text-sm text-white/80 mb-1">Katılım: <strong>{s.attended}/{s.total}</strong></p>
+    <p className="text-sm text-white/80 mb-4">Oran: <span className="font-semibold text-green-300">{s.rate}%</span></p>
 
     {s.active ? (
       <button
@@ -204,45 +198,14 @@ const InstructorDashboard = () => {
 
     <button
       onClick={() => fetchDetails(s.week)}
-      className="text-sm text-blue-300 underline hover:text-blue-400 mb-4"
+      className="text-sm text-blue-300 underline hover:text-blue-400 mb-3"
     >
       Katılımcı Detayları
     </button>
   </div>
 
-  {/* 🎯 Kaydedilmiş Konuların Listesi */}
-  {s.topic?.trim() && (
-    <div className="text-white text-sm mb-4">
-      <p className="font-semibold mb-1">📌 Konular:</p>
-      <ul className="list-disc list-inside space-y-1">
-        {s.topic
-          .split("\n")
-          .filter((line) => line.trim() !== "")
-          .map((item, idx) => (
-            <li key={idx} className="text-white/90">{item}</li>
-          ))}
-      </ul>
-    </div>
-  )}
-
-  {/* 🎥 Video Link */}
-  {s.videoUrl?.trim() && (
-    <div className="text-white text-sm mb-4">
-      <p className="font-semibold">🎥 Video Link:</p>
-      <a
-        href={s.videoUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-300 underline break-all"
-      >
-        {s.videoUrl}
-      </a>
-    </div>
-  )}
-
-  {/* ✍️ Düzenleme Alanı */}
   <div className="text-white text-sm space-y-2 mb-3">
-    <label className="block font-semibold text-white">📋 Konuları Güncelle</label>
+    <label className="block font-semibold text-white">📌 Konular</label>
     <textarea
       rows={2}
       className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm"
@@ -253,7 +216,7 @@ const InstructorDashboard = () => {
       }
     />
 
-    <label className="block font-semibold text-white">🔗 Video Linki Güncelle</label>
+    <label className="block font-semibold text-white">🎥 Video Linki</label>
     <input
       type="text"
       className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm"
@@ -272,7 +235,6 @@ const InstructorDashboard = () => {
     💾 Kaydet
   </button>
 </div>
-
   ))}
 </div>
 
