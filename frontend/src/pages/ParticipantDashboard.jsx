@@ -129,31 +129,49 @@ const ParticipantDashboard = () => {
               </div>
             ) : (
               sessions.map((s) => (
-                <div
-                  key={s.week}
-                  className={`bg-white/10 border rounded-lg p-4 text-center transition text-white backdrop-blur-sm
-                    ${s.attended ? "border-green-400" : "border-white/20"}
-                  `}
-                >
-                  <p className="text-lg font-semibold mb-2">{s.week}. Hafta</p>
+  <div
+    key={s.week}
+    className={`bg-white/10 border rounded-lg p-4 text-center transition text-white backdrop-blur-sm
+      ${s.attended ? "border-green-400" : "border-white/20"}
+    `}
+  >
+    <p className="text-lg font-semibold mb-1">{s.week}. Hafta</p>
 
-                  {/* GÖSTERİM MANTIĞI */}
-                  {s.attended ? (
-                    <span className="text-green-400 font-bold">✔ Katıldı</span>
-                  ) : s.active ? (
-                    <button
-                      onClick={() => handleAttend(s.week)}
-                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-                    >
-                      Katıldım
-                    </button>
-                  ) : (
-                    <span className="text-gray-300 text-sm">
-                      Katılım Kapalı
-                    </span>
-                  )}
-                </div>
-              ))
+    {/* 🔹 Konu varsa göster */}
+    {s.topic && (
+      <p className="text-sm mb-1 text-yellow-300 font-medium">
+        Konu: {s.topic}
+      </p>
+    )}
+
+    {/* 🔹 Video link varsa göster */}
+    {s.videoUrl && (
+      <a
+        href={s.videoUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-sm text-blue-400 underline block mb-2"
+      >
+        📺 Video İzle
+      </a>
+    )}
+
+    {/* Katılım durumu */}
+    {s.attended ? (
+      <span className="text-green-400 font-bold">✔ Katıldı</span>
+    ) : s.active ? (
+      <button
+        onClick={() => handleAttend(s.week)}
+        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+      >
+        Katıldım
+      </button>
+    ) : (
+      <span className="text-gray-300 text-sm">Katılım Kapalı</span>
+    )}
+  </div>
+))
+
             )}
           </div>
         </div>

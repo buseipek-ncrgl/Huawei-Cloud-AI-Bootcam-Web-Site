@@ -197,6 +197,7 @@ const InstructorDashboard = () => {
                   >
                     Yoklamayı Başlat
                   </button>
+                  
                 )}
 
                 <button
@@ -206,9 +207,44 @@ const InstructorDashboard = () => {
                   Katılımcı Detayları
                 </button>
               </div>
+              
             ))}
           </div>
         </div>
+<input
+  type="text"
+  defaultValue={s.topic}
+  placeholder="Haftanın konusu"
+  onBlur={(e) => s.topic = e.target.value}
+  className="w-full mt-2 p-2 rounded text-black"
+/>
+
+<input
+  type="text"
+  defaultValue={s.videoUrl}
+  placeholder="Video bağlantısı"
+  onBlur={(e) => s.videoUrl = e.target.value}
+  className="w-full mt-2 p-2 rounded text-black"
+/>
+
+<button
+  onClick={async () => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/sessions/${s.week}/update`,
+        { topic: s.topic, videoUrl: s.videoUrl },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert("Konu ve video linki güncellendi ✅");
+    } catch (err) {
+      alert("Güncelleme hatası ❌");
+    }
+  }}
+  className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1 mt-2 rounded"
+>
+  Kaydet
+</button>
 
         {/* YENİ: GENEL ÖZET TABLOSU */}
         {showGeneralSummary && generalSummary.length > 0 && (

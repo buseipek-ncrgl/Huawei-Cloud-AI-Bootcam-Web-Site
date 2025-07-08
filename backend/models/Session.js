@@ -1,3 +1,4 @@
+// models/Session.js
 const mongoose = require("mongoose");
 
 const sessionSchema = new mongoose.Schema({
@@ -10,6 +11,14 @@ const sessionSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  topic: {
+    type: String,
+    default: "", // Boş olabilir, sonra instructor tarafından eklenir
+  },
+  videoUrl: {
+    type: String,
+    default: "", // Boş olabilir, sonra instructor tarafından eklenir
+  }
 });
 
 module.exports = mongoose.model("Session", sessionSchema);

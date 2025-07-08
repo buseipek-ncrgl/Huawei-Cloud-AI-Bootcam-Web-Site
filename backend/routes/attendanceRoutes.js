@@ -10,24 +10,28 @@ const Session = require('../models/Session');
 // ----------------------------
 // Katılımcı için oturum bilgilerini getir
 // ----------------------------
+// Katılımcı için oturum bilgilerini getir
 router.get('/sessions', authenticate, async (req, res) => {
   try {
     const sessions = await Session.find().sort({ week: 1 });
 
-    // Yalnızca oturum açmış kullanıcıya ait kayıtlar
+    // Katılımcının kendi yoklama kayıtları
     const attendanceRecords = await Attendance.find({ userId: req.user.id });
 
-    // Her hafta için o kullanıcıya ait katılım var mı diye bak
+    // Her hafta için verileri oluştur
     const sessionsWithAttendance = sessions.map((session) => {
       const attended = attendanceRecords.some(
         record =>
           Number(record.week) === Number(session.week) &&
           record.attended === true
       );
+
       return {
         week: session.week,
         active: session.active,
-        attended
+        attended,
+        topic: session.topic || "",       // 💡 Konu ekleniyor
+        videoUrl: session.videoUrl || ""  // 💡 Video linki ekleniyor
       };
     });
 
@@ -41,6 +45,7 @@ router.get('/sessions', authenticate, async (req, res) => {
     return res.status(500).json({ success: false, error: 'Sunucu hatası' });
   }
 });
+
 
 // ----------------------------
 // Katılım işaretleme endpoint'i (Katılımcı)
@@ -250,6 +255,27 @@ router.get('/general-summary', authenticate, async (req, res) => {
     res.json(generalSummary);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+router.put('/session/:week', authenticate, async (req, res) => {
+  if (req.user.role !== 'instructor') {
+    return res.status(403).json({ error: 'Yetkisiz erişim' });
+  }
+
+  const weekNum = Number(req.params.week);
+  const { topic, videoUrl } = req.body;
+
+  try {
+    const session = await Session.findOneAndUpdate(
+      { week: weekNum },
+      { topic, videoUrl },
+      { new: true, upsert: true }
+    );
+    res.json({ message: "Haftalık içerik güncellendi", session });
+  } catch (err) {
+    console.error("❌ İçerik güncelleme hatası:", err);
+    res.status(500).json({ error: 'Sunucu hatası' });
   }
 });
 
