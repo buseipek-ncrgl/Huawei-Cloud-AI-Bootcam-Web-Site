@@ -110,7 +110,9 @@ router.get('/summary', async (req, res) => {
           attended,
           total: participants,
           rate: participants > 0 ? Math.round((attended / participants) * 100) : 0,
-          active: session.active
+          active: session.active,
+          topic: session.topic || "",       // 🔧 Ekledik
+          videoUrl: session.videoUrl || ""  // 🔧 Ekledik
         };
       })
     );
