@@ -249,9 +249,101 @@ const InstructorDashboard = () => {
             ))}
           </div>
         </div>
+        {/* YENİ: GENEL ÖZET TABLOSU */}
+        {showGeneralSummary && generalSummary.length > 0 && (
+          <div className="mt-10 bg-white/10 border border-white/20 rounded-xl p-6 w-full max-w-7xl">
+            <h3 className="text-lg font-bold mb-4 text-white text-center">
+              📊 Genel Katılım Özeti - Tüm Katılımcılar
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm text-left text-white border border-white/20">
+                <thead className="bg-white/10 uppercase text-xs font-bold">
+                  <tr>
+                    <th className="px-4 py-2">Ad Soyad</th>
+                    <th className="px-4 py-2">E-posta</th>
+                    <th className="px-4 py-2">Katıldığı Hafta</th>
+                    <th className="px-4 py-2">Toplam Hafta</th>
+                    <th className="px-4 py-2">Katılım Oranı</th>
+                    <th className="px-4 py-2">Durum</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white/5">
+                  {generalSummary.map((user) => (
+                    <tr key={user.id} className="border-t border-white/10">
+                      <td className="px-4 py-2">{user.name}</td>
+                      <td className="px-4 py-2">{user.email}</td>
+                      <td className="px-4 py-2">{user.attended}</td>
+                      <td className="px-4 py-2">{user.totalWeeks}</td>
+                      <td className="px-4 py-2">
+                        <span className={`${
+                          user.rate >= 75
+                            ? "text-green-400"
+                            : user.rate >= 50
+                            ? "text-yellow-300"
+                            : "text-red-400"
+                        } font-semibold`}>
+                          %{user.rate}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2">
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          user.rate >= 75
+                            ? "bg-green-600 text-white"
+                            : user.rate >= 50
+                            ? "bg-yellow-600 text-white"
+                            : "bg-red-600 text-white"
+                        }`}>
+                          {user.rate >= 75 ? "Başarılı" : user.rate >= 50 ? "Orta" : "Düşük"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
-        {/* General summary and participant details gibi alt bölümler burada kalıyor... */}
-        {/* Kod zaten uzun olduğu için burayı sadeleştirdim, ama diğer parçaların aynen çalışmaya devam ettiğini unutma */}
+        {/* HAFTALIK DETAY TABLOSU */}
+        {selectedWeek && details.present.length > 0 && (
+          <div className="mt-10 bg-white/10 border border-white/20 rounded-xl p-6 w-full max-w-5xl">
+            <h3 className="text-lg font-bold mb-4 text-white text-center">
+              {selectedWeek}. Hafta Katılım Detayları
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm text-left text-white border border-white/20">
+                <thead className="bg-white/10 uppercase text-xs font-bold">
+                  <tr>
+                    <th className="px-4 py-2">Ad Soyad</th>
+                    <th className="px-4 py-2">E-posta</th>
+                    <th className="px-4 py-2">Katıldığı Hafta</th>
+                    <th className="px-4 py-2">Katılım Oranı</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white/5">
+                  {details.present.map((p) => (
+                    <tr key={p.id} className="border-t border-white/10">
+                      <td className="px-4 py-2">{p.name}</td>
+                      <td className="px-4 py-2">{p.email}</td>
+                      <td className="px-4 py-2">{p.attended} / {p.totalWeeks}</td>
+                      <td className="px-4 py-2">
+                        <span className={`${
+                          p.rate >= 75
+                            ? "text-green-400"
+                            : p.rate >= 50
+                            ? "text-yellow-300"
+                            : "text-red-400"
+                        } font-semibold`}>
+                          %{p.rate}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
