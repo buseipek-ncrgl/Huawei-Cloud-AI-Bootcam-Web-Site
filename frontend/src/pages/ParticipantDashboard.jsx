@@ -86,7 +86,7 @@ const ParticipantDashboard = () => {
 
   return (
     <div
-      className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white"
+      className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white flex flex-col"
       style={{ backgroundImage: "url('/background1.png')" }}
     >
       {/* ÜST BAŞLIK + LOGOLAR */}
@@ -109,10 +109,10 @@ const ParticipantDashboard = () => {
       </div>
 
       {/* ANA LAYOUT */}
-      <div className="flex h-[calc(100vh-160px)]">
+      <div className="flex flex-1">
 
         {/* SIDEBAR */}
-        <aside className="w-64 bg-black/60 border-r border-white/30 p-4 flex flex-col h-full">
+        <aside className="w-64 bg-black/60 border-r border-white/30 p-4 flex flex-col min-h-full">
 
           {/* Merhaba */}
           <div className="text-center text-white mb-6">
