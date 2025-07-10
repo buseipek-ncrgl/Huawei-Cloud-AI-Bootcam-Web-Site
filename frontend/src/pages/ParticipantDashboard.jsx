@@ -110,10 +110,10 @@ const ParticipantDashboard = () => {
 
 
       {/* ANA LAYOUT */}
-      <div className="flex flex-col md:flex-row bg-black/40 min-h-[calc(100vh-160px)]">
+      <div className="flex bg-black/40 min-h-[calc(100vh-160px)]">
 
         {/* SIDEBAR */}
-        <aside className="w-full md:w-64 bg-black/60 border-r border-white/30 p-4 md:min-h-[calc(100vh-160px)] flex flex-col">
+        <aside className="w-64 bg-black/60 border-r border-white/30 p-4 flex flex-col">
 
           {/* Merhaba */}
           <div className="text-center text-white mb-6">
@@ -137,6 +137,8 @@ const ParticipantDashboard = () => {
             ))}
           </nav>
         </aside>
+        <main className="flex-1 p-6 overflow-y-auto">
+          {/* Aktif panel */}
 
         {/* PANEL İÇERİĞİ */}
         <main className="flex-1 p-6 overflow-y-auto">
@@ -318,8 +320,11 @@ const ParticipantDashboard = () => {
               </p>
             </div>
           )}
+          
         </main>
+         </main>
       </div>
+      
     </div>
   );
 };
