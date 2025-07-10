@@ -112,15 +112,15 @@ const ParticipantDashboard = () => {
       <div className="flex flex-1">
 
         {/* SIDEBAR */}
-        <aside className="w-64 bg-black/60 border-r border-white/30 p-4 flex flex-col min-h-screen">
+        <aside className="w-64 h-screen fixed top-0 left-0 bg-black/60 border-r border-white/30 p-4 flex flex-col z-10">
   {/* Merhaba en üstte */}
-  <div className="text-center text-white mb-8">
+  <div className="text-center text-white mb-8 mt-2">
     <p className="text-sm">Merhaba,</p>
     <p className="text-xl font-bold text-yellow-300">{fullName}</p>
   </div>
 
-  {/* Menü aşağıda başlasın */}
-  <nav className="flex flex-col gap-2 flex-1">
+  {/* Menü öğeleri */}
+  <nav className="flex flex-col gap-2">
     {panels.map((panel) => (
       <button
         key={panel}
@@ -138,8 +138,9 @@ const ParticipantDashboard = () => {
 </aside>
 
 
+
         {/* PANEL İÇERİĞİ */}
-        <main className="flex-1 p-6 overflow-y-auto h-full">
+        <main className="ml-64 p-6 overflow-y-auto flex-1">
           <h2 className="text-xl font-bold text-yellow-300 mb-6">{activePanel}</h2>
 
           {/* PROGRAM */}
