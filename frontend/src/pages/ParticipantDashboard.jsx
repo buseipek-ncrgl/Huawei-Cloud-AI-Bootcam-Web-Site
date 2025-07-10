@@ -90,30 +90,31 @@ const ParticipantDashboard = () => {
       style={{ backgroundImage: "url('/background1.png')" }}
     >
       {/* ÜST BAŞLIK + LOGOLAR */}
-      <div className="w-full text-center py-6 bg-black/70 border-b border-white/20">
-        <div className="flex flex-col items-center gap-3">
-          <div className="flex gap-6 justify-center">
-            <img
-              src="/huaweilogo.png"
-              className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
-              alt="Huawei"
-            />
-            <img
-              src="/hsdlogo.png"
-              className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
-              alt="HSD"
-            />
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400">
-            Huawei Cloud AI Bootcamp
-          </h1>
-        </div>
-      </div>
+      <div className="flex flex-col items-center justify-center mt-2 mb-4">
+  <div className="flex items-center gap-8 mb-2">
+    <img
+      src="/huaweilogo.png"
+      alt="Huawei"
+      className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
+    />
+    <img
+      src="/hsdlogo.png"
+      alt="HSD"
+      className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
+    />
+  </div>
+  <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 text-center">
+    Huawei Cloud AI Bootcamp
+  </h1>
+</div>
+
 
       {/* ANA LAYOUT */}
-      <div className="flex flex-col md:flex-row bg-black/40 min-h-screen">
+      <div className="flex flex-col md:flex-row bg-black/40 min-h-[calc(100vh-160px)]">
+
         {/* SIDEBAR */}
-        <aside className="w-full md:w-64 bg-black/60 border-r border-white/20 p-4 md:min-h-screen flex flex-col justify-start">
+        <aside className="w-full md:w-64 bg-black/60 border-r border-white/30 p-4 md:min-h-[calc(100vh-160px)] flex flex-col">
+
           {/* Merhaba */}
           <div className="text-center text-white mb-6">
             <p className="text-sm">Merhaba,</p>
