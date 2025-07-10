@@ -28,9 +28,12 @@ const ParticipantDashboard = () => {
           return;
         }
 
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/sessions`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/attendance/sessions`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         if (!res.data.success) {
           throw new Error(res.data.error || "Veri alınamadı");
@@ -92,24 +95,35 @@ const ParticipantDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
-      <div className="min-h-screen flex flex-col md:flex-row bg-black/40">
-        {/* Sidebar - Tam Yükseklik */}
+    <div
+      className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white"
+      style={{ backgroundImage: "url('/background1.png')" }}
+    >
+      {/* ÜST LOGO & BAŞLIK */}
+      <div className="flex flex-col items-center justify-center mt-2 mb-6 px-4">
+        <div className="flex items-center gap-8 mb-2">
+          <img
+            src="/huaweilogo.png"
+            alt="Huawei"
+            className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
+          />
+          <img
+            src="/hsdlogo.png"
+            alt="HSD"
+            className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
+          />
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 text-center">
+          Huawei Cloud AI Bootcamp
+        </h1>
+      </div>
+
+      <div className="flex flex-col md:flex-row min-h-screen bg-black/40">
+        {/* SIDEBAR */}
         <aside className="w-full md:w-72 bg-black/60 border-r border-white/20 flex flex-col items-center py-6 px-4 md:min-h-screen">
-          {/* Logolar */}
-          <div className="flex flex-col items-center justify-center gap-4 mb-4">
-            <img src="/huaweilogo.png" className="w-40 sm:w-48 drop-shadow-2xl brightness-125" alt="Huawei" />
-            <img src="/hsdlogo.png" className="w-40 sm:w-48 drop-shadow-2xl brightness-125" alt="HSD" />
-          </div>
-          {/* Başlık */}
-          <h1 className="text-xl font-bold text-yellow-400 text-center mb-1">
-            Huawei Cloud AI Bootcamp
-          </h1>
-          {/* Merhaba */}
           <p className="text-sm text-gray-300 mb-6 text-center">
             Merhaba, <span className="font-medium text-white">{fullName}</span>
           </p>
-          {/* Menü */}
           <nav className="flex flex-col gap-2 w-full">
             {panels.map((panel) => (
               <button
@@ -127,16 +141,21 @@ const ParticipantDashboard = () => {
           </nav>
         </aside>
 
-        {/* Main Content */}
+        {/* ANA PANEL */}
         <main className="flex-1 p-6 overflow-y-auto">
           <h2 className="text-xl font-bold text-yellow-300 mb-6">{activePanel}</h2>
 
-          {/* Program Paneli */}
+          {/* PROGRAM */}
           {activePanel === "Program" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {sessions.map((s) => (
-                <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400">
-                  <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
+                <div
+                  key={s.week}
+                  className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
+                >
+                  <h3 className="text-lg font-bold text-yellow-300 mb-2">
+                    {s.week}. Hafta
+                  </h3>
                   {s.topic ? (
                     <ul className="list-disc list-inside text-sm text-gray-200 space-y-1">
                       {s.topic.split("\n").map((item, i) => (
@@ -151,12 +170,17 @@ const ParticipantDashboard = () => {
             </div>
           )}
 
-          {/* Katılım Paneli */}
+          {/* KATILIM */}
           {activePanel === "Katılım" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {sessions.map((s) => (
-                <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400">
-                  <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
+                <div
+                  key={s.week}
+                  className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
+                >
+                  <h3 className="text-lg font-bold text-yellow-300 mb-2">
+                    {s.week}. Hafta
+                  </h3>
                   {s.attended ? (
                     <p className="text-green-400 font-bold">✔ Katıldınız</p>
                   ) : s.active ? (
@@ -174,19 +198,45 @@ const ParticipantDashboard = () => {
             </div>
           )}
 
-          {/* Eğitmenler */}
+          {/* EĞİTMENLER */}
           {activePanel === "Eğitmenler" && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {[
-                { name: "Ahmet Yılmaz", title: "AI Mühendisi – Huawei", linkedin: "#", image: "/profile-placeholder.png" },
-                { name: "Elif Demir", title: "Veri Bilimcisi – Huawei", linkedin: "#", image: "/profile-placeholder.png" },
-                { name: "Mehmet Kaya", title: "Cloud Eğitmeni – HSD", linkedin: "#", image: "/profile-placeholder.png" },
+                {
+                  name: "Ahmet Yılmaz",
+                  title: "AI Mühendisi – Huawei",
+                  linkedin: "#",
+                  image: "/profile-placeholder.png",
+                },
+                {
+                  name: "Elif Demir",
+                  title: "Veri Bilimcisi – Huawei",
+                  linkedin: "#",
+                  image: "/profile-placeholder.png",
+                },
+                {
+                  name: "Mehmet Kaya",
+                  title: "Cloud Eğitmeni – HSD",
+                  linkedin: "#",
+                  image: "/profile-placeholder.png",
+                },
               ].map((e, i) => (
-                <div key={i} className="bg-white/10 border border-white/20 p-4 rounded-lg text-center transition hover:scale-[1.015] hover:border-yellow-400">
-                  <img src={e.image} alt="Eğitmen" className="w-20 h-20 mx-auto rounded-full object-cover mb-3" />
+                <div
+                  key={i}
+                  className="bg-white/10 border border-white/20 p-4 rounded-lg text-center transition hover:scale-[1.015] hover:border-yellow-400"
+                >
+                  <img
+                    src={e.image}
+                    alt="Eğitmen"
+                    className="w-20 h-20 mx-auto rounded-full object-cover mb-3"
+                  />
                   <h3 className="text-lg font-semibold">{e.name}</h3>
                   <p className="text-sm text-gray-300">{e.title}</p>
-                  <a href={e.linkedin} target="_blank" className="text-blue-400 hover:underline text-sm">
+                  <a
+                    href={e.linkedin}
+                    target="_blank"
+                    className="text-blue-400 hover:underline text-sm"
+                  >
                     LinkedIn Profili
                   </a>
                 </div>
@@ -194,32 +244,55 @@ const ParticipantDashboard = () => {
             </div>
           )}
 
-          {/* Kaynaklar */}
+          {/* KAYNAKLAR */}
           {activePanel === "Kaynaklar" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
               {sessions.map((s) => (
-                <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400">
-                  <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta Kaynakları</h3>
+                <div
+                  key={s.week}
+                  className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
+                >
+                  <h3 className="text-lg font-bold text-yellow-300 mb-2">
+                    {s.week}. Hafta Kaynakları
+                  </h3>
                   {s.videoUrl && (
                     <div className="mb-2">
                       <p className="font-semibold">🎥 Video:</p>
-                      <a href={s.videoUrl} target="_blank" className="text-blue-400 hover:underline">İzle</a>
+                      <a
+                        href={s.videoUrl}
+                        target="_blank"
+                        className="text-blue-400 hover:underline"
+                      >
+                        İzle
+                      </a>
                     </div>
                   )}
                   <div className="mb-2">
                     <p className="font-semibold">📄 Medium:</p>
-                    <a href="https://medium.com/@hsdcloudbootcamp/hafta1" target="_blank" className="text-blue-400 hover:underline">Hafta 1 Medium</a>
+                    <a
+                      href="https://medium.com/@hsdcloudbootcamp/hafta1"
+                      target="_blank"
+                      className="text-blue-400 hover:underline"
+                    >
+                      Hafta 1 Medium
+                    </a>
                   </div>
                   <div>
                     <p className="font-semibold">📁 CVÇ:</p>
-                    <a href="https://drive.google.com/file/d/örnekcvç" target="_blank" className="text-blue-400 hover:underline">İndir</a>
+                    <a
+                      href="https://drive.google.com/file/d/örnekcvç"
+                      target="_blank"
+                      className="text-blue-400 hover:underline"
+                    >
+                      İndir
+                    </a>
                   </div>
                 </div>
               ))}
             </div>
           )}
 
-          {/* Kurallar */}
+          {/* KURALLAR */}
           {activePanel === "Kurallar" && (
             <div className="space-y-3 text-sm text-gray-200">
               <p>✅ Her hafta yoklama almanız beklenir.</p>
@@ -230,11 +303,28 @@ const ParticipantDashboard = () => {
             </div>
           )}
 
-          {/* İletişim */}
+          {/* İLETİŞİM */}
           {activePanel === "İletişim" && (
             <div className="space-y-3 text-sm">
-              <p>📧 E-posta: <a href="mailto:hsdcloud@bootcamp.com" className="text-blue-400 underline">hsdcloud@bootcamp.com</a></p>
-              <p>💬 Discord: <a href="https://discord.gg/örnek" className="text-blue-400 underline" target="_blank">Katılmak için tıkla</a></p>
+              <p>
+                📧 E-posta:{" "}
+                <a
+                  href="mailto:hsdcloud@bootcamp.com"
+                  className="text-blue-400 underline"
+                >
+                  hsdcloud@bootcamp.com
+                </a>
+              </p>
+              <p>
+                💬 Discord:{" "}
+                <a
+                  href="https://discord.gg/örnek"
+                  className="text-blue-400 underline"
+                  target="_blank"
+                >
+                  Katılmak için tıkla
+                </a>
+              </p>
             </div>
           )}
         </main>
