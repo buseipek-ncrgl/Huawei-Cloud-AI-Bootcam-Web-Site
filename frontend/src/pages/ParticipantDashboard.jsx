@@ -118,30 +118,33 @@ const ParticipantDashboard = () => {
         </h1>
       </div>
 
-      <div className="flex flex-col md:flex-row bg-black/40 min-h-screen h-full">
+      <div className="flex flex-col md:flex-row h-full min-h-screen bg-black/40">
+  {/* SIDEBAR - tam boy */}
+  <aside className="w-full md:w-72 bg-black/60 border-r border-white/20 flex flex-col items-center py-6 px-4 h-full md:h-screen">
+    <p className="text-sm text-gray-300 mb-6 text-center">
+      Merhaba, <span className="font-medium text-white">{fullName}</span>
+    </p>
+    <nav className="flex flex-col gap-2 w-full">
+      {panels.map((panel) => (
+        <button
+          key={panel}
+          onClick={() => setActivePanel(panel)}
+          className={`text-left w-full px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-[1.03] hover:border-yellow-400 ${
+            activePanel === panel
+              ? "bg-yellow-400 text-black border-yellow-400"
+              : "bg-white/5 border-white/10 text-white"
+          }`}
+        >
+          {panel}
+        </button>
+      ))}
+    </nav>
+  </aside>
 
-        {/* SIDEBAR */}
-        <aside className="w-full md:w-72 bg-black/60 border-r border-white/20 flex flex-col items-center py-6 px-4 h-full md:h-screen">
+  {/* CONTENT */}
+  <main className="flex-1 p-6 overflow-y-auto">
+    {/* Panel içerikleri burada... */}
 
-          <p className="text-sm text-gray-300 mb-6 text-center">
-            Merhaba, <span className="font-medium text-white">{fullName}</span>
-          </p>
-          <nav className="flex flex-col gap-2 w-full">
-            {panels.map((panel) => (
-              <button
-                key={panel}
-                onClick={() => setActivePanel(panel)}
-                className={`text-left w-full px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-[1.03] hover:border-yellow-400 ${
-                  activePanel === panel
-                    ? "bg-yellow-400 text-black border-yellow-400"
-                    : "bg-white/5 border-white/10 text-white"
-                }`}
-              >
-                {panel}
-              </button>
-            ))}
-          </nav>
-        </aside>
 
         {/* ANA PANEL */}
         <main className="flex-1 p-6 overflow-y-auto">
@@ -330,9 +333,14 @@ const ParticipantDashboard = () => {
             </div>
           )}
         </main>
+        </main>
       </div>
+      
     </div>
+    
   );
+  
 };
+
 
 export default ParticipantDashboard;
