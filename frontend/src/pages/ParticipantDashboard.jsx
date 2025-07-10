@@ -111,7 +111,7 @@ const ParticipantDashboard = () => {
       className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
     />
   </div>
-  <h1 className="text-2xl sm:text-2xl font-extrabold text-yellow-400 tracking-wide drop-shadow-lg text-center">
+  <h1 className="text-3xl sm:text-2xl font-extrabold text-yellow-400 tracking-wide drop-shadow-lg text-center">
     Huawei Cloud AI Bootcamp
   </h1>
 </div>
