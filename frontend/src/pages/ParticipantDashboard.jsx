@@ -2,19 +2,22 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const panels = ["Program", "Katılım", "Eğitmenler", "Kaynaklar", "Kurallar", "İletişim"];
+const panels = [
+  "Program",
+  "Katılım",
+  "Eğitmenler",
+  "Kaynaklar",
+  "Kurallar",
+  "İletişim",
+];
 
 const ParticipantDashboard = () => {
   const [sessions, setSessions] = useState([]);
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [openPanel, setOpenPanel] = useState(null);
+  const [activePanel, setActivePanel] = useState("Program");
   const navigate = useNavigate();
-
-  const togglePanel = (panel) => {
-    setOpenPanel((prev) => (prev === panel ? null : panel));
-  };
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -35,7 +38,6 @@ const ParticipantDashboard = () => {
 
         setSessions(res.data.sessions);
         setFullName(res.data.fullName);
-        setError(null);
       } catch (err) {
         setError(err.response?.data?.error || err.message);
         if (err.response?.status === 403) {
@@ -90,215 +92,168 @@ const ParticipantDashboard = () => {
   }
 
   return (
-    <div
-      className="min-h-screen w-full bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/background1.png')" }}
-    >
-      <div className="min-h-screen bg-black/30 flex flex-col items-center px-4 py-10">
-        {/* Logo ve Başlık */}
-        <div className="flex flex-col items-center justify-center mt-2 mb-8">
-          <div className="flex items-center gap-8 mb-2">
-            <img src="/huaweilogo.png" className="w-40 sm:w-48" />
-            <img src="/hsdlogo.png" className="w-40 sm:w-48" />
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 text-center">
-            Huawei Cloud AI Bootcamp
-          </h1>
-        </div>
+    <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
+      <div className="min-h-screen bg-black/40 flex flex-col md:flex-row">
 
-        {/* Katılımcı Bilgisi */}
-        <div className="bg-white/10 border border-white/20 px-6 py-3 rounded-xl mb-6 shadow text-white backdrop-blur-sm">
-          <p className="text-base sm:text-lg font-medium">
-            Katılımcı:{" "}
-            <span className="font-semibold text-white">{fullName}</span>
-          </p>
-        </div>
-
-        {/* Paneller */}
-        <div className="w-full max-w-5xl space-y-4">
-          {panels.map((panel) => (
-            <div key={panel} className="bg-white/10 border border-white/20 rounded-xl text-white shadow overflow-hidden">
+        {/* Sidebar */}
+        <div className="w-full md:w-64 bg-black/50 border-r border-white/20 p-6 flex flex-col items-center">
+          <img src="/huaweilogo.png" alt="Huawei" className="w-32 mb-4" />
+          <img src="/hsdlogo.png" alt="HSD" className="w-32 mb-8" />
+          <h2 className="text-lg font-semibold text-center mb-6">Merhaba, {fullName}</h2>
+          <nav className="space-y-2 w-full">
+            {panels.map((panel) => (
               <button
-                onClick={() => togglePanel(panel)}
-                className="w-full text-left px-6 py-4 font-semibold text-xl bg-white/10 hover:bg-yellow-500/10 transition"
+                key={panel}
+                onClick={() => setActivePanel(panel)}
+                className={`w-full text-left px-4 py-2 rounded transition ${
+                  activePanel === panel
+                    ? "bg-yellow-400 text-black font-bold"
+                    : "hover:bg-white/10"
+                }`}
               >
                 {panel}
               </button>
-              {openPanel === panel && (
-                <div className="p-6 bg-black/30">
+            ))}
+          </nav>
+        </div>
 
-                  {/* PROGRAM */}
-                  {panel === "Program" ? (
-                    sessions.length === 0 ? (
-                      <p className="text-gray-200">Haftalık konu bilgisi bulunamadı</p>
-                    ) : (
-                      <div className="space-y-4">
-                        {sessions.map((s) => (
-                          <div key={s.week} className="bg-white/5 border border-white/20 rounded-lg p-4">
-                            <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
-                            {s.topic ? (
-                              <ul className="list-disc list-inside text-sm text-gray-200 space-y-1">
-                                {s.topic.split("\n").map((item, i) => (
-                                  <li key={i}>{item.trim()}</li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <p className="italic text-gray-400">Henüz konu bilgisi girilmemiş</p>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )
+        {/* Content */}
+        <div className="flex-1 p-6 overflow-y-auto">
+          <h1 className="text-2xl font-bold text-yellow-300 mb-6">{activePanel}</h1>
 
-                  /* KATILIM */
-                  ) : panel === "Katılım" ? (
-                    sessions.length === 0 ? (
-                      <p className="text-gray-200">Yoklama bilgisi bulunamadı</p>
-                    ) : (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        {sessions.map((s) => (
-                          <div key={s.week} className="bg-white/5 border border-white/20 rounded-xl p-5 backdrop-blur-sm">
-                            <h3 className="text-xl font-bold mb-3 text-yellow-300">{s.week}. Hafta</h3>
-
-                            {s.topic && (
-                              <div className="mb-3">
-                                <p className="font-semibold mb-1 text-white">📌 Konular:</p>
-                                <ul className="list-disc list-inside text-sm text-gray-200 space-y-1">
-                                  {s.topic.split("\n").map((item, i) => (
-                                    <li key={i}>{item.trim()}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-
-                            {s.videoUrl?.trim() && (
-                              <div className="mb-3">
-                                <p className="font-semibold text-white">🎥 Video Link:</p>
-                                <a
-                                  href={s.videoUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-block mt-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
-                                >
-                                  İzle
-                                </a>
-                              </div>
-                            )}
-
-                            {s.attended ? (
-                              <span className="text-green-400 font-bold text-lg">✔ Katıldınız</span>
-                            ) : s.active ? (
-                              <button
-                                onClick={() => handleAttend(s.week)}
-                                className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg text-base font-semibold w-full mt-2"
-                              >
-                                Katıldım
-                              </button>
-                            ) : (
-                              <span className="text-gray-400 italic text-sm">Katılım Kapalı</span>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )
-
-                  /* EĞİTMENLER */
-                  ) : panel === "Eğitmenler" ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                      {[
-                        {
-                          name: "Ahmet Yılmaz",
-                          title: "AI Mühendisi – Huawei",
-                          linkedin: "https://www.linkedin.com/in/ahmetyilmaz",
-                        },
-                        {
-                          name: "Elif Demir",
-                          title: "Veri Bilimcisi – Huawei",
-                          linkedin: "https://www.linkedin.com/in/elifdemir",
-                        },
-                        {
-                          name: "Mehmet Kaya",
-                          title: "Cloud Eğitmeni – HSD",
-                          linkedin: "https://www.linkedin.com/in/mehmetkaya",
-                        },
-                      ].map((instructor, i) => (
-                        <div key={i} className="bg-white/10 border border-white/20 rounded-lg p-4 text-white">
-                          <h3 className="text-lg font-semibold">{instructor.name}</h3>
-                          <p className="text-sm text-gray-300 mb-2">{instructor.title}</p>
-                          <a
-                            href={instructor.linkedin}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-400 hover:underline text-sm"
-                          >
-                            LinkedIn Profili
-                          </a>
-                        </div>
+          {/* PROGRAM */}
+          {activePanel === "Program" && (
+            <div className="space-y-4">
+              {sessions.map((s) => (
+                <div key={s.week} className="bg-white/10 rounded-lg p-4 border border-white/20">
+                  <h3 className="text-lg font-semibold text-yellow-300 mb-2">
+                    {s.week}. Hafta
+                  </h3>
+                  {s.topic ? (
+                    <ul className="list-disc list-inside text-sm text-gray-200 space-y-1">
+                      {s.topic.split("\n").map((item, i) => (
+                        <li key={i}>{item.trim()}</li>
                       ))}
-                    </div>
-
-                  /* KURALLAR */
-                  ) : panel === "Kurallar" ? (
-                    <div className="space-y-3 text-gray-200 text-sm leading-relaxed">
-                      <p>✅ Her katılımcının her hafta yoklama alması beklenmektedir.</p>
-                      <p>📌 En az 4 hafta katılım zorunludur. Aksi halde sertifika verilmez.</p>
-                      <p>🧠 Her hafta konular öğrenildikten sonra haftalık sınav yapılabilir.</p>
-                      <p>🎓 Final sınavına sadece yeterli katılım gösterenler alınır.</p>
-                      <p>📨 Sorularınız için eğitmenlerle veya iletişim bölümündeki destekle iletişime geçebilirsiniz.</p>
-                    </div>
-
-                  /* KAYNAKLAR */
-                  ) : panel === "Kaynaklar" ? (
-                    <div className="space-y-4 text-white text-sm">
-                      <div>
-                        <h4 className="font-semibold mb-1">🎥 YouTube Video:</h4>
-                        <a
-                          href="https://www.youtube.com/watch?v=örnekvideo"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-400 hover:underline"
-                        >
-                          https://www.youtube.com/watch?v=örnekvideo
-                        </a>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">📄 Medium Yazısı:</h4>
-                        <a
-                          href="https://medium.com/@hsdcloudbootcamp/hafta1"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-400 hover:underline"
-                        >
-                          https://medium.com/@hsdcloudbootcamp/hafta1
-                        </a>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">📁 CVÇ (Çalışma ve Video Çizelgesi):</h4>
-                        <a
-                          href="https://drive.google.com/file/d/örnekcvç"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-400 hover:underline"
-                        >
-                          Google Drive Linki (CVÇ)
-                        </a>
-                      </div>
-                    </div>
-
-                  /* İLETİŞİM */
-                  ) : panel === "İletişim" ? (
-                    <div className="text-sm text-white space-y-3">
-                      <p>📧 E-posta: <a href="mailto:hsdcloud@bootcamp.com" className="text-blue-400 underline">hsdcloud@bootcamp.com</a></p>
-                      <p>💬 Discord: <a href="https://discord.gg/örnek" target="_blank" className="text-blue-400 underline">Katılmak için tıkla</a></p>
-                    </div>
-
+                    </ul>
                   ) : (
-                    <p className="text-gray-200">"{panel}" bölümü içeriği yakında eklenecek.</p>
+                    <p className="italic text-gray-400">Konu girilmemiş</p>
+                  )}
+                  {s.videoUrl?.trim() && (
+                    <div className="mt-3">
+                      <p className="font-semibold">🎥 Video:</p>
+                      <a
+                        href={s.videoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:underline text-sm"
+                      >
+                        İzlemek için tıkla
+                      </a>
+                    </div>
                   )}
                 </div>
-              )}
+              ))}
             </div>
-          ))}
+          )}
+
+          {/* KATILIM */}
+          {activePanel === "Katılım" && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {sessions.map((s) => (
+                <div key={s.week} className="bg-white/10 rounded-lg p-4 border border-white/20">
+                  <h3 className="text-lg font-semibold mb-3 text-yellow-300">
+                    {s.week}. Hafta
+                  </h3>
+                  {s.attended ? (
+                    <p className="text-green-400 font-bold">✔ Katıldınız</p>
+                  ) : s.active ? (
+                    <button
+                      onClick={() => handleAttend(s.week)}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold text-sm"
+                    >
+                      Katıldım
+                    </button>
+                  ) : (
+                    <p className="text-gray-400 italic">Katılım Kapalı</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* EĞİTMENLER */}
+          {activePanel === "Eğitmenler" && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                {
+                  name: "Ahmet Yılmaz",
+                  title: "AI Mühendisi – Huawei",
+                  linkedin: "https://www.linkedin.com/in/ahmetyilmaz",
+                },
+                {
+                  name: "Elif Demir",
+                  title: "Veri Bilimcisi – Huawei",
+                  linkedin: "https://www.linkedin.com/in/elifdemir",
+                },
+                {
+                  name: "Mehmet Kaya",
+                  title: "Cloud Eğitmeni – HSD",
+                  linkedin: "https://www.linkedin.com/in/mehmetkaya",
+                },
+              ].map((e, i) => (
+                <div key={i} className="bg-white/10 rounded-lg p-4 border border-white/20">
+                  <h3 className="text-lg font-semibold">{e.name}</h3>
+                  <p className="text-sm text-gray-300">{e.title}</p>
+                  <a href={e.linkedin} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline text-sm mt-1 inline-block">
+                    LinkedIn Profili
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* KAYNAKLAR */}
+          {activePanel === "Kaynaklar" && (
+            <div className="space-y-4 text-sm">
+              <div className="bg-white/10 p-4 rounded-lg border border-white/20">
+                <p className="font-semibold mb-1">🎥 YouTube Video:</p>
+                <a href="https://www.youtube.com/watch?v=örnekvideo" target="_blank" className="text-blue-400 hover:underline">
+                  https://www.youtube.com/watch?v=örnekvideo
+                </a>
+              </div>
+              <div className="bg-white/10 p-4 rounded-lg border border-white/20">
+                <p className="font-semibold mb-1">📄 Medium Yazısı:</p>
+                <a href="https://medium.com/@hsdcloudbootcamp/hafta1" target="_blank" className="text-blue-400 hover:underline">
+                  https://medium.com/@hsdcloudbootcamp/hafta1
+                </a>
+              </div>
+              <div className="bg-white/10 p-4 rounded-lg border border-white/20">
+                <p className="font-semibold mb-1">📁 CVÇ:</p>
+                <a href="https://drive.google.com/file/d/örnekcvç" target="_blank" className="text-blue-400 hover:underline">
+                  Google Drive Linki (CVÇ)
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* KURALLAR */}
+          {activePanel === "Kurallar" && (
+            <div className="space-y-3 text-sm text-gray-200">
+              <p>✅ Her hafta yoklama almanız beklenir.</p>
+              <p>📌 En az 4 hafta katılım zorunludur.</p>
+              <p>🧠 Her hafta sonrası mini sınav olabilir.</p>
+              <p>🎓 Final sınavına yeterli katılımı olanlar girebilir.</p>
+              <p>📨 Yardım için iletişim bölümünü kullanın.</p>
+            </div>
+          )}
+
+          {/* İLETİŞİM */}
+          {activePanel === "İletişim" && (
+            <div className="space-y-3 text-sm">
+              <p>📧 E-posta: <a href="mailto:hsdcloud@bootcamp.com" className="text-blue-400 underline">hsdcloud@bootcamp.com</a></p>
+              <p>💬 Discord: <a href="https://discord.gg/örnek" className="text-blue-400 underline" target="_blank">Katılmak için tıkla</a></p>
+            </div>
+          )}
         </div>
       </div>
     </div>
