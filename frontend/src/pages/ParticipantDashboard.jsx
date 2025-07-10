@@ -111,7 +111,7 @@ const ParticipantDashboard = () => {
       className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
     />
   </div>
-  <h1 className="text-3xl sm:text-3xl font-extrabold text-yellow-400 tracking-wide drop-shadow-lg text-center">
+  <h1 className="text-3xl sm:text-4xl font-extrabold text-yellow-400 tracking-wide drop-shadow-lg text-center">
     Huawei Cloud AI Bootcamp
   </h1>
 </div>
@@ -149,7 +149,7 @@ const ParticipantDashboard = () => {
 
         {/* PANEL İÇERİĞİ */}
         <main className="ml-64 p-6 overflow-y-auto flex-1">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-yellow-400 mb-6 flex items-center gap-3 tracking-wide drop-shadow-md">
+          <h2 className="text-3xl sm:text-3xl font-extrabold text-yellow-400 mb-6 flex items-center gap-3 tracking-wide drop-shadow-md">
   {panelTitles[activePanel]}
 </h2>
 
