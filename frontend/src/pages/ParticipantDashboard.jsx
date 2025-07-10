@@ -93,42 +93,51 @@ const ParticipantDashboard = () => {
 
   return (
     <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
-      <div className="min-h-screen bg-black/40 flex flex-col md:flex-row">
+      {/* ÜST BAŞLIK & LOGOLAR */}
+      <div className="w-full text-center py-6 bg-black/70 border-b border-white/20">
+        <div className="flex flex-col items-center gap-3">
+          <div className="flex gap-6 justify-center">
+            <img src="/huaweilogo.png" className="w-32 sm:w-36" alt="Huawei" />
+            <img src="/hsdlogo.png" className="w-32 sm:w-36" alt="HSD" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-yellow-400">
+            Huawei Cloud AI Bootcamp
+          </h1>
+          <p className="text-sm text-gray-300">Katılımcı: <span className="font-medium text-white">{fullName}</span></p>
+        </div>
+      </div>
 
-        {/* Sidebar */}
-        <div className="w-full md:w-64 bg-black/50 border-r border-white/20 p-6 flex flex-col items-center">
-          <img src="/huaweilogo.png" alt="Huawei" className="w-32 mb-4" />
-          <img src="/hsdlogo.png" alt="HSD" className="w-32 mb-8" />
-          <h2 className="text-lg font-semibold text-center mb-6">Merhaba, {fullName}</h2>
-          <nav className="space-y-2 w-full">
+      {/* ANA LAYOUT */}
+      <div className="min-h-screen flex flex-col md:flex-row bg-black/40">
+        {/* SIDEBAR */}
+        <aside className="w-full md:w-64 p-4 border-r border-white/20 bg-black/50">
+          <nav className="flex flex-col gap-2">
             {panels.map((panel) => (
               <button
                 key={panel}
                 onClick={() => setActivePanel(panel)}
-                className={`w-full text-left px-4 py-2 rounded transition ${
+                className={`text-left px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-105 hover:border-yellow-400 ${
                   activePanel === panel
-                    ? "bg-yellow-400 text-black font-bold"
-                    : "hover:bg-white/10"
+                    ? "bg-yellow-400 text-black border-yellow-400"
+                    : "bg-white/5 border-white/10 text-white"
                 }`}
               >
                 {panel}
               </button>
             ))}
           </nav>
-        </div>
+        </aside>
 
-        {/* Content */}
-        <div className="flex-1 p-6 overflow-y-auto">
-          <h1 className="text-2xl font-bold text-yellow-300 mb-6">{activePanel}</h1>
+        {/* PANEL İÇERİĞİ */}
+        <main className="flex-1 p-6 overflow-y-auto">
+          <h2 className="text-xl font-bold text-yellow-300 mb-6">{activePanel}</h2>
 
           {/* PROGRAM */}
           {activePanel === "Program" && (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {sessions.map((s) => (
-                <div key={s.week} className="bg-white/10 rounded-lg p-4 border border-white/20">
-                  <h3 className="text-lg font-semibold text-yellow-300 mb-2">
-                    {s.week}. Hafta
-                  </h3>
+                <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400">
+                  <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
                   {s.topic ? (
                     <ul className="list-disc list-inside text-sm text-gray-200 space-y-1">
                       {s.topic.split("\n").map((item, i) => (
@@ -136,20 +145,7 @@ const ParticipantDashboard = () => {
                       ))}
                     </ul>
                   ) : (
-                    <p className="italic text-gray-400">Konu girilmemiş</p>
-                  )}
-                  {s.videoUrl?.trim() && (
-                    <div className="mt-3">
-                      <p className="font-semibold">🎥 Video:</p>
-                      <a
-                        href={s.videoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-400 hover:underline text-sm"
-                      >
-                        İzlemek için tıkla
-                      </a>
-                    </div>
+                    <p className="text-gray-400 italic">Konu girilmemiş</p>
                   )}
                 </div>
               ))}
@@ -160,10 +156,8 @@ const ParticipantDashboard = () => {
           {activePanel === "Katılım" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {sessions.map((s) => (
-                <div key={s.week} className="bg-white/10 rounded-lg p-4 border border-white/20">
-                  <h3 className="text-lg font-semibold mb-3 text-yellow-300">
-                    {s.week}. Hafta
-                  </h3>
+                <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400">
+                  <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
                   {s.attended ? (
                     <p className="text-green-400 font-bold">✔ Katıldınız</p>
                   ) : s.active ? (
@@ -185,26 +179,15 @@ const ParticipantDashboard = () => {
           {activePanel === "Eğitmenler" && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {[
-                {
-                  name: "Ahmet Yılmaz",
-                  title: "AI Mühendisi – Huawei",
-                  linkedin: "https://www.linkedin.com/in/ahmetyilmaz",
-                },
-                {
-                  name: "Elif Demir",
-                  title: "Veri Bilimcisi – Huawei",
-                  linkedin: "https://www.linkedin.com/in/elifdemir",
-                },
-                {
-                  name: "Mehmet Kaya",
-                  title: "Cloud Eğitmeni – HSD",
-                  linkedin: "https://www.linkedin.com/in/mehmetkaya",
-                },
+                { name: "Ahmet Yılmaz", title: "AI Mühendisi – Huawei", linkedin: "#", image: "/profile-placeholder.png" },
+                { name: "Elif Demir", title: "Veri Bilimcisi – Huawei", linkedin: "#", image: "/profile-placeholder.png" },
+                { name: "Mehmet Kaya", title: "Cloud Eğitmeni – HSD", linkedin: "#", image: "/profile-placeholder.png" },
               ].map((e, i) => (
-                <div key={i} className="bg-white/10 rounded-lg p-4 border border-white/20">
+                <div key={i} className="bg-white/10 border border-white/20 p-4 rounded-lg text-center transition hover:scale-[1.015] hover:border-yellow-400">
+                  <img src={e.image} alt="Eğitmen" className="w-20 h-20 mx-auto rounded-full object-cover mb-3" />
                   <h3 className="text-lg font-semibold">{e.name}</h3>
-                  <p className="text-sm text-gray-300">{e.title}</p>
-                  <a href={e.linkedin} target="_blank" rel="noreferrer" className="text-blue-400 hover:underline text-sm mt-1 inline-block">
+                  <p className="text-sm text-gray-300 mb-1">{e.title}</p>
+                  <a href={e.linkedin} target="_blank" className="text-blue-400 hover:underline text-sm">
                     LinkedIn Profili
                   </a>
                 </div>
@@ -214,25 +197,26 @@ const ParticipantDashboard = () => {
 
           {/* KAYNAKLAR */}
           {activePanel === "Kaynaklar" && (
-            <div className="space-y-4 text-sm">
-              <div className="bg-white/10 p-4 rounded-lg border border-white/20">
-                <p className="font-semibold mb-1">🎥 YouTube Video:</p>
-                <a href="https://www.youtube.com/watch?v=örnekvideo" target="_blank" className="text-blue-400 hover:underline">
-                  https://www.youtube.com/watch?v=örnekvideo
-                </a>
-              </div>
-              <div className="bg-white/10 p-4 rounded-lg border border-white/20">
-                <p className="font-semibold mb-1">📄 Medium Yazısı:</p>
-                <a href="https://medium.com/@hsdcloudbootcamp/hafta1" target="_blank" className="text-blue-400 hover:underline">
-                  https://medium.com/@hsdcloudbootcamp/hafta1
-                </a>
-              </div>
-              <div className="bg-white/10 p-4 rounded-lg border border-white/20">
-                <p className="font-semibold mb-1">📁 CVÇ:</p>
-                <a href="https://drive.google.com/file/d/örnekcvç" target="_blank" className="text-blue-400 hover:underline">
-                  Google Drive Linki (CVÇ)
-                </a>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+              {sessions.map((s) => (
+                <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400">
+                  <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta Kaynakları</h3>
+                  {s.videoUrl && (
+                    <div className="mb-2">
+                      <p className="font-semibold">🎥 Video:</p>
+                      <a href={s.videoUrl} target="_blank" className="text-blue-400 hover:underline">İzle</a>
+                    </div>
+                  )}
+                  <div className="mb-2">
+                    <p className="font-semibold">📄 Medium:</p>
+                    <a href="https://medium.com/@hsdcloudbootcamp/hafta1" target="_blank" className="text-blue-400 hover:underline">Hafta 1 Medium</a>
+                  </div>
+                  <div>
+                    <p className="font-semibold">📁 CVÇ:</p>
+                    <a href="https://drive.google.com/file/d/örnekcvç" target="_blank" className="text-blue-400 hover:underline">İndir</a>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
@@ -254,7 +238,7 @@ const ParticipantDashboard = () => {
               <p>💬 Discord: <a href="https://discord.gg/örnek" className="text-blue-400 underline" target="_blank">Katılmak için tıkla</a></p>
             </div>
           )}
-        </div>
+        </main>
       </div>
     </div>
   );
