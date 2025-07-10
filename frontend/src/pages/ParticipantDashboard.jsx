@@ -99,7 +99,7 @@ const ParticipantDashboard = () => {
     >
       {/* ÜST BAŞLIK + LOGOLAR */}
 <div className="ml-64 pt-6 pb-4 flex flex-col items-center justify-center">
-  <div className="flex items-center gap-8 mb-3">
+  <div className="flex items-center gap-8 mb-2">
     <img
       src="/huaweilogo.png"
       alt="Huawei"
@@ -111,7 +111,7 @@ const ParticipantDashboard = () => {
       className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
     />
   </div>
-  <h1 className="text-4xl sm:text-5xl font-extrabold text-yellow-400 tracking-wide drop-shadow-lg text-center">
+  <h1 className="text-3xl sm:text-5xl font-extrabold text-yellow-400 tracking-wide drop-shadow-lg text-center">
     Huawei Cloud AI Bootcamp
   </h1>
 </div>
@@ -281,7 +281,7 @@ const ParticipantDashboard = () => {
                     </a>
                   </div>
                   <div>
-                    <p className="font-semibold">📁 CVÇ:</p>
+                    <p className="font-semibold">📁:</p>
                     <a
                       href="https://drive.google.com/file/d/örnekcvç"
                       target="_blank"
