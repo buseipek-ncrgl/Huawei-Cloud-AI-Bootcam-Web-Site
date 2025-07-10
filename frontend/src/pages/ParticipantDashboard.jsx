@@ -93,30 +93,29 @@ const ParticipantDashboard = () => {
 
   return (
     <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
-      {/* ÜST BAŞLIK & LOGOLAR */}
-      <div className="w-full text-center py-6 bg-black/70 border-b border-white/20">
-        <div className="flex flex-col items-center gap-3">
-          <div className="flex gap-6 justify-center">
-            <img src="/huaweilogo.png" className="w-32 sm:w-36" alt="Huawei" />
-            <img src="/hsdlogo.png" className="w-32 sm:w-36" alt="HSD" />
+      <div className="min-h-screen flex flex-col md:flex-row bg-black/40">
+        {/* Sidebar - Tam Yükseklik */}
+        <aside className="w-full md:w-72 bg-black/60 border-r border-white/20 flex flex-col items-center py-6 px-4 md:min-h-screen">
+          {/* Logolar */}
+          <div className="flex flex-col items-center justify-center gap-4 mb-4">
+            <img src="/huaweilogo.png" className="w-40 sm:w-48 drop-shadow-2xl brightness-125" alt="Huawei" />
+            <img src="/hsdlogo.png" className="w-40 sm:w-48 drop-shadow-2xl brightness-125" alt="HSD" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-yellow-400">
+          {/* Başlık */}
+          <h1 className="text-xl font-bold text-yellow-400 text-center mb-1">
             Huawei Cloud AI Bootcamp
           </h1>
-          <p className="text-sm text-gray-300">Katılımcı: <span className="font-medium text-white">{fullName}</span></p>
-        </div>
-      </div>
-
-      {/* ANA LAYOUT */}
-      <div className="min-h-screen flex flex-col md:flex-row bg-black/40">
-        {/* SIDEBAR */}
-        <aside className="w-full md:w-64 p-4 border-r border-white/20 bg-black/50">
-          <nav className="flex flex-col gap-2">
+          {/* Merhaba */}
+          <p className="text-sm text-gray-300 mb-6 text-center">
+            Merhaba, <span className="font-medium text-white">{fullName}</span>
+          </p>
+          {/* Menü */}
+          <nav className="flex flex-col gap-2 w-full">
             {panels.map((panel) => (
               <button
                 key={panel}
                 onClick={() => setActivePanel(panel)}
-                className={`text-left px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-105 hover:border-yellow-400 ${
+                className={`text-left w-full px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-[1.03] hover:border-yellow-400 ${
                   activePanel === panel
                     ? "bg-yellow-400 text-black border-yellow-400"
                     : "bg-white/5 border-white/10 text-white"
@@ -128,11 +127,11 @@ const ParticipantDashboard = () => {
           </nav>
         </aside>
 
-        {/* PANEL İÇERİĞİ */}
+        {/* Main Content */}
         <main className="flex-1 p-6 overflow-y-auto">
           <h2 className="text-xl font-bold text-yellow-300 mb-6">{activePanel}</h2>
 
-          {/* PROGRAM */}
+          {/* Program Paneli */}
           {activePanel === "Program" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {sessions.map((s) => (
@@ -152,7 +151,7 @@ const ParticipantDashboard = () => {
             </div>
           )}
 
-          {/* KATILIM */}
+          {/* Katılım Paneli */}
           {activePanel === "Katılım" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {sessions.map((s) => (
@@ -163,7 +162,7 @@ const ParticipantDashboard = () => {
                   ) : s.active ? (
                     <button
                       onClick={() => handleAttend(s.week)}
-                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold text-sm"
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold text-sm w-full"
                     >
                       Katıldım
                     </button>
@@ -175,7 +174,7 @@ const ParticipantDashboard = () => {
             </div>
           )}
 
-          {/* EĞİTMENLER */}
+          {/* Eğitmenler */}
           {activePanel === "Eğitmenler" && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {[
@@ -186,7 +185,7 @@ const ParticipantDashboard = () => {
                 <div key={i} className="bg-white/10 border border-white/20 p-4 rounded-lg text-center transition hover:scale-[1.015] hover:border-yellow-400">
                   <img src={e.image} alt="Eğitmen" className="w-20 h-20 mx-auto rounded-full object-cover mb-3" />
                   <h3 className="text-lg font-semibold">{e.name}</h3>
-                  <p className="text-sm text-gray-300 mb-1">{e.title}</p>
+                  <p className="text-sm text-gray-300">{e.title}</p>
                   <a href={e.linkedin} target="_blank" className="text-blue-400 hover:underline text-sm">
                     LinkedIn Profili
                   </a>
@@ -195,7 +194,7 @@ const ParticipantDashboard = () => {
             </div>
           )}
 
-          {/* KAYNAKLAR */}
+          {/* Kaynaklar */}
           {activePanel === "Kaynaklar" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
               {sessions.map((s) => (
@@ -220,7 +219,7 @@ const ParticipantDashboard = () => {
             </div>
           )}
 
-          {/* KURALLAR */}
+          {/* Kurallar */}
           {activePanel === "Kurallar" && (
             <div className="space-y-3 text-sm text-gray-200">
               <p>✅ Her hafta yoklama almanız beklenir.</p>
@@ -231,7 +230,7 @@ const ParticipantDashboard = () => {
             </div>
           )}
 
-          {/* İLETİŞİM */}
+          {/* İletişim */}
           {activePanel === "İletişim" && (
             <div className="space-y-3 text-sm">
               <p>📧 E-posta: <a href="mailto:hsdcloud@bootcamp.com" className="text-blue-400 underline">hsdcloud@bootcamp.com</a></p>
