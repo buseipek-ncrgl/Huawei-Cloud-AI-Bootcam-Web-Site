@@ -118,9 +118,11 @@ const ParticipantDashboard = () => {
         </h1>
       </div>
 
-      <div className="flex flex-col md:flex-row min-h-screen bg-black/40">
+      <div className="flex flex-col md:flex-row bg-black/40 min-h-screen h-full">
+
         {/* SIDEBAR */}
-        <aside className="w-full md:w-72 bg-black/60 border-r border-white/20 flex flex-col items-center py-6 px-4 md:min-h-screen">
+        <aside className="w-full md:w-72 bg-black/60 border-r border-white/20 flex flex-col items-center py-6 px-4 h-full md:h-screen">
+
           <p className="text-sm text-gray-300 mb-6 text-center">
             Merhaba, <span className="font-medium text-white">{fullName}</span>
           </p>
