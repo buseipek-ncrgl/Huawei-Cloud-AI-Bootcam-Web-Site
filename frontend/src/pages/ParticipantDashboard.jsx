@@ -2,14 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const panels = [
-  "Program",
-  "Katılım",
-  "Eğitmenler",
-  "Kaynaklar",
-  "Kurallar",
-  "İletişim",
-];
+const panels = ["Program", "Katılım", "Eğitmenler", "Kaynaklar", "Kurallar", "İletişim"];
 
 const ParticipantDashboard = () => {
   const [sessions, setSessions] = useState([]);
@@ -92,31 +85,47 @@ const ParticipantDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
-      {/* ÜST BAŞLIK & LOGOLAR */}
+    <div
+      className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white"
+      style={{ backgroundImage: "url('/background1.png')" }}
+    >
+      {/* ÜST BAŞLIK + LOGOLAR */}
       <div className="w-full text-center py-6 bg-black/70 border-b border-white/20">
         <div className="flex flex-col items-center gap-3">
           <div className="flex gap-6 justify-center">
-            <img src="/huaweilogo.png" className="w-32 sm:w-36" alt="Huawei" />
-            <img src="/hsdlogo.png" className="w-32 sm:w-36" alt="HSD" />
+            <img
+              src="/huaweilogo.png"
+              className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
+              alt="Huawei"
+            />
+            <img
+              src="/hsdlogo.png"
+              className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
+              alt="HSD"
+            />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-yellow-400">
+          <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400">
             Huawei Cloud AI Bootcamp
           </h1>
-          <p className="text-sm text-gray-300">Katılımcı: <span className="font-medium text-white">{fullName}</span></p>
         </div>
       </div>
 
       {/* ANA LAYOUT */}
-      <div className="min-h-screen flex flex-col md:flex-row bg-black/40">
+      <div className="flex flex-col md:flex-row bg-black/40 min-h-screen">
         {/* SIDEBAR */}
-        <aside className="w-full md:w-64 p-4 border-r border-white/20 bg-black/50">
+        <aside className="w-full md:w-64 bg-black/60 border-r border-white/20 p-4 md:min-h-screen flex flex-col justify-start">
+          {/* Merhaba */}
+          <div className="text-center text-white mb-6">
+            <p className="text-sm">Merhaba,</p>
+            <p className="font-semibold">{fullName}</p>
+          </div>
+          {/* Menü */}
           <nav className="flex flex-col gap-2">
             {panels.map((panel) => (
               <button
                 key={panel}
                 onClick={() => setActivePanel(panel)}
-                className={`text-left px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-105 hover:border-yellow-400 ${
+                className={`text-left px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-[1.03] hover:border-yellow-400 ${
                   activePanel === panel
                     ? "bg-yellow-400 text-black border-yellow-400"
                     : "bg-white/5 border-white/10 text-white"
@@ -136,7 +145,10 @@ const ParticipantDashboard = () => {
           {activePanel === "Program" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {sessions.map((s) => (
-                <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400">
+                <div
+                  key={s.week}
+                  className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
+                >
                   <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
                   {s.topic ? (
                     <ul className="list-disc list-inside text-sm text-gray-200 space-y-1">
@@ -156,7 +168,10 @@ const ParticipantDashboard = () => {
           {activePanel === "Katılım" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {sessions.map((s) => (
-                <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400">
+                <div
+                  key={s.week}
+                  className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
+                >
                   <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
                   {s.attended ? (
                     <p className="text-green-400 font-bold">✔ Katıldınız</p>
@@ -179,15 +194,41 @@ const ParticipantDashboard = () => {
           {activePanel === "Eğitmenler" && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {[
-                { name: "Ahmet Yılmaz", title: "AI Mühendisi – Huawei", linkedin: "#", image: "/profile-placeholder.png" },
-                { name: "Elif Demir", title: "Veri Bilimcisi – Huawei", linkedin: "#", image: "/profile-placeholder.png" },
-                { name: "Mehmet Kaya", title: "Cloud Eğitmeni – HSD", linkedin: "#", image: "/profile-placeholder.png" },
+                {
+                  name: "Ahmet Yılmaz",
+                  title: "AI Mühendisi – Huawei",
+                  linkedin: "#",
+                  image: "/profile-placeholder.png",
+                },
+                {
+                  name: "Elif Demir",
+                  title: "Veri Bilimcisi – Huawei",
+                  linkedin: "#",
+                  image: "/profile-placeholder.png",
+                },
+                {
+                  name: "Mehmet Kaya",
+                  title: "Cloud Eğitmeni – HSD",
+                  linkedin: "#",
+                  image: "/profile-placeholder.png",
+                },
               ].map((e, i) => (
-                <div key={i} className="bg-white/10 border border-white/20 p-4 rounded-lg text-center transition hover:scale-[1.015] hover:border-yellow-400">
-                  <img src={e.image} alt="Eğitmen" className="w-20 h-20 mx-auto rounded-full object-cover mb-3" />
+                <div
+                  key={i}
+                  className="bg-white/10 border border-white/20 p-4 rounded-lg text-center transition hover:scale-[1.015] hover:border-yellow-400"
+                >
+                  <img
+                    src={e.image}
+                    alt="Eğitmen"
+                    className="w-20 h-20 mx-auto rounded-full object-cover mb-3"
+                  />
                   <h3 className="text-lg font-semibold">{e.name}</h3>
                   <p className="text-sm text-gray-300 mb-1">{e.title}</p>
-                  <a href={e.linkedin} target="_blank" className="text-blue-400 hover:underline text-sm">
+                  <a
+                    href={e.linkedin}
+                    target="_blank"
+                    className="text-blue-400 hover:underline text-sm"
+                  >
                     LinkedIn Profili
                   </a>
                 </div>
@@ -199,21 +240,42 @@ const ParticipantDashboard = () => {
           {activePanel === "Kaynaklar" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
               {sessions.map((s) => (
-                <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400">
+                <div
+                  key={s.week}
+                  className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
+                >
                   <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta Kaynakları</h3>
                   {s.videoUrl && (
                     <div className="mb-2">
                       <p className="font-semibold">🎥 Video:</p>
-                      <a href={s.videoUrl} target="_blank" className="text-blue-400 hover:underline">İzle</a>
+                      <a
+                        href={s.videoUrl}
+                        target="_blank"
+                        className="text-blue-400 hover:underline"
+                      >
+                        İzle
+                      </a>
                     </div>
                   )}
                   <div className="mb-2">
                     <p className="font-semibold">📄 Medium:</p>
-                    <a href="https://medium.com/@hsdcloudbootcamp/hafta1" target="_blank" className="text-blue-400 hover:underline">Hafta 1 Medium</a>
+                    <a
+                      href="https://medium.com/@hsdcloudbootcamp/hafta1"
+                      target="_blank"
+                      className="text-blue-400 hover:underline"
+                    >
+                      Hafta 1 Medium
+                    </a>
                   </div>
                   <div>
                     <p className="font-semibold">📁 CVÇ:</p>
-                    <a href="https://drive.google.com/file/d/örnekcvç" target="_blank" className="text-blue-400 hover:underline">İndir</a>
+                    <a
+                      href="https://drive.google.com/file/d/örnekcvç"
+                      target="_blank"
+                      className="text-blue-400 hover:underline"
+                    >
+                      İndir
+                    </a>
                   </div>
                 </div>
               ))}
@@ -234,8 +296,25 @@ const ParticipantDashboard = () => {
           {/* İLETİŞİM */}
           {activePanel === "İletişim" && (
             <div className="space-y-3 text-sm">
-              <p>📧 E-posta: <a href="mailto:hsdcloud@bootcamp.com" className="text-blue-400 underline">hsdcloud@bootcamp.com</a></p>
-              <p>💬 Discord: <a href="https://discord.gg/örnek" className="text-blue-400 underline" target="_blank">Katılmak için tıkla</a></p>
+              <p>
+                📧 E-posta:{" "}
+                <a
+                  href="mailto:hsdcloud@bootcamp.com"
+                  className="text-blue-400 underline"
+                >
+                  hsdcloud@bootcamp.com
+                </a>
+              </p>
+              <p>
+                💬 Discord:{" "}
+                <a
+                  href="https://discord.gg/örnek"
+                  className="text-blue-400 underline"
+                  target="_blank"
+                >
+                  Katılmak için tıkla
+                </a>
+              </p>
             </div>
           )}
         </main>
