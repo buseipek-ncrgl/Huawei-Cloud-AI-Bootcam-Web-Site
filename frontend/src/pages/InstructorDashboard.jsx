@@ -265,12 +265,12 @@ const InstructorDashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {summary.map((s) => (
               <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg hover:scale-[1.015] hover:border-yellow-400 transition flex flex-col justify-between">
-               {s.active && (
+               {/* Aktif rozeti */}
+  {s.active && (
     <span className="absolute top-2 right-2 bg-green-700 text-white text-xs px-2 py-1 rounded font-semibold">
       ✅ Aktif
     </span>
   )}
-
                 <div>
                   <h3 className="text-lg font-bold text-yellow-300 mb-1">{s.week}. Hafta</h3>
                   <p className="text-sm">Katılım: {s.attended}/{s.total}</p>
