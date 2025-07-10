@@ -90,23 +90,25 @@ const ParticipantDashboard = () => {
       style={{ backgroundImage: "url('/background1.png')" }}
     >
       {/* ÜST BAŞLIK + LOGOLAR */}
-      <div className="flex flex-col items-center justify-center pt-4 pb-4">
-        <div className="flex items-center gap-8 mb-2">
-          <img
-            src="/huaweilogo.png"
-            alt="Huawei"
-            className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
-          />
-          <img
-            src="/hsdlogo.png"
-            alt="HSD"
-            className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
-          />
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 text-center">
-          Huawei Cloud AI Bootcamp
-        </h1>
-      </div>
+<div className="flex flex-col items-center justify-center pt-2 pb-4">
+  <div className="flex items-center gap-8 mb-1 sm:mb-2">
+    <img
+      src="/huaweilogo.png"
+      alt="Huawei"
+      className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
+    />
+    <img
+      src="/hsdlogo.png"
+      alt="HSD"
+      className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
+    />
+  </div>
+  <h1 className="text-2xl sm:text-3xl font-bold text-yellow-400 text-center mt-[-8px] sm:mt-[-4px]">
+    Huawei Cloud AI Bootcamp
+  </h1>
+</div>
+
+
 
       {/* ANA LAYOUT */}
       <div className="flex flex-1">
@@ -114,9 +116,9 @@ const ParticipantDashboard = () => {
         {/* SIDEBAR */}
         <aside className="w-64 h-screen fixed top-0 left-0 bg-black/60 border-r border-white/30 p-4 flex flex-col z-10">
   {/* Merhaba en üstte */}
-  <div className="text-center text-white mb-8 mt-2">
-    <p className="text-sm">Merhaba,</p>
-    <p className="text-xl font-bold text-yellow-300">{fullName}</p>
+  <div className="text-center text-white mt-2 mb-12">
+    <p className="text-xl font-bold text-yellow-300">Merhaba,</p>
+    <p className="text-xl font-bold text-yellow-300">{fullName} 👋</p>
   </div>
 
   {/* Menü öğeleri */}
@@ -141,7 +143,9 @@ const ParticipantDashboard = () => {
 
         {/* PANEL İÇERİĞİ */}
         <main className="ml-64 p-6 overflow-y-auto flex-1">
-          <h2 className="text-xl font-bold text-yellow-300 mb-6">{activePanel}</h2>
+          <h2 className="text-3xl font-bold text-yellow-400 border-b-2 border-yellow-400 pb-2 mb-6 tracking-wide">
+  {activePanel}
+</h2>
 
           {/* PROGRAM */}
           {activePanel === "Program" && (
