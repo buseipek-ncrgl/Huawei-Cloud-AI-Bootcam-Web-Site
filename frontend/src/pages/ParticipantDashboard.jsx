@@ -90,38 +90,38 @@ const ParticipantDashboard = () => {
       style={{ backgroundImage: "url('/background1.png')" }}
     >
       {/* ÜST BAŞLIK + LOGOLAR */}
-      <div className="flex flex-col items-center justify-center mt-2 mb-4">
-  <div className="flex items-center gap-8 mb-2">
-    <img
-      src="/huaweilogo.png"
-      alt="Huawei"
-      className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
-    />
-    <img
-      src="/hsdlogo.png"
-      alt="HSD"
-      className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
-    />
-  </div>
-  <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 text-center">
-    Huawei Cloud AI Bootcamp
-  </h1>
-</div>
-
+      <div className="flex flex-col items-center justify-center pt-4 pb-4">
+        <div className="flex items-center gap-8 mb-2">
+          <img
+            src="/huaweilogo.png"
+            alt="Huawei"
+            className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
+          />
+          <img
+            src="/hsdlogo.png"
+            alt="HSD"
+            className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
+          />
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-bold text-yellow-400 text-center">
+          Huawei Cloud AI Bootcamp
+        </h1>
+      </div>
 
       {/* ANA LAYOUT */}
-      <div className="flex bg-black/40 min-h-[calc(100vh-160px)]">
+      <div className="flex h-[calc(100vh-160px)]">
 
         {/* SIDEBAR */}
-        <aside className="w-64 bg-black/60 border-r border-white/30 p-4 flex flex-col">
+        <aside className="w-64 bg-black/60 border-r border-white/30 p-4 flex flex-col h-full">
 
           {/* Merhaba */}
           <div className="text-center text-white mb-6">
             <p className="text-sm">Merhaba,</p>
             <p className="font-semibold">{fullName}</p>
           </div>
+          
           {/* Menü */}
-          <nav className="flex flex-col gap-2">
+          <nav className="flex flex-col gap-2 flex-1">
             {panels.map((panel) => (
               <button
                 key={panel}
@@ -137,11 +137,9 @@ const ParticipantDashboard = () => {
             ))}
           </nav>
         </aside>
-        <main className="flex-1 p-6 overflow-y-auto">
-          {/* Aktif panel */}
 
         {/* PANEL İÇERİĞİ */}
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-6 overflow-y-auto h-full">
           <h2 className="text-xl font-bold text-yellow-300 mb-6">{activePanel}</h2>
 
           {/* PROGRAM */}
@@ -320,11 +318,8 @@ const ParticipantDashboard = () => {
               </p>
             </div>
           )}
-          
         </main>
-         </main>
       </div>
-      
     </div>
   );
 };
