@@ -211,19 +211,19 @@ const ParticipantDashboard = () => {
                   name: "Ahmet Yılmaz",
                   title: "AI Mühendisi – Huawei",
                   linkedin: "#",
-                  image: "/profile-placeholder.png",
+                  image: "/profile.png",
                 },
                 {
                   name: "Elif Demir",
                   title: "Veri Bilimcisi – Huawei",
                   linkedin: "#",
-                  image: "/profile-placeholder.png",
+                  image: "/profile.png",
                 },
                 {
                   name: "Mehmet Kaya",
                   title: "Cloud Eğitmeni – HSD",
                   linkedin: "#",
-                  image: "/profile-placeholder.png",
+                  image: "/profile.png",
                 },
               ].map((e, i) => (
                 <div
