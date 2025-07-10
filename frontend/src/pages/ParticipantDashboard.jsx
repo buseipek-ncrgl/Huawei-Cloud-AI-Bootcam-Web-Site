@@ -3,6 +3,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const panels = ["Program", "Katılım", "Eğitmenler", "Kaynaklar", "Kurallar", "İletişim"];
+const panelTitles = {
+  Program: "📅 Eğitim Programı",
+  Katılım: "📝 Katılım Durumu",
+  Eğitmenler: "👨‍🏫 Eğitmenler",
+  Kaynaklar: "📚 Eğitim Kaynakları",
+  Kurallar: "📌 Katılım Kuralları",
+  İletişim: "✉️ İletişim Bilgileri",
+};
 
 const ParticipantDashboard = () => {
   const [sessions, setSessions] = useState([]);
@@ -90,8 +98,8 @@ const ParticipantDashboard = () => {
       style={{ backgroundImage: "url('/background1.png')" }}
     >
       {/* ÜST BAŞLIK + LOGOLAR */}
-<div className="flex flex-col items-center justify-center pt-2 pb-4">
-  <div className="flex items-center gap-8 mb-1 sm:mb-2">
+<div className="ml-64 pt-6 pb-4 flex flex-col items-center justify-center">
+  <div className="flex items-center gap-8 mb-3">
     <img
       src="/huaweilogo.png"
       alt="Huawei"
@@ -103,12 +111,10 @@ const ParticipantDashboard = () => {
       className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
     />
   </div>
-  <h1 className="text-2xl sm:text-3xl font-bold text-yellow-400 text-center mt-[-8px] sm:mt-[-4px]">
+  <h1 className="text-4xl sm:text-5xl font-extrabold text-yellow-400 tracking-wide drop-shadow-lg text-center">
     Huawei Cloud AI Bootcamp
   </h1>
 </div>
-
-
 
       {/* ANA LAYOUT */}
       <div className="flex flex-1">
@@ -143,9 +149,10 @@ const ParticipantDashboard = () => {
 
         {/* PANEL İÇERİĞİ */}
         <main className="ml-64 p-6 overflow-y-auto flex-1">
-          <h2 className="text-3xl font-bold text-yellow-400 border-b-2 border-yellow-400 pb-2 mb-6 tracking-wide">
-  {activePanel}
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-yellow-400 mb-6 flex items-center gap-3 tracking-wide drop-shadow-md">
+  {panelTitles[activePanel]}
 </h2>
+
 
           {/* PROGRAM */}
           {activePanel === "Program" && (
