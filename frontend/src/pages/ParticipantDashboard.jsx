@@ -112,12 +112,12 @@ const ParticipantDashboard = () => {
       <div className="flex flex-1">
 
         {/* SIDEBAR */}
-        <aside className="w-64 bg-black/60 border-r border-white/30 p-4 flex flex-col min-h-full">
+        <aside className="w-64 bg-black/60 border-r border-white/30 p-4 flex flex-col" style={{ minHeight: 'calc(100vh - 200px)' }}>
 
           {/* Merhaba */}
-          <div className="text-center text-white mb-6">
+          <div className="text-center text-white mb-15">
             <p className="text-sm">Merhaba,</p>
-            <p className="font-semibold">{fullName}</p>
+            <p className="text-xl font-bold text-yellow-300">{fullName}</p>
           </div>
           
           {/* Menü */}
