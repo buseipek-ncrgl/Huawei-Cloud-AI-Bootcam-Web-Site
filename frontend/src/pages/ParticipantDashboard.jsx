@@ -112,31 +112,31 @@ const ParticipantDashboard = () => {
       <div className="flex flex-1">
 
         {/* SIDEBAR */}
-        <aside className="w-64 bg-black/60 border-r border-white/30 p-4 flex flex-col" style={{ minHeight: 'calc(100vh - 200px)' }}>
+        <aside className="w-64 bg-black/60 border-r border-white/30 p-4 flex flex-col min-h-screen">
+  {/* Merhaba en üstte */}
+  <div className="text-center text-white mb-8">
+    <p className="text-sm">Merhaba,</p>
+    <p className="text-xl font-bold text-yellow-300">{fullName}</p>
+  </div>
 
-          {/* Merhaba */}
-          <div className="text-center text-white mb-15">
-            <p className="text-sm">Merhaba,</p>
-            <p className="text-xl font-bold text-yellow-300">{fullName}</p>
-          </div>
-          
-          {/* Menü */}
-          <nav className="flex flex-col gap-2 flex-1">
-            {panels.map((panel) => (
-              <button
-                key={panel}
-                onClick={() => setActivePanel(panel)}
-                className={`text-left px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-[1.03] hover:border-yellow-400 ${
-                  activePanel === panel
-                    ? "bg-yellow-400 text-black border-yellow-400"
-                    : "bg-white/5 border-white/10 text-white"
-                }`}
-              >
-                {panel}
-              </button>
-            ))}
-          </nav>
-        </aside>
+  {/* Menü aşağıda başlasın */}
+  <nav className="flex flex-col gap-2 flex-1">
+    {panels.map((panel) => (
+      <button
+        key={panel}
+        onClick={() => setActivePanel(panel)}
+        className={`text-left px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-[1.03] hover:border-yellow-400 ${
+          activePanel === panel
+            ? "bg-yellow-400 text-black border-yellow-400"
+            : "bg-white/5 border-white/10 text-white"
+        }`}
+      >
+        {panel}
+      </button>
+    ))}
+  </nav>
+</aside>
+
 
         {/* PANEL İÇERİĞİ */}
         <main className="flex-1 p-6 overflow-y-auto h-full">
