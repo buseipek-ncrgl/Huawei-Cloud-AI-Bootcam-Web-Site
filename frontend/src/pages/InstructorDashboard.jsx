@@ -130,354 +130,405 @@ const InstructorDashboard = () => {
     fetchData();
   }, []);
 
-  return (
-    <div className="flex flex-col lg:flex-row min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
+ return (
+  <div className="flex flex-col lg:flex-row min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
+    
+    {/* MOBILE HEADER */}
+    <div className="lg:hidden flex items-center justify-between p-4 bg-black/70 border-b border-white/30 backdrop-blur-sm">
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="text-white p-2 hover:bg-white/20 rounded-lg transition"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <h1 className="text-lg font-bold text-yellow-400">Eğitmen Paneli</h1>
+      <div className="w-8"></div>
+    </div>
 
+    {/* SIDEBAR */}
+    <aside className={`fixed top-0 left-0 h-full w-72 bg-black/80 backdrop-blur-lg border-r border-white/20 flex flex-col z-50 transform transition-all duration-300 ease-in-out ${
+      sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+    } lg:translate-x-0 lg:static lg:bg-black/60`}>
       
-      {/* MOBILE HEADER */}
-      <div className="lg:hidden flex items-center justify-between p-4 bg-black/60 border-b border-white/30">
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="text-white p-2"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-        <h1 className="text-lg font-bold text-yellow-400">Eğitmen Paneli</h1>
-        <div className="w-8"></div>
+      {/* Mobile close button */}
+      <button
+        onClick={() => setSidebarOpen(false)}
+        className="lg:hidden absolute top-4 right-4 text-white hover:bg-white/20 p-2 rounded-full transition"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      {/* User Info */}
+      <div className="text-center text-white pt-8 pb-6 px-4 border-b border-white/10">
+        <div className="bg-yellow-400/10 border border-yellow-400/30 rounded-xl p-4 mb-2 backdrop-blur-sm">
+          <p className="text-lg font-semibold text-yellow-300">Merhaba,</p>
+          <p className="text-xl font-bold text-yellow-300">{fullName} 👨‍🏫</p>
+        </div>
+      </div>
+      
+      {/* Navigation */}
+      <nav className="flex flex-col gap-3 p-4 flex-grow">
+        {panels.map((panel) => (
+          <button
+            key={panel}
+            onClick={() => handlePanelChange(panel)}
+            className={`text-left px-4 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-[1.02] ${
+              activePanel === panel
+                ? "bg-yellow-400 text-black shadow-lg border-yellow-500"
+                : "bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-yellow-400"
+            }`}
+          >
+            {panelTitles[panel]}
+          </button>
+        ))}
+      </nav>
+
+      {/* Footer */}
+      <div className="p-4 border-t border-white/10 text-center text-xs text-white/50">
+        Huawei Cloud AI Bootcamp © 2023
+      </div>
+    </aside>
+
+    {/* OVERLAY for mobile */}
+    {sidebarOpen && (
+      <div
+        className="fixed inset-0 bg-black/60 z-40 lg:hidden"
+        onClick={() => setSidebarOpen(false)}
+      ></div>
+    )}
+
+    {/* MAIN CONTENT */}
+    <main className="flex-1 lg:ml-0 p-4 lg:p-6 min-h-screen transition-all overflow-auto">
+      {/* Desktop Header */}
+      <div className="hidden lg:block text-center mb-8">
+        <div className="flex justify-center items-center gap-8 mb-4">
+          <img src="/huaweilogo.png" alt="Huawei" className="h-12 object-contain" />
+          <img src="/hsdlogo.png" alt="Partner" className="h-12 object-contain" />
+        </div>
+        <h1 className="text-3xl font-bold text-yellow-400">Huawei Cloud AI Bootcamp</h1>
       </div>
 
-      {/* SIDEBAR */}
-      <aside className={`fixed top-0 left-0 h-full w-64 bg-black/80 backdrop-blur-sm border-r border-white/30 p-4 flex flex-col z-50 transform transition-transform duration-300 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0 lg:static lg:bg-black/60`}>
-        
-        {/* Mobile close button */}
-        <button
-          onClick={() => setSidebarOpen(false)}
-          className="lg:hidden absolute top-4 right-4 text-white"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+      {/* Panel Title */}
+      <h2 className="text-xl lg:text-2xl font-bold text-yellow-400 mb-6 lg:mb-8 flex items-center gap-2">
+        {panelTitles[activePanel]}
+      </h2>
 
-        <div className="text-center text-white mt-8 lg:mt-2 mb-8 lg:mb-12">
-          <p className="text-lg lg:text-xl font-bold text-yellow-300">Merhaba,</p>
-          <p className="text-lg lg:text-xl font-bold text-yellow-300">{fullName} 👨‍🏫</p>
-        </div>
-        
-        <nav className="flex flex-col gap-2">
-          {panels.map((panel) => (
-            <button
-              key={panel}
-              onClick={() => handlePanelChange(panel)}
-              className={`text-left px-4 py-3 rounded-lg font-semibold transition-all duration-200 border hover:scale-[1.03] hover:border-yellow-400 ${
-                activePanel === panel
-                  ? "bg-yellow-400 text-black border-yellow-400"
-                  : "bg-white/5 border-white/10 text-white"
-              }`}
+      {/* PROGRAM PANELİ */}
+      {activePanel === "Program" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {summary.map((s) => (
+            <div
+              key={s.week}
+              className="bg-white/10 border border-white/20 p-5 rounded-xl transition hover:scale-[1.02] hover:border-yellow-400 backdrop-blur-sm"
             >
-              {panelTitles[panel]}
-            </button>
-          ))}
-        </nav>
-      </aside>
+              <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
+                <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+                  {s.week}. Hafta
+                </span>
+              </h3>
 
-      {/* OVERLAY for mobile */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        ></div>
+              {s.topic?.trim() ? (
+                <>
+                  <p className="text-sm font-semibold text-white mb-2">📌 Konular:</p>
+                  <ul className="list-disc list-inside text-sm text-white/90 mb-4 space-y-1">
+                    {s.topic.split("\n").map((line, i) => (
+                      <li key={i}>{line}</li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <p className="text-gray-400 italic text-sm mb-4">Henüz konu girilmedi.</p>
+              )}
+
+              {/* Güncelleme Alanı */}
+              <div>
+                <label className="block font-semibold text-white mb-2 text-sm">📋 Konuları Güncelle</label>
+                <textarea
+                  rows={3}
+                  className="w-full p-3 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
+                  placeholder="Her satıra bir konu yazın"
+                  value={tempTopics[s.week] ?? ""}
+                  onChange={(e) =>
+                    setTempTopics((prev) => ({ ...prev, [s.week]: e.target.value }))
+                  }
+                />
+                <button
+                  onClick={() => handleUpdate(s.week)}
+                  className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm transition flex items-center justify-center gap-2"
+                >
+                  💾 Kaydet
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
 
-      {/* MAIN */}
-      <main className="lg:ml-64 p-4 lg:p-6 w-full min-h-screen transition-all">
-        {/* Üst Başlık - Hidden on mobile */}
-        <div className="hidden lg:block text-center mb-6">
-          <div className="flex justify-center items-center gap-6 mb-4">
-            <img src="/huaweilogo.png" alt="Huawei" className="w-32 sm:w-40" />
-            <img src="/hsdlogo.png" alt="Partner" className="w-32 sm:w-40" />
-          </div>
-          <h1 className="text-3xl font-bold text-yellow-400">Huawei Cloud AI Bootcamp</h1>
-        </div>
+      {/* KAYNAKLAR PANELİ */}
+      {activePanel === "Kaynaklar" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {summary.map((s) => (
+            <div
+              key={s.week}
+              className="bg-white/10 border border-white/20 p-5 rounded-xl transition hover:scale-[1.02] hover:border-yellow-400 backdrop-blur-sm"
+            >
+              <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
+                <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+                  {s.week}. Hafta
+                </span>
+              </h3>
 
-        {/* PANEL İÇERİĞİ */}
-        <h2 className="text-xl lg:text-2xl font-bold text-yellow-400 mb-4 lg:mb-6">
-          {panelTitles[activePanel]}
-        </h2>
-
-        {/* PROGRAM PANELİ */}
-        {activePanel === "Program" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            {summary.map((s) => (
-              <div
-                key={s.week}
-                className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
-              >
-                <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
-
-                {s.topic?.trim() ? (
-                  <>
-                    <p className="text-sm font-semibold text-white mb-1">📌 Konular:</p>
-                    <ul className="list-disc list-inside text-sm text-white/90 mb-2">
-                      {s.topic.split("\n").map((line, i) => (
-                        <li key={i}>{line}</li>
-                      ))}
-                    </ul>
-                  </>
+              {/* Mevcut Kaynaklar */}
+              <div className="mb-5 space-y-3">
+                <p className="text-sm font-semibold text-white">📚 Mevcut Kaynaklar</p>
+                {s.videoUrl?.trim() ? (
+                  <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
+                    <span className="text-sm text-white flex items-center gap-2">
+                      <span className="bg-blue-500/20 p-1.5 rounded-lg">🎥</span>
+                      Video
+                    </span>
+                    <a
+                      href={s.videoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                      İzle
+                    </a>
+                  </div>
                 ) : (
-                  <p className="text-gray-400 italic text-sm">Henüz konu girilmedi.</p>
+                  <div className="bg-white/5 p-3 rounded-lg border border-white/10">
+                    <span className="text-sm text-gray-400 flex items-center gap-2">
+                      <span className="bg-gray-500/20 p-1.5 rounded-lg">🎥</span>
+                      Video linki yok
+                    </span>
+                  </div>
                 )}
+                
+                {s.mediumUrl?.trim() ? (
+                  <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
+                    <span className="text-sm text-white flex items-center gap-2">
+                      <span className="bg-green-500/20 p-1.5 rounded-lg">📝</span>
+                      Medium
+                    </span>
+                    <a
+                      href={s.mediumUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                      Oku
+                    </a>
+                  </div>
+                ) : (
+                  <div className="bg-white/5 p-3 rounded-lg border border-white/10">
+                    <span className="text-sm text-gray-400 flex items-center gap-2">
+                      <span className="bg-gray-500/20 p-1.5 rounded-lg">📝</span>
+                      Medium linki yok
+                    </span>
+                  </div>
+                )}
+              </div>
 
-                {/* Güncelleme Alanı */}
+              {/* Güncelleme Alanı */}
+              <div className="space-y-4">
+                <p className="text-sm font-semibold text-white">🔄 Kaynak Güncelle</p>
                 <div>
-                  <label className="block font-semibold text-white mb-1 text-sm">📋 Konuları Güncelle</label>
-                  <textarea
-                    rows={3}
-                    className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm"
-                    placeholder="Her satıra bir konu yazın"
-                    value={tempTopics[s.week] ?? ""}
+                  <label className="block font-semibold text-white text-sm mb-2">🔗 Video Linki</label>
+                  <input
+                    type="text"
+                    className="w-full p-3 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
+                    placeholder="https://..."
+                    value={tempVideos[s.week] ?? ""}
                     onChange={(e) =>
-                      setTempTopics((prev) => ({ ...prev, [s.week]: e.target.value }))
+                      setTempVideos((prev) => ({ ...prev, [s.week]: e.target.value }))
                     }
                   />
-                  <button
-                    onClick={() => handleUpdate(s.week)}
-                    className="mt-2 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded text-sm"
-                  >
-                    💾 Kaydet
-                  </button>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* KAYNAKLAR PANELİ */}
-        {activePanel === "Kaynaklar" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            {summary.map((s) => (
-              <div
-                key={s.week}
-                className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
-              >
-                <h3 className="text-lg font-bold text-yellow-300 mb-3">{s.week}. Hafta Kaynakları</h3>
-
-                {/* Mevcut Kaynaklar */}
-                <div className="mb-4 space-y-2">
-                  {s.videoUrl?.trim() ? (
-                    <div className="flex items-center justify-between bg-white/5 p-2 rounded">
-                      <span className="text-sm text-white">🎥 Video</span>
-                      <a
-                        href={s.videoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-semibold"
-                      >
-                        İzle
-                      </a>
-                    </div>
-                  ) : (
-                    <div className="bg-white/5 p-2 rounded">
-                      <span className="text-sm text-gray-400">🎥 Video linki yok</span>
-                    </div>
-                  )}
-                  
-                  {s.mediumUrl?.trim() ? (
-                    <div className="flex items-center justify-between bg-white/5 p-2 rounded">
-                      <span className="text-sm text-white">📝 Medium</span>
-                      <a
-                        href={s.mediumUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm font-semibold"
-                      >
-                        Oku
-                      </a>
-                    </div>
-                  ) : (
-                    <div className="bg-white/5 p-2 rounded">
-                      <span className="text-sm text-gray-400">📝 Medium linki yok</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Güncelleme Alanı */}
-                <div className="space-y-3">
-                  <div>
-                    <label className="block font-semibold text-white text-sm mb-1">🔗 Video Linki</label>
-                    <input
-                      type="text"
-                      className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm"
-                      placeholder="https://..."
-                      value={tempVideos[s.week] ?? ""}
-                      onChange={(e) =>
-                        setTempVideos((prev) => ({ ...prev, [s.week]: e.target.value }))
-                      }
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block font-semibold text-white text-sm mb-1">✍️ Medium Linki</label>
-                    <input
-                      type="text"
-                      className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm"
-                      placeholder="https://medium.com/..."
-                      value={tempMediums[s.week] ?? ""}
-                      onChange={(e) =>
-                        setTempMediums((prev) => ({ ...prev, [s.week]: e.target.value }))
-                      }
-                    />
-                  </div>
-                  
-                  <button
-                    onClick={() => handleUpdate(s.week)}
-                    className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded text-sm"
-                  >
-                    💾 Kaydet
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* KATILIM PANELİ */}
-        {activePanel === "Katılım" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-            {summary.map((s) => (
-              <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg hover:scale-[1.015] hover:border-yellow-400 transition flex flex-col justify-between">
+                
                 <div>
-                  <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
-                  <div className="text-sm space-y-1 mb-3">
-                    <p>Katılım: <span className="font-semibold">{s.attended}/{s.total}</span></p>
-                    <p>
-                      Oran:{" "}
-                      <span className={`font-semibold ${
-                        s.rate >= 75 ? "text-green-400" : s.rate >= 50 ? "text-yellow-300" : "text-red-400"
-                      }`}>
-                        %{s.rate}
-                      </span>
-                    </p>
-                  </div>
-                  
-                  {s.active ? (
-                    <button
-                      onClick={() => handleStop(s.week)}
-                      className="bg-red-600 hover:bg-red-700 text-white w-full rounded py-2 mb-2 text-sm font-semibold"
-                    >
-                      ⛔ Yoklamayı Bitir
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleStart(s.week)}
-                      className="bg-green-600 hover:bg-green-700 text-white w-full rounded py-2 mb-2 text-sm font-semibold"
-                    >
-                      ✅ Yoklamayı Başlat
-                    </button>
-                  )}
+                  <label className="block font-semibold text-white text-sm mb-2">✍️ Medium Linki</label>
+                  <input
+                    type="text"
+                    className="w-full p-3 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
+                    placeholder="https://medium.com/..."
+                    value={tempMediums[s.week] ?? ""}
+                    onChange={(e) =>
+                      setTempMediums((prev) => ({ ...prev, [s.week]: e.target.value }))
+                    }
+                  />
                 </div>
                 
                 <button
-                  onClick={() => fetchDetails(s.week)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white w-full rounded py-2 text-sm font-semibold"
+                  onClick={() => handleUpdate(s.week)}
+                  className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2.5 rounded-lg text-sm transition flex items-center justify-center gap-2"
                 >
-                  📊 Detayları Gör
+                  💾 Kaydet
                 </button>
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
+      )}
 
-        {/* HAFTA DETAYI */}
-        {selectedWeek && details.present.length > 0 && (
-          <div className="mt-6 bg-white/10 border border-white/20 rounded-xl p-4 lg:p-6">
-            <h3 className="text-lg font-bold mb-4 text-white text-center">
+      {/* KATILIM PANELİ */}
+      {activePanel === "Katılım" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {summary.map((s) => (
+            <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm">
+              <div>
+                <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
+                  <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+                    {s.week}. Hafta
+                  </span>
+                </h3>
+                <div className="space-y-3 mb-4">
+                  <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
+                    <span className="text-sm text-white">Katılım</span>
+                    <span className="font-semibold">{s.attended}/{s.total}</span>
+                  </div>
+                  <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
+                    <span className="text-sm text-white">Oran</span>
+                    <span className={`font-semibold ${
+                      s.rate >= 75 ? "text-green-400" : s.rate >= 50 ? "text-yellow-300" : "text-red-400"
+                    }`}>
+                      %{s.rate}
+                    </span>
+                  </div>
+                </div>
+                
+                {s.active ? (
+                  <button
+                    onClick={() => handleStop(s.week)}
+                    className="bg-red-600 hover:bg-red-700 text-white w-full rounded-lg py-2.5 mb-3 text-sm font-semibold transition flex items-center justify-center gap-2"
+                  >
+                    ⛔ Yoklamayı Bitir
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleStart(s.week)}
+                    className="bg-green-600 hover:bg-green-700 text-white w-full rounded-lg py-2.5 mb-3 text-sm font-semibold transition flex items-center justify-center gap-2"
+                  >
+                    ✅ Yoklamayı Başlat
+                  </button>
+                )}
+              </div>
+              
+              <button
+                onClick={() => fetchDetails(s.week)}
+                className="bg-blue-600 hover:bg-blue-700 text-white w-full rounded-lg py-2.5 text-sm font-semibold transition flex items-center justify-center gap-2"
+              >
+                📊 Detayları Gör
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* HAFTA DETAYI */}
+      {selectedWeek && details.present.length > 0 && (
+        <div className="mt-8 bg-white/10 border border-white/20 rounded-xl p-5 lg:p-6 backdrop-blur-sm">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-bold text-white">
               {selectedWeek}. Hafta Katılım Detayları
             </h3>
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm text-white border border-white/20">
-                <thead className="bg-white/10">
-                  <tr>
-                    <th className="text-left px-2 lg:px-4 py-2 font-bold">Ad Soyad</th>
-                    <th className="text-left px-2 lg:px-4 py-2 font-bold">E-posta</th>
-                    <th className="text-left px-2 lg:px-4 py-2 font-bold">Katılım</th>
-                    <th className="text-left px-2 lg:px-4 py-2 font-bold">Oran</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white/5">
-                  {details.present.map((p) => (
-                    <tr key={p.id} className="border-t border-white/10">
-                      <td className="px-2 lg:px-4 py-2">{p.name}</td>
-                      <td className="px-2 lg:px-4 py-2 text-xs lg:text-sm">{p.email}</td>
-                      <td className="px-2 lg:px-4 py-2">{p.attended}/{p.totalWeeks}</td>
-                      <td className="px-2 lg:px-4 py-2">
-                        <span className={`font-semibold ${
-                          p.rate >= 75 ? "text-green-400" : p.rate >= 50 ? "text-yellow-300" : "text-red-400"
-                        }`}>
-                          %{p.rate}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <button 
+              onClick={() => setSelectedWeek(null)}
+              className="text-white/70 hover:text-white transition"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-        )}
-
-        {/* GENEL KATILIM */}
-        {activePanel === "Genel Katılım" && generalSummary.length > 0 && (
-          <div className="bg-white/10 border border-white/20 rounded-xl p-4 lg:p-6">
-            <h3 className="text-lg font-bold mb-4 text-white text-center">📊 Tüm Katılımcı Özeti</h3>
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm text-white border border-white/20">
-                <thead className="bg-white/10">
-                  <tr>
-                    <th className="text-left px-2 lg:px-4 py-2 font-bold">Ad Soyad</th>
-                    <th className="text-left px-2 lg:px-4 py-2 font-bold">E-posta</th>
-                    <th className="text-left px-2 lg:px-4 py-2 font-bold">Katılım</th>
-                    <th className="text-left px-2 lg:px-4 py-2 font-bold">Oran</th>
-                    <th className="text-left px-2 lg:px-4 py-2 font-bold">Durum</th>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-white">
+              <thead className="bg-white/10">
+                <tr>
+                  <th className="text-left px-4 py-3 font-bold rounded-tl-lg">Ad Soyad</th>
+                  <th className="text-left px-4 py-3 font-bold">E-posta</th>
+                  <th className="text-left px-4 py-3 font-bold">Katılım</th>
+                  <th className="text-left px-4 py-3 font-bold rounded-tr-lg">Oran</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/10">
+                {details.present.map((p) => (
+                  <tr key={p.id} className="hover:bg-white/5 transition">
+                    <td className="px-4 py-3">{p.name}</td>
+                    <td className="px-4 py-3">{p.email}</td>
+                    <td className="px-4 py-3">{p.attended}/{p.totalWeeks}</td>
+                    <td className="px-4 py-3">
+                      <span className={`font-semibold ${
+                        p.rate >= 75 ? "text-green-400" : p.rate >= 50 ? "text-yellow-300" : "text-red-400"
+                      }`}>
+                        %{p.rate}
+                      </span>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {generalSummary.map((user) => (
-                    <tr key={user.id} className="border-t border-white/10">
-                      <td className="px-2 lg:px-4 py-2">{user.name}</td>
-                      <td className="px-2 lg:px-4 py-2 text-xs lg:text-sm">{user.email}</td>
-                      <td className="px-2 lg:px-4 py-2">{user.attended}/{user.totalWeeks}</td>
-                      <td className="px-2 lg:px-4 py-2">
-                        <span className={`font-semibold ${
-                          user.rate >= 75 ? "text-green-400" : user.rate >= 50 ? "text-yellow-300" : "text-red-400"
-                        }`}>
-                          %{user.rate}
-                        </span>
-                      </td>
-                      <td className="px-2 lg:px-4 py-2">
-                        <span className={`text-xs font-semibold px-2 py-1 rounded ${
-                          user.rate >= 75
-                            ? "bg-green-600"
-                            : user.rate >= 50
-                            ? "bg-yellow-600"
-                            : "bg-red-600"
-                        } text-white`}>
-                          {user.rate >= 75 ? "Başarılı" : user.rate >= 50 ? "Orta" : "Düşük"}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
-      </main>
-    </div>
-  );
-};
+        </div>
+      )}
 
+      {/* GENEL KATILIM */}
+      {activePanel === "Genel Katılım" && generalSummary.length > 0 && (
+        <div className="bg-white/10 border border-white/20 rounded-xl p-5 lg:p-6 backdrop-blur-sm">
+          <h3 className="text-lg font-bold mb-5 text-white">📊 Tüm Katılımcı Özeti</h3>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-white">
+              <thead className="bg-white/10">
+                <tr>
+                  <th className="text-left px-4 py-3 font-bold rounded-tl-lg">Ad Soyad</th>
+                  <th className="text-left px-4 py-3 font-bold">E-posta</th>
+                  <th className="text-left px-4 py-3 font-bold">Katılım</th>
+                  <th className="text-left px-4 py-3 font-bold">Oran</th>
+                  <th className="text-left px-4 py-3 font-bold rounded-tr-lg">Durum</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/10">
+                {generalSummary.map((user) => (
+                  <tr key={user.id} className="hover:bg-white/5 transition">
+                    <td className="px-4 py-3">{user.name}</td>
+                    <td className="px-4 py-3">{user.email}</td>
+                    <td className="px-4 py-3">{user.attended}/{user.totalWeeks}</td>
+                    <td className="px-4 py-3">
+                      <span className={`font-semibold ${
+                        user.rate >= 75 ? "text-green-400" : user.rate >= 50 ? "text-yellow-300" : "text-red-400"
+                      }`}>
+                        %{user.rate}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                        user.rate >= 75
+                          ? "bg-green-600/20 text-green-400"
+                          : user.rate >= 50
+                          ? "bg-yellow-600/20 text-yellow-400"
+                          : "bg-red-600/20 text-red-400"
+                      }`}>
+                        {user.rate >= 75 ? "Başarılı" : user.rate >= 50 ? "Orta" : "Düşük"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </main>
+  </div>
+)};
 export default InstructorDashboard;
