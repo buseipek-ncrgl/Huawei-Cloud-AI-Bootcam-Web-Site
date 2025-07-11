@@ -403,27 +403,30 @@ const InstructorDashboard = () => {
       )}
 
       {/* KATILIM PANELİ */}
-      {activePanel === "Katılım" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {/* 🟨 YENİ HAFTA EKLE FORMU */} 
-<div className="w-full flex justify-center mb-6">
-  <div className="flex items-center gap-3 bg-white/10 border border-yellow-400 rounded-xl p-3 backdrop-blur-sm w-full max-w-sm">
-    <input
-      type="number"
-      min="1"
-      placeholder="Hafta No"
-      value={newWeek}
-      onChange={(e) => setNewWeek(Number(e.target.value))}
-      className="flex-1 p-2 rounded-lg bg-black/30 border border-white/20 text-white placeholder-white/50 text-sm focus:outline-none focus:border-yellow-400"
-    />
-    <button
-      onClick={handleCreateWeek}
-      className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition"
-    >
-      ➕  Yeni Hafta Ekle
-    </button>
-  </div>
-</div>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 lg:mb-8 gap-4">
+  <h2 className="text-xl lg:text-2xl font-bold text-yellow-400">
+    {panelTitles[activePanel]}
+  </h2>
+
+  {/* Yalnızca Katılım panelinde göster */}
+  {activePanel === "Katılım" && (
+    <div className="flex items-center gap-2 bg-white/10 border border-yellow-400 rounded-lg px-3 py-2 backdrop-blur-sm">
+      <input
+        type="number"
+        min="1"
+        placeholder="Hafta"
+        value={newWeek}
+        onChange={(e) => setNewWeek(Number(e.target.value))}
+        className="w-20 px-2 py-1 rounded bg-black/30 border border-white/20 text-white text-sm placeholder-white/50 focus:outline-none focus:border-yellow-400"
+      />
+      <button
+        onClick={handleCreateWeek}
+        className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold text-sm px-3 py-1.5 rounded transition"
+      >
+        ➕
+      </button>
+    </div>
+  )}
 
 
           {summary.map((s) => (
@@ -481,7 +484,7 @@ const InstructorDashboard = () => {
             </div>
           ))}
         </div>
-      )}
+      )
 
       {/* HAFTA DETAYI */}
       {selectedWeek && details.present.length > 0 && (
