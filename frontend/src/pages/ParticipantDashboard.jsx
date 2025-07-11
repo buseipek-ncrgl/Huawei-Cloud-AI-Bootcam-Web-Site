@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {
-  CalendarDays, CheckSquare, Users, BookOpenText, Info, Mail
-} from "lucide-react";
 
 const panels = [
   { key: "Program", title: "📅 Eğitim Programı" },
@@ -13,6 +10,14 @@ const panels = [
   { key: "Kurallar", title: "📌 Katılım Kuralları" },
   { key: "İletişim", title: "✉️ İletişim Bilgileri" },
 ];
+const panelTitles = {
+  Program: "📅 Eğitim Programı",
+  Katılım: "📝 Katılım Durumu",
+  Eğitmenler: "👨‍🏫 Eğitmenler",
+  Kaynaklar: "📚 Eğitim Kaynakları",
+  Kurallar: "📌 Katılım Kuralları",
+  İletişim: "✉️ İletişim Bilgileri",
+};
 
 const ParticipantDashboard = () => {
   const [sessions, setSessions] = useState([]);
@@ -174,6 +179,10 @@ const ParticipantDashboard = () => {
           </div>
           <h1 className="text-4xl font-bold text-yellow-400">Huawei Cloud AI Bootcamp</h1>
         </div>
+        {/* Panel Başlığı */}
+        <h2 className="text-xl lg:text-2xl font-bold text-yellow-400 mb-6 lg:mb-8 flex items-center gap-2">
+          {panelTitles[activePanel]}
+          </h2>
 
         {/* Panel İçeriği */}
         {activePanel === "Program" && (
