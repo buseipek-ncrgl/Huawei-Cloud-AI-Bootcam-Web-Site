@@ -13,6 +13,7 @@ const InstructorDashboard = () => {
   const [activePanel, setActivePanel] = useState("Program");
   const [summary, setSummary] = useState([]);
   const [fullName, setFullName] = useState("");
+  const [newWeek, setNewWeek] = useState("");
   const [details, setDetails] = useState({ present: [] });
   const [selectedWeek, setSelectedWeek] = useState(null);
   const [generalSummary, setGeneralSummary] = useState([]);
@@ -129,6 +130,24 @@ const InstructorDashboard = () => {
   useEffect(() => {
     fetchData();
   }, []);
+const handleCreateWeek = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/session/create`, {
+      week: newWeek
+    }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.data.success) throw new Error(res.data.error || "Hafta eklenemedi");
+
+    alert(`✅ ${newWeek}. hafta eklendi!`);
+    fetchSummary(); // özet verileri güncelle
+    setNewWeek(""); // input temizle
+  } catch (err) {
+    alert(err.response?.data?.error || err.message);
+  }
+};
 
  return (
   <div className="flex flex-col lg:flex-row min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
@@ -381,64 +400,84 @@ const InstructorDashboard = () => {
       )}
 
       {/* KATILIM PANELİ */}
-      {activePanel === "Katılım" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {summary.map((s) => (
-            <div key={s.week} className="relative bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm">
-              {s.active && (
-                <span className="absolute top-3 right-3 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg">
-                  🟢 Aktif
-                  </span>
-                )}
+{activePanel === "Katılım" && (
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    {summary.map((s) => (
+      <div key={s.week} className="relative bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm">
+        {s.active && (
+          <span className="absolute top-3 right-3 text-green-400 text-sm font-semibold">
+            Aktif
+          </span>
+        )}
 
-              <div>
-                <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
-                  <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
-                    {s.week}. Hafta
-                  </span>
-                </h3>
-                <div className="space-y-3 mb-4">
-                  <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
-                    <span className="text-sm text-white">Katılım</span>
-                    <span className="font-semibold">{s.attended}/{s.total}</span>
-                  </div>
-                  <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
-                    <span className="text-sm text-white">Oran</span>
-                    <span className={`font-semibold ${
-                      s.rate >= 75 ? "text-green-400" : s.rate >= 50 ? "text-yellow-300" : "text-red-400"
-                    }`}>
-                      %{s.rate}
-                    </span>
-                  </div>
-                </div>
-                
-                {s.active ? (
-                  <button
-                    onClick={() => handleStop(s.week)}
-                    className="bg-red-600 hover:bg-red-700 text-white w-full rounded-lg py-2.5 mb-3 text-sm font-semibold transition flex items-center justify-center gap-2"
-                  >
-                    ⛔ Yoklamayı Bitir
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleStart(s.week)}
-                    className="bg-green-600 hover:bg-green-700 text-white w-full rounded-lg py-2.5 mb-3 text-sm font-semibold transition flex items-center justify-center gap-2"
-                  >
-                    ✅ Yoklamayı Başlat
-                  </button>
-                )}
-              </div>
-              
-              <button
-                onClick={() => fetchDetails(s.week)}
-                className="bg-blue-600 hover:bg-blue-700 text-white w-full rounded-lg py-2.5 text-sm font-semibold transition flex items-center justify-center gap-2"
-              >
-                📊 Detayları Gör
-              </button>
+        <div>
+          <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
+            <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+              {s.week}. Hafta
+            </span>
+          </h3>
+          <div className="space-y-3 mb-4">
+            <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
+              <span className="text-sm text-white">Katılım</span>
+              <span className="font-semibold">{s.attended}/{s.total}</span>
             </div>
-          ))}
+            <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
+              <span className="text-sm text-white">Oran</span>
+              <span className={`font-semibold ${
+                s.rate >= 75 ? "text-green-400" : s.rate >= 50 ? "text-yellow-300" : "text-red-400"
+              }`}>
+                %{s.rate}
+              </span>
+            </div>
+          </div>
+          
+          {s.active ? (
+            <button
+              onClick={() => handleStop(s.week)}
+              className="bg-red-600 hover:bg-red-700 text-white w-full rounded-lg py-2.5 mb-3 text-sm font-semibold transition flex items-center justify-center gap-2"
+            >
+              ⛔ Yoklamayı Bitir
+            </button>
+          ) : (
+            <button
+              onClick={() => handleStart(s.week)}
+              className="bg-green-600 hover:bg-green-700 text-white w-full rounded-lg py-2.5 mb-3 text-sm font-semibold transition flex items-center justify-center gap-2"
+            >
+              ✅ Yoklamayı Başlat
+            </button>
+          )}
         </div>
-      )}
+        
+        <button
+          onClick={() => fetchDetails(s.week)}
+          className="bg-blue-600 hover:bg-blue-700 text-white w-full rounded-lg py-2.5 text-sm font-semibold transition flex items-center justify-center gap-2"
+        >
+          📊 Detayları Gör
+        </button>
+      </div>
+    ))}
+
+    {/* 🟨 YENİ HAFTA EKLE KARTI */}
+    <div className="bg-white/5 border border-dashed border-yellow-400 p-5 rounded-xl flex flex-col items-center justify-center hover:bg-white/10 hover:scale-[1.02] transition cursor-pointer backdrop-blur-sm">
+      <h3 className="text-lg font-bold text-yellow-400 mb-2">➕ Yeni Hafta Ekle</h3>
+      <input
+        type="number"
+        min="1"
+        placeholder="Hafta Numarası"
+        value={newWeek}
+        onChange={(e) => setNewWeek(Number(e.target.value))}
+        className="w-full p-2 rounded-lg bg-black/30 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-yellow-400 text-sm mb-3"
+      />
+      <button
+        onClick={handleCreateWeek}
+        className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm transition"
+      >
+        ✅ Ekle
+      </button>
+    </div>
+  </div>
+)}
+
 
       {/* HAFTA DETAYI */}
       {selectedWeek && details.present.length > 0 && (
