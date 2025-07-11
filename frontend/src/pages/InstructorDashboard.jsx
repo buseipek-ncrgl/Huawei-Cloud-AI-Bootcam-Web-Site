@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const panels = ["Program", "Katılım", "Kaynaklar", "Genel Katılım"];
 const panelTitles = {
@@ -10,118 +11,172 @@ const panelTitles = {
 
 const InstructorDashboard = () => {
   const [activePanel, setActivePanel] = useState("Program");
-  const [summary, setSummary] = useState([
-    { week: 1, topic: "React Temelleri\nComponent Yapısı", attended: 15, total: 20, rate: 75, active: false, videoUrl: "", mediumUrl: "" },
-    { week: 2, topic: "State ve Props\nEvent Handling", attended: 18, total: 20, rate: 90, active: true, videoUrl: "https://youtube.com/watch?v=example", mediumUrl: "" },
-    { week: 3, topic: "", attended: 12, total: 20, rate: 60, active: false, videoUrl: "", mediumUrl: "https://medium.com/example" },
-  ]);
-  const [fullName, setFullName] = useState("Ahmet Yılmaz");
+  const [summary, setSummary] = useState([]);
+  const [fullName, setFullName] = useState("");
   const [details, setDetails] = useState({ present: [] });
   const [selectedWeek, setSelectedWeek] = useState(null);
-  const [generalSummary, setGeneralSummary] = useState([
-    { id: 1, name: "Ali Veli", email: "ali@example.com", attended: 2, totalWeeks: 3, rate: 67 },
-    { id: 2, name: "Ayşe Demir", email: "ayse@example.com", attended: 3, totalWeeks: 3, rate: 100 },
-    { id: 3, name: "Mehmet Kaya", email: "mehmet@example.com", attended: 1, totalWeeks: 3, rate: 33 },
-  ]);
+  const [generalSummary, setGeneralSummary] = useState([]);
   const [tempTopics, setTempTopics] = useState({});
   const [tempVideos, setTempVideos] = useState({});
   const [tempMediums, setTempMediums] = useState({});
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const fetchDetails = (week) => {
-    const mockDetails = {
-      present: [
-        { id: 1, name: "Ali Veli", email: "ali@example.com", attended: 2, totalWeeks: 3, rate: 67 },
-        { id: 2, name: "Ayşe Demir", email: "ayse@example.com", attended: 3, totalWeeks: 3, rate: 100 },
-        { id: 3, name: "Mehmet Kaya", email: "mehmet@example.com", attended: 1, totalWeeks: 3, rate: 33 },
-      ]
+  const fetchData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const [summaryRes, profileRes, generalRes] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/summary`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/general-summary`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+      setSummary(summaryRes.data);
+      setFullName(profileRes.data.fullName);
+      setGeneralSummary(generalRes.data);
+
+      const topicState = {};
+      const videoState = {};
+      const mediumState = {};
+      summaryRes.data.forEach((s) => {
+        topicState[s.week] = s.topic || "";
+        videoState[s.week] = s.videoUrl || "";
+        mediumState[s.week] = s.mediumUrl || "";
+      });
+      setTempTopics(topicState);
+      setTempVideos(videoState);
+      setTempMediums(mediumState); 
+    } catch (err) {
+      alert("Veriler alınamadı");
+    }
+  };
+
+  const fetchDetails = async (week) => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/attendance/details/${week}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setSelectedWeek(week);
+      setDetails(res.data);
+    } catch {
+      alert("Katılım detayları alınamadı");
+    }
+  };
+
+  const handleStart = async (week) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/sessions/${week}/start`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert(`${week}. hafta başlatıldı ✅`);
+      fetchData();
+    } catch {
+      alert("Başlatılamadı ❌");
+    }
+  };
+
+  const handleStop = async (week) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/sessions/${week}/stop`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert(`${week}. hafta durduruldu ⛔`);
+      fetchData();
+    } catch {
+      alert("Durdurulamadı ❌");
+    }
+  };
+
+  const handleUpdate = async (week, field) => {
+    const token = localStorage.getItem("token");
+    const data = {
+      topic: tempTopics[week] ?? "",
+      videoUrl: tempVideos[week] ?? "",
+      mediumUrl: tempMediums[week] ?? "",
     };
-    setSelectedWeek(week);
-    setDetails(mockDetails);
-  };
 
-  const handleStart = (week) => {
-    alert(`${week}. hafta başlatıldı ✅`);
-  };
-
-  const handleStop = (week) => {
-    alert(`${week}. hafta durduruldu ⛔`);
-  };
-
-  const handleUpdate = (week) => {
-    alert("Güncelleme başarılı ✅");
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/sessions/${week}`,
+        data,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert("Güncelleme başarılı ✅");
+      fetchData();
+    } catch {
+      alert("Güncellenemedi ❌");
+    }
   };
 
   const handlePanelChange = (panel) => {
     setActivePanel(panel);
     setSelectedWeek(null);
-    setSidebarOpen(false);
+    setSidebarOpen(false); // Mobilde menü seçildikten sonra kapat
   };
 
   useEffect(() => {
-    const topicState = {};
-    const videoState = {};
-    const mediumState = {};
-    summary.forEach((s) => {
-      topicState[s.week] = s.topic || "";
-      videoState[s.week] = s.videoUrl || "";
-      mediumState[s.week] = s.mediumUrl || "";
-    });
-    setTempTopics(topicState);
-    setTempVideos(videoState);
-    setTempMediums(mediumState);
+    fetchData();
   }, []);
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white">
+    <div className="flex flex-col lg:flex-row min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
+
       
       {/* MOBILE HEADER */}
-      <div className="lg:hidden flex items-center justify-between p-3 bg-black/70 border-b border-white/20">
+      <div className="lg:hidden flex items-center justify-between p-4 bg-black/60 border-b border-white/30">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="text-white p-2 hover:bg-white/10 rounded"
+          className="text-white p-2"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-        <h1 className="text-base font-bold text-yellow-400">Eğitmen Paneli</h1>
-        <div className="w-9"></div>
+        <h1 className="text-lg font-bold text-yellow-400">Eğitmen Paneli</h1>
+        <div className="w-8"></div>
       </div>
 
       {/* SIDEBAR */}
-      <aside className={`fixed top-0 left-0 h-full w-full sm:w-80 lg:w-72 bg-black/85 backdrop-blur-sm border-r border-white/20 flex flex-col z-50 transform transition-all duration-300 ease-in-out ${
+      <aside className={`fixed top-0 left-0 h-full w-64 bg-black/80 backdrop-blur-sm border-r border-white/30 p-4 flex flex-col z-50 transform transition-transform duration-300 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       } lg:translate-x-0 lg:static lg:bg-black/60`}>
         
         {/* Mobile close button */}
         <button
           onClick={() => setSidebarOpen(false)}
-          className="lg:hidden absolute top-3 right-3 text-white/80 hover:text-white p-2 hover:bg-white/10 rounded"
+          className="lg:hidden absolute top-4 right-4 text-white"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 
-        {/* User Info */}
-        <div className="text-center text-white pt-6 pb-4 px-4 lg:pt-4 lg:pb-6">
-          <div className="bg-yellow-400/10 border border-yellow-400/30 rounded-lg p-4 mb-2">
-            <p className="text-sm lg:text-base font-semibold text-yellow-300">Merhaba,</p>
-            <p className="text-base lg:text-lg font-bold text-yellow-300">{fullName} 👨‍🏫</p>
-          </div>
+        <div className="text-center text-white mt-8 lg:mt-2 mb-8 lg:mb-12">
+          <p className="text-lg lg:text-xl font-bold text-yellow-300">Merhaba,</p>
+          <p className="text-lg lg:text-xl font-bold text-yellow-300">{fullName} 👨‍🏫</p>
         </div>
         
-        {/* Navigation */}
-        <nav className="flex flex-col gap-2 px-4 pb-4">
+        <nav className="flex flex-col gap-2">
           {panels.map((panel) => (
             <button
               key={panel}
               onClick={() => handlePanelChange(panel)}
-              className={`text-left px-3 py-3 rounded-lg font-semibold transition-all duration-200 border text-sm lg:text-base hover:scale-[1.02] hover:border-yellow-400 ${
+              className={`text-left px-4 py-3 rounded-lg font-semibold transition-all duration-200 border hover:scale-[1.03] hover:border-yellow-400 ${
                 activePanel === panel
-                  ? "bg-yellow-400 text-black border-yellow-400 shadow-lg"
-                  : "bg-white/5 border-white/10 text-white hover:bg-white/10"
+                  ? "bg-yellow-400 text-black border-yellow-400"
+                  : "bg-white/5 border-white/10 text-white"
               }`}
             >
               {panelTitles[panel]}
@@ -133,60 +188,56 @@ const InstructorDashboard = () => {
       {/* OVERLAY for mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/60 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         ></div>
       )}
 
-      {/* MAIN CONTENT */}
-      <main className="flex-1 lg:ml-0 p-4 lg:p-6 min-h-screen transition-all">
-        {/* Desktop Header */}
+      {/* MAIN */}
+      <main className="lg:ml-64 p-4 lg:p-6 w-full min-h-screen transition-all">
+        {/* Üst Başlık - Hidden on mobile */}
         <div className="hidden lg:block text-center mb-6">
           <div className="flex justify-center items-center gap-6 mb-4">
-            <div className="w-32 h-16 bg-white/10 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">HUAWEI</span>
-            </div>
-            <div className="w-32 h-16 bg-white/10 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">HSD</span>
-            </div>
+            <img src="/huaweilogo.png" alt="Huawei" className="w-32 sm:w-40" />
+            <img src="/hsdlogo.png" alt="Partner" className="w-32 sm:w-40" />
           </div>
-          <h1 className="text-2xl lg:text-3xl font-bold text-yellow-400">Huawei Cloud AI Bootcamp</h1>
+          <h1 className="text-3xl font-bold text-yellow-400">Huawei Cloud AI Bootcamp</h1>
         </div>
 
-        {/* Panel Title */}
-        <h2 className="text-lg lg:text-2xl font-bold text-yellow-400 mb-4 lg:mb-6">
+        {/* PANEL İÇERİĞİ */}
+        <h2 className="text-xl lg:text-2xl font-bold text-yellow-400 mb-4 lg:mb-6">
           {panelTitles[activePanel]}
         </h2>
 
         {/* PROGRAM PANELİ */}
         {activePanel === "Program" && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {summary.map((s) => (
               <div
                 key={s.week}
-                className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.02] hover:border-yellow-400"
+                className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
               >
-                <h3 className="text-lg font-bold text-yellow-300 mb-3">{s.week}. Hafta</h3>
+                <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
 
                 {s.topic?.trim() ? (
                   <>
-                    <p className="text-sm font-semibold text-white mb-2">📌 Konular:</p>
-                    <ul className="list-disc list-inside text-sm text-white/90 mb-3">
+                    <p className="text-sm font-semibold text-white mb-1">📌 Konular:</p>
+                    <ul className="list-disc list-inside text-sm text-white/90 mb-2">
                       {s.topic.split("\n").map((line, i) => (
                         <li key={i}>{line}</li>
                       ))}
                     </ul>
                   </>
                 ) : (
-                  <p className="text-gray-400 italic text-sm mb-3">Henüz konu girilmedi.</p>
+                  <p className="text-gray-400 italic text-sm">Henüz konu girilmedi.</p>
                 )}
 
                 {/* Güncelleme Alanı */}
                 <div>
-                  <label className="block font-semibold text-white mb-2 text-sm">📋 Konuları Güncelle</label>
+                  <label className="block font-semibold text-white mb-1 text-sm">📋 Konuları Güncelle</label>
                   <textarea
                     rows={3}
-                    className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none"
+                    className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm"
                     placeholder="Her satıra bir konu yazın"
                     value={tempTopics[s.week] ?? ""}
                     onChange={(e) =>
@@ -195,7 +246,7 @@ const InstructorDashboard = () => {
                   />
                   <button
                     onClick={() => handleUpdate(s.week)}
-                    className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded text-sm transition"
+                    className="mt-2 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded text-sm"
                   >
                     💾 Kaydet
                   </button>
@@ -207,11 +258,11 @@ const InstructorDashboard = () => {
 
         {/* KAYNAKLAR PANELİ */}
         {activePanel === "Kaynaklar" && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {summary.map((s) => (
               <div
                 key={s.week}
-                className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.02] hover:border-yellow-400"
+                className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
               >
                 <h3 className="text-lg font-bold text-yellow-300 mb-3">{s.week}. Hafta Kaynakları</h3>
 
@@ -224,7 +275,7 @@ const InstructorDashboard = () => {
                         href={s.videoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-semibold transition"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-semibold"
                       >
                         İzle
                       </a>
@@ -242,7 +293,7 @@ const InstructorDashboard = () => {
                         href={s.mediumUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm font-semibold transition"
+                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm font-semibold"
                       >
                         Oku
                       </a>
@@ -260,7 +311,7 @@ const InstructorDashboard = () => {
                     <label className="block font-semibold text-white text-sm mb-1">🔗 Video Linki</label>
                     <input
                       type="text"
-                      className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none"
+                      className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm"
                       placeholder="https://..."
                       value={tempVideos[s.week] ?? ""}
                       onChange={(e) =>
@@ -273,7 +324,7 @@ const InstructorDashboard = () => {
                     <label className="block font-semibold text-white text-sm mb-1">✍️ Medium Linki</label>
                     <input
                       type="text"
-                      className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none"
+                      className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm"
                       placeholder="https://medium.com/..."
                       value={tempMediums[s.week] ?? ""}
                       onChange={(e) =>
@@ -284,7 +335,7 @@ const InstructorDashboard = () => {
                   
                   <button
                     onClick={() => handleUpdate(s.week)}
-                    className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded text-sm transition"
+                    className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded text-sm"
                   >
                     💾 Kaydet
                   </button>
@@ -296,12 +347,12 @@ const InstructorDashboard = () => {
 
         {/* KATILIM PANELİ */}
         {activePanel === "Katılım" && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {summary.map((s) => (
-              <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg hover:scale-[1.02] hover:border-yellow-400 transition flex flex-col justify-between">
+              <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg hover:scale-[1.015] hover:border-yellow-400 transition flex flex-col justify-between">
                 <div>
-                  <h3 className="text-lg font-bold text-yellow-300 mb-3">{s.week}. Hafta</h3>
-                  <div className="text-sm space-y-2 mb-4">
+                  <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
+                  <div className="text-sm space-y-1 mb-3">
                     <p>Katılım: <span className="font-semibold">{s.attended}/{s.total}</span></p>
                     <p>
                       Oran:{" "}
@@ -316,14 +367,14 @@ const InstructorDashboard = () => {
                   {s.active ? (
                     <button
                       onClick={() => handleStop(s.week)}
-                      className="bg-red-600 hover:bg-red-700 text-white w-full rounded py-2 mb-3 text-sm font-semibold transition"
+                      className="bg-red-600 hover:bg-red-700 text-white w-full rounded py-2 mb-2 text-sm font-semibold"
                     >
                       ⛔ Yoklamayı Bitir
                     </button>
                   ) : (
                     <button
                       onClick={() => handleStart(s.week)}
-                      className="bg-green-600 hover:bg-green-700 text-white w-full rounded py-2 mb-3 text-sm font-semibold transition"
+                      className="bg-green-600 hover:bg-green-700 text-white w-full rounded py-2 mb-2 text-sm font-semibold"
                     >
                       ✅ Yoklamayı Başlat
                     </button>
@@ -332,7 +383,7 @@ const InstructorDashboard = () => {
                 
                 <button
                   onClick={() => fetchDetails(s.week)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white w-full rounded py-2 text-sm font-semibold transition"
+                  className="bg-blue-600 hover:bg-blue-700 text-white w-full rounded py-2 text-sm font-semibold"
                 >
                   📊 Detayları Gör
                 </button>
