@@ -148,7 +148,7 @@ const InstructorDashboard = () => {
     </div>
 
     {/* SIDEBAR */}
-    <aside className={`fixed top-0 left-0 h-full w-72 bg-black/40 backdrop-blur-lg border-r border-white/20 flex flex-col z-50 transform transition-all duration-300 ease-in-out ${
+    <aside className={`lg:static fixed top-0 left-0 lg:min-h-screen h-full w-72 bg-black/30 backdrop-blur-md border-r border-white/20 shadow-lg flex flex-col z-50 transform transition-all duration-300 ease-in-out ${
   sidebarOpen ? 'translate-x-0' : '-translate-x-full'
 } lg:translate-x-0 lg:static lg:bg-black/40`}>
       
@@ -202,7 +202,7 @@ const InstructorDashboard = () => {
     )}
 
     {/* MAIN CONTENT */}
-    <main className="flex-1 lg:ml-72 p-4 lg:p-6 min-h-screen transition-all overflow-auto">
+    <main className="flex-1 lg:ml-0 p-4 lg:p-6 min-h-screen transition-all overflow-auto">
       {/* Desktop Header */}
       <div className="hidden lg:block text-center mb-8">
         <div className="flex justify-center items-center gap-8 mb-4">
