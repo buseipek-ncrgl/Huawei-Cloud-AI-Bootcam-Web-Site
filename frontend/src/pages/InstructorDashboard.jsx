@@ -132,10 +132,10 @@ const InstructorDashboard = () => {
   }, []);
 
 
-  const handleCreateWeek = async () => {
+ const handleCreateWeek = async () => {
   try {
     const token = localStorage.getItem("token");
-    const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/session/create`, {
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/sessions/create`, {
       week: newWeek
     }, {
       headers: { Authorization: `Bearer ${token}` },
@@ -144,12 +144,13 @@ const InstructorDashboard = () => {
     if (!res.data.success) throw new Error(res.data.error || "Hafta eklenemedi");
 
     alert(`✅ ${newWeek}. hafta eklendi!`);
-    await fetchData(); // ✅ doğru şekilde güncellendi
-    setNewWeek(""); // input temizle
+    fetchData(); // ✅ fetchSummary yerine fetchData çünkü özet+konu+video hepsini çekiyor
+    setNewWeek("");
   } catch (err) {
     alert(err.response?.data?.error || err.message);
   }
 };
+
 
  return (
   <div className="flex flex-col lg:flex-row min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
