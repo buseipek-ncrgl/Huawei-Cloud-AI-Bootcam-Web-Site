@@ -238,11 +238,14 @@ const ParticipantDashboard = () => {
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
     {sessions.map((s) => (
       <div
-        key={s.week}
-         className="relative bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm"
-      >
-        <h3 className="text-lg font-bold text-yellow-300 mb-4">{s.week}. Hafta Kaynakları</h3>
-
+              key={s.week}
+              className="bg-white/10 border border-white/20 p-5 rounded-xl transition hover:scale-[1.02] hover:border-yellow-400 backdrop-blur-sm"
+            >
+              <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
+                <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+                  {s.week}. Hafta Kaynakları
+                </span>
+              </h3>
         {/* Medium Link */}
         <div className="mb-3">
           <p className="text-sm text-white font-semibold mb-1 flex items-center gap-2">
