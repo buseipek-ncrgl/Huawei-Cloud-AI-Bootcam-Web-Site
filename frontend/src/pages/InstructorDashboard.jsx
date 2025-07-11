@@ -224,30 +224,34 @@ const InstructorDashboard = () => {
       >
         <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta Kaynakları</h3>
 
-        {/* Video Linki varsa göster */}  
-{s.videoUrl?.trim() && (
-  <a
-    href={s.videoUrl}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="inline-block bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-1 rounded mb-2 mr-2 transition"
-  >
-    🎥 İzle
-  </a>
-)}
-
-{/* Medium Linki varsa göster */}
+        {s.videoUrl?.trim() ? (
+          <div className="mb-2">
+            <p className="font-semibold text-white text-sm">🎥 Video:</p>
+            <a
+              href={s.videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 underline text-sm"
+            >
+              İzle
+            </a>
+          </div>
+        ) : (
+          <p className="text-gray-400 italic text-sm mb-2">Henüz video linki yok.</p>
+        )}
 {s.mediumUrl?.trim() && (
-  <a
-    href={s.mediumUrl}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="inline-block bg-purple-500 hover:bg-purple-600 text-white text-sm font-semibold px-4 py-1 rounded mb-2 transition"
-  >
-    📝 Oku
-  </a>
+  <div className="mb-2">
+    <p className="font-semibold text-white text-sm">📝 Medium:</p>
+    <a
+      href={s.mediumUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-400 underline text-sm"
+    >
+      Oku
+    </a>
+  </div>
 )}
-
 
         {/* Güncelleme Alanı */}
         <div>
