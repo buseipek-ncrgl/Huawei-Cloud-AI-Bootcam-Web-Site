@@ -341,16 +341,16 @@ const InstructorDashboard = () => {
               {selectedWeek}. Hafta Katılım Detayları
             </h3>
             <div className="overflow-x-auto">
-              <table className="table-fixed w-full text-sm text-white border border-white/20">
-                <thead className="bg-white/10 text-xs font-bold uppercase">
+              <table className="min-w-full text-sm text-left text-white border border-white/20">
+                <thead className="bg-white/10 uppercase text-xs font-bold">
                   <tr>
-                    <th className="px-4 py-2 w-1/5">Ad Soyad</th>
-                    <th className="px-4 py-2 w-1/5">E-posta</th>
-                    <th className="px-4 py-2 w-1/5">Katıldığı Hafta</th>
-                    <th className="px-4 py-2 w-1/5">Katılım Oranı</th>
+                    <th className="px-4 py-2">Ad Soyad</th>
+                    <th className="px-4 py-2">E-posta</th>
+                    <th className="px-4 py-2">Katıldığı Hafta</th>
+                    <th className="px-4 py-2">Katılım Oranı</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="bg-white/5">
                   {details.present.map((p) => (
                     <tr key={p.id} className="border-t border-white/10">
                       <td className="px-4 py-2">{p.name}</td>
@@ -376,15 +376,15 @@ const InstructorDashboard = () => {
           <div className="mt-10 bg-white/10 border border-white/20 rounded-xl p-6 w-full max-w-7xl">
             <h3 className="text-lg font-bold mb-4 text-white text-center">📊 Tüm Katılımcı Özeti</h3>
             <div className="overflow-x-auto">
-              <table className="table-fixed w-full text-sm text-white border border-white/20">
+              <table className="min-w-full text-sm text-white border border-white/20">
                 <thead className="bg-white/10 text-xs font-bold uppercase">
                   <tr>
-                    <th className="px-4 py-2 w-1/5">Ad Soyad</th>
-                    <th className="px-4 py-2 w-1/5">E-posta</th>
-                    <th className="px-4 py-2 w-1/5">Katıldığı Hafta</th>
-                    <th className="px-4 py-2 w-1/5">Toplam Hafta</th>
-                    <th className="px-4 py-2 w-1/5">Oran</th>
-                    <th className="px-4 py-2 w-1/5">Durum</th>
+                    <th className="px-4 py-2">Ad Soyad</th>
+                    <th className="px-4 py-2">E-posta</th>
+                    <th className="px-4 py-2">Katıldığı Hafta</th>
+                    <th className="px-4 py-2">Toplam Hafta</th>
+                    <th className="px-4 py-2">Oran</th>
+                    <th className="px-4 py-2">Durum</th>
                   </tr>
                 </thead>
                 <tbody>
