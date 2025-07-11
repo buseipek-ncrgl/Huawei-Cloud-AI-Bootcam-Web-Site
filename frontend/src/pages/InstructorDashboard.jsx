@@ -386,7 +386,7 @@ const InstructorDashboard = () => {
           {summary.map((s) => (
             <div key={s.week} className="relative bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm">
               {s.active && (
-                <span className="absolute top-3 right-3 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg">
+                <span className="text-sm font-semibold text-green-400">
                   🟢 Aktif
                   </span>
                 )}

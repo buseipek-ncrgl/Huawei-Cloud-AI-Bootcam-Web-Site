@@ -198,7 +198,7 @@ const ParticipantDashboard = () => {
         {activePanel === "Katılım" && (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             {sessions.map((s) => (
-              <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl backdrop-blur-sm hover:scale-[1.02] hover:border-yellow-400 transition">
+              <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl transition hover:scale-[1.02] hover:border-yellow-400 backdrop-blur-sm">
                 <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
                 {s.attended ? (
                   <p className="text-green-400 font-bold">✔ Katıldınız</p>
@@ -239,7 +239,7 @@ const ParticipantDashboard = () => {
     {sessions.map((s) => (
       <div
         key={s.week}
-        className="bg-white/10 border border-white/20 p-5 rounded-xl backdrop-blur-sm hover:scale-[1.02] hover:border-yellow-400 transition"
+         className="bg-white/10 border border-white/20 p-5 rounded-xl transition hover:scale-[1.02] hover:border-yellow-400 backdrop-blur-sm"
       >
         <h3 className="text-lg font-bold text-yellow-300 mb-4">{s.week}. Hafta Kaynakları</h3>
 
