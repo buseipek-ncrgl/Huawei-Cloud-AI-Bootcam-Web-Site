@@ -403,14 +403,10 @@ const InstructorDashboard = () => {
       )}
 
       {/* KATILIM PANELİ */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 lg:mb-8 gap-4">
-  <h2 className="text-xl lg:text-2xl font-bold text-yellow-400">
-    {panelTitles[activePanel]}
-  </h2>
-
-  {/* Yalnızca Katılım panelinde göster */}
-  {activePanel === "Katılım" && (
-    <div className="flex items-center gap-2 bg-white/10 border border-yellow-400 rounded-lg px-3 py-2 backdrop-blur-sm">
+      
+      {activePanel === "Katılım" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          <div className="flex items-center gap-2 bg-white/10 border border-yellow-400 rounded-lg px-3 py-2 backdrop-blur-sm">
       <input
         type="number"
         min="1"
@@ -426,8 +422,7 @@ const InstructorDashboard = () => {
         ➕
       </button>
     </div>
-  )}
-
+  )
 
           {summary.map((s) => (
             <div key={s.week} className="relative bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm">
@@ -484,7 +479,7 @@ const InstructorDashboard = () => {
             </div>
           ))}
         </div>
-      )
+      )}
 
       {/* HAFTA DETAYI */}
       {selectedWeek && details.present.length > 0 && (
