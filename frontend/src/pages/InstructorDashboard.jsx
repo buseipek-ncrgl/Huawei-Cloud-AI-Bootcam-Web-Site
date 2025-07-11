@@ -211,7 +211,7 @@ const InstructorDashboard = () => {
 
         {/* PROGRAM PANELİ */}
         {activePanel === "Program" && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {summary.map((s) => (
               <div
                 key={s.week}
@@ -258,7 +258,7 @@ const InstructorDashboard = () => {
 
         {/* KAYNAKLAR PANELİ */}
         {activePanel === "Kaynaklar" && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {summary.map((s) => (
               <div
                 key={s.week}
@@ -347,7 +347,7 @@ const InstructorDashboard = () => {
 
         {/* KATILIM PANELİ */}
         {activePanel === "Katılım" && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {summary.map((s) => (
               <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg hover:scale-[1.015] hover:border-yellow-400 transition flex flex-col justify-between">
                 <div>
