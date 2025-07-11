@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { User, Calendar, Users, BookOpen, ShieldCheck, Mail } from "lucide-react";
 
 const panels = ["Program", "Katılım", "Eğitmenler", "Kaynaklar", "Kurallar", "İletişim"];
 const panelTitles = {
@@ -10,6 +11,15 @@ const panelTitles = {
   Kaynaklar: "📚 Eğitim Kaynakları",
   Kurallar: "📌 Katılım Kuralları",
   İletişim: "✉️ İletişim Bilgileri",
+};
+
+const icons = {
+  Program: Calendar,
+  Katılım: Users,
+  Eğitmenler: User,
+  Kaynaklar: BookOpen,
+  Kurallar: ShieldCheck,
+  İletişim: Mail,
 };
 
 const ParticipantDashboard = () => {
@@ -24,26 +34,19 @@ const ParticipantDashboard = () => {
     const fetchSessions = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/login");
-          return;
-        }
+        if (!token) return navigate("/login");
 
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/sessions`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (!res.data.success) {
-          throw new Error(res.data.error || "Veri alınamadı");
-        }
+        if (!res.data.success) throw new Error(res.data.error || "Veri alınamadı");
 
         setSessions(res.data.sessions);
         setFullName(res.data.fullName);
       } catch (err) {
         setError(err.response?.data?.error || err.message);
-        if (err.response?.status === 403) {
-          navigate("/login");
-        }
+        if (err.response?.status === 403) navigate("/login");
       } finally {
         setLoading(false);
       }
@@ -55,283 +58,168 @@ const ParticipantDashboard = () => {
   const handleAttend = async (week) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/attendance/${week}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/attendance/${week}`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      if (!response.data.success) {
-        throw new Error(response.data.error || "Katılım kaydedilemedi");
-      }
+      if (!response.data.success) throw new Error(response.data.error || "Katılım kaydedilemedi");
 
       alert(`Hafta ${week} için yoklama alındı ✅`);
-      setSessions((prev) =>
-        prev.map((s) => (s.week === week ? { ...s, attended: true } : s))
-      );
+      setSessions((prev) => prev.map((s) => (s.week === week ? { ...s, attended: true } : s)));
     } catch (err) {
       alert(err.response?.data?.error || err.message);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900">
-        <div className="text-white text-2xl">Yükleniyor...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900">
-        <div className="text-red-400 text-xl p-4 bg-black/50 rounded-lg max-w-md text-center">
-          {error}
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white text-xl">Yükleniyor...</div>;
+  if (error) return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-red-400 text-xl">{error}</div>;
 
   return (
-    <div
-      className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white flex flex-col"
-      style={{ backgroundImage: "url('/background1.png')" }}
-    >
-      {/* ÜST BAŞLIK + LOGOLAR */}
-<div className="ml-64 pt-6 pb-4 flex flex-col items-center justify-center">
-  <div className="flex items-center gap-8 mb-2">
-    <img
-      src="/huaweilogo.png"
-      alt="Huawei"
-      className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
-    />
-    <img
-      src="/hsdlogo.png"
-      alt="HSD"
-      className="w-40 sm:w-48 drop-shadow-2xl brightness-125"
-    />
-  </div>
-  <h1 className="text-3xl sm:text-4xl font-extrabold text-yellow-400 tracking-wide drop-shadow-lg text-center">
-    Huawei Cloud AI Bootcamp
-  </h1>
-</div>
+    <div className="flex min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
 
-      {/* ANA LAYOUT */}
-      <div className="flex flex-1">
+      {/* SIDEBAR */}
+      <aside className="w-72 h-screen bg-black/60 border-r border-white/30 p-5 flex flex-col fixed top-0 left-0 z-40">
+        <div className="text-center mb-8">
+          <p className="text-yellow-300 font-semibold text-lg">Merhaba,</p>
+          <p className="text-yellow-300 font-bold text-xl">{fullName} 👋</p>
+        </div>
 
-        {/* SIDEBAR */}
-        <aside className="w-64 h-screen fixed top-0 left-0 bg-black/60 border-r border-white/30 p-4 flex flex-col z-10">
-  {/* Merhaba en üstte */}
-  <div className="text-center text-white mt-2 mb-12">
-    <p className="text-xl font-bold text-yellow-300">Merhaba,</p>
-    <p className="text-xl font-bold text-yellow-300">{fullName} 👋</p>
-  </div>
+        {panels.map((panel) => {
+          const Icon = icons[panel];
+          return (
+            <button
+              key={panel}
+              onClick={() => setActivePanel(panel)}
+              className={`flex items-center gap-3 px-4 py-2 mb-2 rounded-lg font-medium transition-all duration-200 hover:scale-[1.03] hover:border-yellow-400 border ${{
+                true: "bg-yellow-400 text-black border-yellow-400",
+                false: "bg-white/5 text-white border-white/10",
+              }[activePanel === panel]}`}
+            >
+              <Icon className="w-5 h-5" />
+              {panelTitles[panel]}
+            </button>
+          );
+        })}
+      </aside>
 
-  {/* Menü öğeleri */}
-  <nav className="flex flex-col gap-2">
-    {panels.map((panel) => (
-      <button
-        key={panel}
-        onClick={() => setActivePanel(panel)}
-        className={`text-left px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-[1.03] hover:border-yellow-400 ${
-          activePanel === panel
-            ? "bg-yellow-400 text-black border-yellow-400"
-            : "bg-white/5 border-white/10 text-white"
-        }`}
-      >
-        {panel}
-      </button>
-    ))}
-  </nav>
-</aside>
+      {/* MAIN CONTENT */}
+      <main className="ml-72 p-6 flex-1">
+        {/* LOGO HEADER */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-6 mb-3">
+            <img src="/huaweilogo.png" alt="Huawei" className="h-16 object-contain" />
+            <img src="/hsdlogo.png" alt="HSD" className="h-20 object-contain" />
+          </div>
+          <h1 className="text-3xl font-bold text-yellow-400">Huawei Cloud AI Bootcamp</h1>
+        </div>
 
+        <h2 className="text-xl font-bold text-yellow-400 mb-6">{panelTitles[activePanel]}</h2>
 
+        {/* PROGRAM */}
+        {activePanel === "Program" && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            {sessions.map((s) => (
+              <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-xl">
+                <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
+                {s.topic ? (
+                  <ul className="list-disc list-inside text-sm text-white/90 space-y-1">
+                    {s.topic.split("\n").map((line, i) => (
+                      <li key={i}>{line}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-400 italic">Henüz konu girilmemiş</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
-        {/* PANEL İÇERİĞİ */}
-        <main className="ml-64 p-6 overflow-y-auto flex-1">
-          <h2 className="text-3xl sm:text-3xl font-extrabold text-yellow-400 mb-6 flex items-center gap-3 tracking-wide drop-shadow-md">
-  {panelTitles[activePanel]}
-</h2>
-
-
-          {/* PROGRAM */}
-          {activePanel === "Program" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {sessions.map((s) => (
-                <div
-                  key={s.week}
-                  className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
-                >
-                  <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
-                  {s.topic ? (
-                    <ul className="list-disc list-inside text-sm text-gray-200 space-y-1">
-                      {s.topic.split("\n").map((item, i) => (
-                        <li key={i}>{item.trim()}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-400 italic">Konu girilmemiş</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* KATILIM */}
-          {activePanel === "Katılım" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {sessions.map((s) => (
-                <div
-                  key={s.week}
-                  className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
-                >
-                  <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta</h3>
-                  {s.attended ? (
-                    <p className="text-green-400 font-bold">✔ Katıldınız</p>
-                  ) : s.active ? (
-                    <button
-                      onClick={() => handleAttend(s.week)}
-                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold text-sm"
-                    >
-                      Katıldım
-                    </button>
-                  ) : (
-                    <p className="text-gray-400 italic">Katılım Kapalı</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* EĞİTMENLER */}
-          {activePanel === "Eğitmenler" && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {[
-                {
-                  name: "Ahmet Yılmaz",
-                  title: "AI Mühendisi – Huawei",
-                  linkedin: "#",
-                  image: "/profile.png",
-                },
-                {
-                  name: "Elif Demir",
-                  title: "Veri Bilimcisi – Huawei",
-                  linkedin: "#",
-                  image: "/profile.png",
-                },
-                {
-                  name: "Mehmet Kaya",
-                  title: "Cloud Eğitmeni – HSD",
-                  linkedin: "#",
-                  image: "/profile.png",
-                },
-              ].map((e, i) => (
-                <div
-                  key={i}
-                  className="bg-white/10 border border-white/20 p-4 rounded-lg text-center transition hover:scale-[1.015] hover:border-yellow-400"
-                >
-                  <img
-                    src={e.image}
-                    alt="Eğitmen"
-                    className="w-20 h-20 mx-auto rounded-full object-cover mb-3"
-                  />
-                  <h3 className="text-lg font-semibold">{e.name}</h3>
-                  <p className="text-sm text-gray-300 mb-1">{e.title}</p>
-                  <a
-                    href={e.linkedin}
-                    target="_blank"
-                    className="text-blue-400 hover:underline text-sm"
+        {/* KATILIM */}
+        {activePanel === "Katılım" && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            {sessions.map((s) => (
+              <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-xl">
+                <h3 className="text-lg font-bold text-yellow-300 mb-3">{s.week}. Hafta</h3>
+                {s.attended ? (
+                  <p className="text-green-400 font-bold">✔ Katıldınız</p>
+                ) : s.active ? (
+                  <button
+                    onClick={() => handleAttend(s.week)}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold"
                   >
-                    LinkedIn Profili
-                  </a>
-                </div>
-              ))}
-            </div>
-          )}
+                    Katıldım
+                  </button>
+                ) : (
+                  <p className="text-gray-400 italic">Katılım Kapalı</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
-          {/* KAYNAKLAR */}
-          {activePanel === "Kaynaklar" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-              {sessions.map((s) => (
-                <div
-                  key={s.week}
-                  className="bg-white/10 border border-white/20 p-4 rounded-lg transition hover:scale-[1.015] hover:border-yellow-400"
-                >
-                  <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta Kaynakları</h3>
+        {/* EĞİTMENLER */}
+        {activePanel === "Eğitmenler" && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+            {["Ahmet Yılmaz", "Elif Demir", "Mehmet Kaya"].map((name, i) => (
+              <div key={i} className="bg-white/10 border border-white/20 p-5 rounded-xl text-center">
+                <img src="/profile.png" className="w-20 h-20 mx-auto rounded-full mb-3" alt="" />
+                <h3 className="font-semibold">{name}</h3>
+                <p className="text-sm text-gray-300">Eğitmen</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* KAYNAKLAR */}
+        {activePanel === "Kaynaklar" && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+            {sessions.map((s) => (
+              <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl">
+                <h3 className="text-lg font-bold text-yellow-300 mb-3">{s.week}. Hafta</h3>
+                <div className="space-y-3">
                   {s.videoUrl && (
-                    <div className="mb-2">
-                      <p className="font-semibold">🎥 Video:</p>
-                      <a
-                        href={s.videoUrl}
-                        target="_blank"
-                        className="text-blue-400 hover:underline"
-                      >
-                        İzle
-                      </a>
-                    </div>
+                    <a
+                      href={s.videoUrl}
+                      target="_blank"
+                      className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold text-sm"
+                    >
+                      🎥 İzle
+                    </a>
                   )}
-                  <div className="mb-2">
-                    <p className="font-semibold">📄 Medium:</p>
+                  {s.mediumUrl && (
                     <a
-                      href="https://medium.com/@hsdcloudbootcamp/hafta1"
+                      href={s.mediumUrl}
                       target="_blank"
-                      className="text-blue-400 hover:underline"
+                      className="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold text-sm"
                     >
-                      Hafta 1 Medium
+                      📝 Oku
                     </a>
-                  </div>
-                  <div>
-                    <p className="font-semibold">📁:</p>
-                    <a
-                      href="https://drive.google.com/file/d/örnekcvç"
-                      target="_blank"
-                      className="text-blue-400 hover:underline"
-                    >
-                      İndir
-                    </a>
-                  </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
+        )}
 
-          {/* KURALLAR */}
-          {activePanel === "Kurallar" && (
-            <div className="space-y-3 text-sm text-gray-200">
-              <p>✅ Her hafta yoklama almanız beklenir.</p>
-              <p>📌 En az 4 hafta katılım zorunludur.</p>
-              <p>🧠 Her hafta sonrası mini sınav olabilir.</p>
-              <p>🎓 Final sınavına yeterli katılımı olanlar girebilir.</p>
-              <p>📨 Yardım için iletişim bölümünü kullanın.</p>
-            </div>
-          )}
+        {/* KURALLAR */}
+        {activePanel === "Kurallar" && (
+          <div className="space-y-3 text-white/90">
+            <p>✅ Her hafta yoklama almanız beklenir.</p>
+            <p>📌 En az 4 hafta katılım zorunludur.</p>
+            <p>🧠 Her hafta sonrası mini sınav olabilir.</p>
+            <p>🎓 Final sınavına yeterli katılımı olanlar girebilir.</p>
+          </div>
+        )}
 
-          {/* İLETİŞİM */}
-          {activePanel === "İletişim" && (
-            <div className="space-y-3 text-sm">
-              <p>
-                📧 E-posta:{" "}
-                <a
-                  href="mailto:hsdcloud@bootcamp.com"
-                  className="text-blue-400 underline"
-                >
-                  hsdcloud@bootcamp.com
-                </a>
-              </p>
-              <p>
-                💬 Discord:{" "}
-                <a
-                  href="https://discord.gg/örnek"
-                  className="text-blue-400 underline"
-                  target="_blank"
-                >
-                  Katılmak için tıkla
-                </a>
-              </p>
-            </div>
-          )}
-        </main>
-      </div>
+        {/* İLETİŞİM */}
+        {activePanel === "İletişim" && (
+          <div className="space-y-3 text-white/90">
+            <p>📧 E-posta: <a href="mailto:hsdcloud@bootcamp.com" className="underline text-blue-400">hsdcloud@bootcamp.com</a></p>
+            <p>💬 Discord: <a href="https://discord.gg/hsdcloud" className="underline text-blue-400" target="_blank">Discord'a Katıl</a></p>
+          </div>
+        )}
+      </main>
     </div>
   );
 };
