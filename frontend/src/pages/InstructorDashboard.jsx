@@ -148,9 +148,9 @@ const InstructorDashboard = () => {
     </div>
 
     {/* SIDEBAR */}
-    <aside className={`fixed top-0 left-0 h-full w-72 bg-black/80 backdrop-blur-lg border-r border-white/20 flex flex-col z-50 transform transition-all duration-300 ease-in-out ${
-      sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-    } lg:translate-x-0 lg:static lg:bg-black/60`}>
+    <aside className={`fixed top-0 left-0 min-h-screen h-screen w-72 bg-black/50 backdrop-blur-md border-r border-white/20 flex flex-col z-50 transform transition-all duration-300 ease-in-out ${
+  sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+} lg:translate-x-0 lg:static lg:bg-black/40`}>
       
       {/* Mobile close button */}
       <button
@@ -189,7 +189,7 @@ const InstructorDashboard = () => {
 
       {/* Footer */}
       <div className="p-4 border-t border-white/10 text-center text-xs text-white/50">
-        Huawei Cloud AI Bootcamp © 2023
+        Huawei Cloud AI Bootcamp © 2025
       </div>
     </aside>
 
@@ -206,9 +206,9 @@ const InstructorDashboard = () => {
       {/* Desktop Header */}
       <div className="hidden lg:block text-center mb-8">
         <div className="flex justify-center items-center gap-8 mb-4">
-          <img src="/huaweilogo.png" alt="Huawei" className="h-12 object-contain" />
-          <img src="/hsdlogo.png" alt="Partner" className="h-12 object-contain" />
-        </div>
+          <img src="/huaweilogo.png" alt="Huawei" className="h-20 object-contain" />
+          <img src="/hsdlogo.png" alt="Partner" className="h-20 object-contain" />
+        </div><h1 className="text-4xl font-extrabold text-yellow-400 tracking-wide">Huawei Cloud AI Bootcamp</h1>
         <h1 className="text-3xl font-bold text-yellow-400">Huawei Cloud AI Bootcamp</h1>
       </div>
 
