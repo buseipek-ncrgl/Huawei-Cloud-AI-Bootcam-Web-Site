@@ -231,24 +231,56 @@ const ParticipantDashboard = () => {
         )}
 
         {activePanel === "Kaynaklar" && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-            {sessions.map((s) => (
-              <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl backdrop-blur-sm hover:scale-[1.02] hover:border-yellow-400 transition">
-                <h3 className="text-lg font-bold text-yellow-300 mb-3">{s.week}. Hafta Kaynakları</h3>
-                {s.videoUrl?.trim() && (
-                  <a href={s.videoUrl} target="_blank" rel="noopener noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-semibold inline-block mb-2">
-                    🎥 İzle
-                  </a>
-                )}
-                {s.mediumUrl?.trim() && (
-                  <a href={s.mediumUrl} target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-semibold inline-block">
-                    📝 Oku
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    {sessions.map((s) => (
+      <div
+        key={s.week}
+        className="bg-white/10 border border-white/20 p-5 rounded-xl backdrop-blur-sm hover:scale-[1.02] hover:border-yellow-400 transition"
+      >
+        <h3 className="text-lg font-bold text-yellow-300 mb-4">{s.week}. Hafta Kaynakları</h3>
+
+        {/* Medium Link */}
+        <div className="mb-3">
+          <p className="text-sm text-white font-semibold mb-1 flex items-center gap-2">
+            📝 Medium
+          </p>
+          {s.mediumUrl?.trim() ? (
+            <a
+              href={s.mediumUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-semibold inline-block"
+            >
+              Oku
+            </a>
+          ) : (
+            <p className="text-gray-400 italic text-sm">Medium bağlantısı bulunamadı</p>
+          )}
+        </div>
+
+        {/* Video Link */}
+        <div>
+          <p className="text-sm text-white font-semibold mb-1 flex items-center gap-2">
+            🎥 Video
+          </p>
+          {s.videoUrl?.trim() ? (
+            <a
+              href={s.videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-semibold inline-block"
+            >
+              İzle
+            </a>
+          ) : (
+            <p className="text-gray-400 italic text-sm">Video bağlantısı bulunamadı</p>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
 
         {activePanel === "Kurallar" && (
           <ul className="list-disc list-inside text-sm text-gray-200 space-y-2">
