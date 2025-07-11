@@ -287,13 +287,26 @@ const ParticipantDashboard = () => {
 
 
         {activePanel === "Kurallar" && (
-          <ul className="list-disc list-inside text-sm text-gray-200 space-y-2">
-            <li>✅ Her hafta yoklama almanız beklenir.</li>
-            <li>📌 En az 4 hafta katılım zorunludur.</li>
-            <li>🧠 Her hafta sonrası mini sınav olabilir.</li>
-            <li>🎓 Final sınavına yeterli katılımı olanlar girebilir.</li>
-          </ul>
-        )}
+  <div className="space-y-4 text-sm text-white/90 leading-relaxed">
+    <h3 className="text-lg font-bold text-yellow-300 mb-2">📌 Program Kuralları</h3>
+    <ul className="list-disc list-inside space-y-1">
+      <li>📅 Bu program 4 haftalık bir eğitim sürecini kapsamaktadır.</li>
+      <li>📝 Katılımınız her hafta otomatik olarak sistemden takip edilmektedir.</li>
+      <li>📊 Sertifika almak için en az <span className="text-yellow-300 font-semibold">%80</span> oranında katılım gereklidir.</li>
+      <li>🎓 Eğitimi tamamlayanlara katılım belgesi verilecektir.</li>
+    </ul>
+
+    <h3 className="text-lg font-bold text-yellow-300 mt-6 mb-2">🤝 Topluluk Kuralları</h3>
+    <ul className="list-disc list-inside space-y-1">
+      <li>💬 Tüm katılımcılardan saygılı ve destekleyici bir iletişim beklenmektedir.</li>
+      <li>🚫 Hakaret, spam veya reklam içerikli mesajlar yasaktır.</li>
+      <li>📥 Sorularınızı sormaktan çekinmeyin, topluluk yardımlaşmayı sever.</li>
+      <li>🧠 Katılımınız ve katkılarınız program kalitesini artırır.</li>
+      <li>📨 Sorun yaşarsanız eğitmenlere veya destek kanallarına ulaşabilirsiniz.</li>
+    </ul>
+  </div>
+)}
+
 
         {activePanel === "İletişim" && (
           <div className="space-y-3 text-sm">

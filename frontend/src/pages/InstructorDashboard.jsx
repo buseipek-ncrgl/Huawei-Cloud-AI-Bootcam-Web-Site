@@ -384,7 +384,13 @@ const InstructorDashboard = () => {
       {activePanel === "Katılım" && (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           {summary.map((s) => (
-            <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm">
+            <div key={s.week} className="relative bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm">
+              {s.active && (
+                <span className="absolute top-3 right-3 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg">
+                  🟢 Aktif
+                  </span>
+                )}
+
               <div>
                 <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
                   <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
