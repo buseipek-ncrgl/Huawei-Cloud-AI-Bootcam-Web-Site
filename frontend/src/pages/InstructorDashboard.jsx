@@ -149,7 +149,7 @@ const InstructorDashboard = () => {
       </div>
 
       {/* SIDEBAR */}
-      <aside className={`fixed top-0 left-0 h-full w-64 bg-black/80 backdrop-blur-sm border-r border-white/30 p-4 flex flex-col z-50 transform transition-transform duration-300 ${
+      <aside className={`w-72 fixed top-0 left-0 h-full w-64 bg-black/80 backdrop-blur-sm border-r border-white/30 p-4 flex flex-col z-50 transform transition-transform duration-300 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       } lg:translate-x-0 lg:static lg:bg-black/60`}>
         
@@ -194,7 +194,7 @@ const InstructorDashboard = () => {
       )}
 
       {/* MAIN */}
-      <main className="lg:ml-64 p-4 lg:p-6 w-full min-h-screen transition-all">
+      <main className="ml-72 p-6 w-full min-h-screen transition-all">
         {/* Üst Başlık - Hidden on mobile */}
         <div className="hidden lg:block text-center mb-6">
           <div className="flex justify-center items-center gap-6 mb-4">
@@ -211,7 +211,8 @@ const InstructorDashboard = () => {
 
         {/* PROGRAM PANELİ */}
         {activePanel === "Program" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
             {summary.map((s) => (
               <div
                 key={s.week}
@@ -258,7 +259,8 @@ const InstructorDashboard = () => {
 
         {/* KAYNAKLAR PANELİ */}
         {activePanel === "Kaynaklar" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
             {summary.map((s) => (
               <div
                 key={s.week}
@@ -347,7 +349,8 @@ const InstructorDashboard = () => {
 
         {/* KATILIM PANELİ */}
         {activePanel === "Katılım" && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
             {summary.map((s) => (
               <div key={s.week} className="bg-white/10 border border-white/20 p-4 rounded-lg hover:scale-[1.015] hover:border-yellow-400 transition flex flex-col justify-between">
                 <div>
