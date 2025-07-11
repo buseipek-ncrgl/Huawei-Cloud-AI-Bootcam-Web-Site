@@ -18,6 +18,8 @@ const InstructorDashboard = () => {
   const [generalSummary, setGeneralSummary] = useState([]);
   const [tempTopics, setTempTopics] = useState({});
   const [tempVideos, setTempVideos] = useState({});
+  const [tempMediums, setTempMediums] = useState({});
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const fetchData = async () => {
     const token = localStorage.getItem("token");
@@ -42,9 +44,11 @@ const InstructorDashboard = () => {
       summaryRes.data.forEach((s) => {
         topicState[s.week] = s.topic || "";
         videoState[s.week] = s.videoUrl || "";
+        mediumState[s.week] = s.mediumUrl || "";
       });
       setTempTopics(topicState);
       setTempVideos(videoState);
+      setTempMediums(mediumState); 
     } catch (err) {
       alert("Veriler alınamadı");
     }
@@ -99,6 +103,7 @@ const InstructorDashboard = () => {
     const data = {
       topic: tempTopics[week] ?? "",
       videoUrl: tempVideos[week] ?? "",
+      mediumUrl: tempMediums[week] ?? "",
     };
 
     try {
@@ -120,31 +125,48 @@ const InstructorDashboard = () => {
 
   return (
     <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white flex" style={{ backgroundImage: "url('/background1.png')" }}>
-      {/* SIDEBAR */}
-      <aside className="w-64 h-screen fixed top-0 left-0 bg-black/60 border-r border-white/30 p-4 flex flex-col z-10">
-        <div className="text-center text-white mt-2 mb-12">
-          <p className="text-xl font-bold text-yellow-300">Merhaba,</p>
-          <p className="text-xl font-bold text-yellow-300">{fullName} 👨‍🏫</p>
-        </div>
-        <nav className="flex flex-col gap-2">
-          {panels.map((panel) => (
-            <button
-              key={panel}
-              onClick={() => {
-                setActivePanel(panel);
-                setSelectedWeek(null);
-              }}
-              className={`text-left px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-[1.03] hover:border-yellow-400 ${
-                activePanel === panel
-                  ? "bg-yellow-400 text-black border-yellow-400"
-                  : "bg-white/5 border-white/10 text-white"
-              }`}
-            >
-              {panelTitles[panel]}
-            </button>
-          ))}
-        </nav>
-      </aside>
+      {/* SIDEBAR */} 
+<aside className={`fixed top-0 left-0 z-30 h-full w-64 bg-black/80 border-r border-white/30 p-4 flex flex-col transition-transform duration-300 transform
+  ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:relative md:block`}>
+  <div className="flex justify-between items-center mb-6">
+    <p className="text-xl font-bold text-yellow-300">Merhaba, {fullName}</p>
+    <button
+      onClick={() => setSidebarOpen(false)}
+      className="md:hidden text-white text-xl font-bold"
+    >
+      ✕
+    </button>
+  </div>
+  <nav className="flex flex-col gap-2">
+    {panels.map((panel) => (
+      <button
+        key={panel}
+        onClick={() => {
+          setActivePanel(panel);
+          setSelectedWeek(null);
+          setSidebarOpen(false); // mobilde tıklayınca kapansın
+        }}
+        className={`text-left px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-[1.03] hover:border-yellow-400 ${
+          activePanel === panel
+            ? "bg-yellow-400 text-black border-yellow-400"
+            : "bg-white/5 border-white/10 text-white"
+        }`}
+      >
+        {panelTitles[panel]}
+      </button>
+    ))}
+  </nav>
+  {/* Mobil Menü Butonu */}
+<div className="md:hidden p-4">
+  <button
+    onClick={() => setSidebarOpen(true)}
+    className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-4 py-2 rounded"
+  >
+    ☰ Menü
+  </button>
+</div>
+
+</aside>
 
       {/* MAIN */}
       <main className="ml-64 p-6 w-full">
@@ -220,21 +242,29 @@ const InstructorDashboard = () => {
       >
         <h3 className="text-lg font-bold text-yellow-300 mb-2">{s.week}. Hafta Kaynakları</h3>
 
-        {s.videoUrl?.trim() ? (
-          <div className="mb-2">
-            <p className="font-semibold text-white text-sm">🎥 Video:</p>
-            <a
-              href={s.videoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 underline text-sm"
-            >
-              İzle
-            </a>
-          </div>
-        ) : (
-          <p className="text-gray-400 italic text-sm mb-2">Henüz video linki yok.</p>
-        )}
+        {/* Video Linki varsa göster */}  
+{s.videoUrl?.trim() && (
+  <a
+    href={s.videoUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-1 rounded mb-2 mr-2 transition"
+  >
+    🎥 İzle
+  </a>
+)}
+
+{/* Medium Linki varsa göster */}
+{s.mediumUrl?.trim() && (
+  <a
+    href={s.mediumUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block bg-purple-500 hover:bg-purple-600 text-white text-sm font-semibold px-4 py-1 rounded mb-2 transition"
+  >
+    📝 Oku
+  </a>
+)}
 
         {/* Güncelleme Alanı */}
         <div>
@@ -248,6 +278,19 @@ const InstructorDashboard = () => {
               setTempVideos((prev) => ({ ...prev, [s.week]: e.target.value }))
             }
           />
+          {/* Medium Linki */}
+<div className="mt-3">
+  <label className="block font-semibold text-white text-sm mb-1">✍️ Medium Linki Güncelle</label>
+  <input
+    type="text"
+    className="w-full p-2 rounded bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm"
+    placeholder="https://medium.com/..."
+    value={tempMediums[s.week] ?? ""}
+    onChange={(e) =>
+      setTempMediums((prev) => ({ ...prev, [s.week]: e.target.value }))
+    }
+  />
+</div>
           <button
             onClick={() => handleUpdate(s.week)}
             className="mt-2 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-1 rounded"

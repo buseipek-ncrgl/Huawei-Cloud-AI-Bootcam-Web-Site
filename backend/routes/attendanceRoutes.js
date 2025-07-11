@@ -31,7 +31,8 @@ router.get('/sessions', authenticate, async (req, res) => {
         active: session.active,
         attended,
         topic: session.topic || "",       // 💡 Konu ekleniyor
-        videoUrl: session.videoUrl || ""  // 💡 Video linki ekleniyor
+        videoUrl: session.videoUrl || "",  // 💡 Video linki ekleniyor
+        mediumUrl: session.mediumUrl || ""
       };
     });
 
@@ -112,7 +113,8 @@ router.get('/summary', async (req, res) => {
           rate: participants > 0 ? Math.round((attended / participants) * 100) : 0,
           active: session.active,
           topic: session.topic || "",       // 🔧 Ekledik
-          videoUrl: session.videoUrl || ""  // 🔧 Ekledik
+          videoUrl: session.videoUrl || "",  // 🔧 Ekledik
+          mediumUrl: session.mediumUrl || "" 
         };
       })
     );
@@ -272,6 +274,27 @@ router.put('/session/:week', authenticate, async (req, res) => {
     const session = await Session.findOneAndUpdate(
       { week: weekNum },
       { topic, videoUrl },
+      { new: true, upsert: true }
+    );
+    res.json({ message: "Haftalık içerik güncellendi", session });
+  } catch (err) {
+    console.error("❌ İçerik güncelleme hatası:", err);
+    res.status(500).json({ error: 'Sunucu hatası' });
+  }
+});
+
+router.put('/session/:week', authenticate, async (req, res) => {
+  if (req.user.role !== 'instructor') {
+    return res.status(403).json({ error: 'Yetkisiz erişim' });
+  }
+
+  const weekNum = Number(req.params.week);
+  const { topic, videoUrl, mediumUrl } = req.body;
+
+  try {
+    const session = await Session.findOneAndUpdate(
+      { week: weekNum },
+      { topic, videoUrl, mediumUrl }, // ✅ mediumUrl dahil
       { new: true, upsert: true }
     );
     res.json({ message: "Haftalık içerik güncellendi", session });

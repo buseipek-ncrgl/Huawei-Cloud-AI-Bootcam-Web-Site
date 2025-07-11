@@ -18,6 +18,10 @@ const sessionSchema = new mongoose.Schema({
   videoUrl: {
     type: String,
     default: "", // Boş olabilir, sonra instructor tarafından eklenir
+  },
+  mediumUrl: { 
+    type: String,
+    default: "",
   }
 });
 

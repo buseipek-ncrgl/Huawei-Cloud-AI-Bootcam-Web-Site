@@ -78,12 +78,12 @@ exports.stopSession = async (req, res) => {
 
 exports.updateSessionContent = async (req, res) => {
   const { week } = req.params;
-  const { topic, videoUrl } = req.body;
+  const { topic, videoUrl, mediumUrl } = req.body;
 
   try {
     const session = await Session.findOneAndUpdate(
       { week },
-      { topic, videoUrl },
+      { topic, videoUrl, mediumUrl },
       { new: true }
     );
 
