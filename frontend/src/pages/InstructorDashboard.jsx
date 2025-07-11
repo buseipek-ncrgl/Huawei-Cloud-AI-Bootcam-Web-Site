@@ -126,17 +126,25 @@ const InstructorDashboard = () => {
   return (
     <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white flex" style={{ backgroundImage: "url('/background1.png')" }}>
       {/* SIDEBAR */} 
-<aside className={`fixed top-0 left-0 z-30 h-full w-64 bg-black/80 border-r border-white/30 p-4 flex flex-col transition-transform duration-300 transform
+<aside className={`fixed top-0 left-0 z-40 h-full w-64 bg-black/70 border-r border-white/20 p-4 flex flex-col transition-transform duration-300 transform
   ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:relative md:block`}>
+
+  {/* Sidebar Üstü - Merhaba ve Kapat */}
   <div className="flex justify-between items-center mb-6">
-    <p className="text-xl font-bold text-yellow-300">Merhaba, {fullName}</p>
+    <div>
+      <p className="text-sm text-white">Merhaba,</p>
+      <p className="text-xl font-bold text-yellow-300">{fullName} 👨‍🏫</p>
+    </div>
+    {/* Mobilde X tuşu */}
     <button
       onClick={() => setSidebarOpen(false)}
-      className="md:hidden text-white text-xl font-bold"
+      className="md:hidden text-white text-2xl font-bold"
     >
       ✕
     </button>
   </div>
+
+  {/* Panel Butonları */}
   <nav className="flex flex-col gap-2">
     {panels.map((panel) => (
       <button
@@ -144,7 +152,7 @@ const InstructorDashboard = () => {
         onClick={() => {
           setActivePanel(panel);
           setSelectedWeek(null);
-          setSidebarOpen(false); // mobilde tıklayınca kapansın
+          setSidebarOpen(false); // mobilde kapanması için
         }}
         className={`text-left px-4 py-2 rounded-lg font-semibold transition-all duration-200 border hover:scale-[1.03] hover:border-yellow-400 ${
           activePanel === panel
@@ -156,20 +164,20 @@ const InstructorDashboard = () => {
       </button>
     ))}
   </nav>
-  {/* Mobil Menü Butonu */}
-<div className="md:hidden p-4">
+</aside>
+
+
+      {/* MAIN */}
+      <main className="md:ml-64 w-full p-6 min-h-screen">
+        <div className="md:hidden fixed top-4 left-4 z-50">
   <button
     onClick={() => setSidebarOpen(true)}
-    className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-4 py-2 rounded"
+    className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-4 py-2 rounded shadow-lg"
   >
     ☰ Menü
   </button>
 </div>
 
-</aside>
-
-      {/* MAIN */}
-      <main className="ml-64 p-6 w-full">
         {/* Üst Başlık */}
         <div className="text-center mb-6">
           <div className="flex justify-center items-center gap-6 mb-4">
