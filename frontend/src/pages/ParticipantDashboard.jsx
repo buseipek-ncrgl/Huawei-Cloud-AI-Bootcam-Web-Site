@@ -150,6 +150,10 @@ const ParticipantDashboard = () => {
             </button>
           ))}
         </nav>
+        {/* Footer */}
+      <div className="p-4 border-t border-white/10 text-center text-xs text-white/50">
+        Huawei Cloud AI Bootcamp © 2025
+      </div>
       </aside>
 
       {/* OVERLAY for mobile */}
