@@ -148,7 +148,7 @@ const InstructorDashboard = () => {
     </div>
 
     {/* SIDEBAR */}
-    <aside className={`fixed top-0 left-0 min-h-screen h-screen w-72 bg-black/50 backdrop-blur-md border-r border-white/20 flex flex-col z-50 transform transition-all duration-300 ease-in-out ${
+    <aside className={`fixed top-0 left-0 min-h-screen h-screen w-72 bg-black/30 backdrop-blur-md border-r border-white/20 flex flex-col z-50 transform transition-all duration-300 ease-in-out ${
   sidebarOpen ? 'translate-x-0' : '-translate-x-full'
 } lg:translate-x-0 lg:static lg:bg-black/40`}>
       
@@ -207,9 +207,8 @@ const InstructorDashboard = () => {
       <div className="hidden lg:block text-center mb-8">
         <div className="flex justify-center items-center gap-8 mb-4">
           <img src="/huaweilogo.png" alt="Huawei" className="h-20 object-contain" />
-          <img src="/hsdlogo.png" alt="Partner" className="h-20 object-contain" />
-        </div><h1 className="text-4xl font-extrabold text-yellow-400 tracking-wide">Huawei Cloud AI Bootcamp</h1>
-        <h1 className="text-3xl font-bold text-yellow-400">Huawei Cloud AI Bootcamp</h1>
+          <img src="/hsdlogo.png" alt="Partner" className="h-40 object-contain" />
+        </div><h1 className="text-3xl font-bold text-yellow-400">Huawei Cloud AI Bootcamp</h1>
       </div>
 
       {/* Panel Title */}
