@@ -6,12 +6,12 @@ import {
 } from "lucide-react";
 
 const panels = [
-  { key: "Program", icon: <CalendarDays size={18} />, title: "📅 Eğitim Programı" },
-  { key: "Katılım", icon: <CheckSquare size={18} />, title: "📝 Katılım Durumu" },
-  { key: "Eğitmenler", icon: <Users size={18} />, title: "👨‍🏫 Eğitmenler" },
-  { key: "Kaynaklar", icon: <BookOpenText size={18} />, title: "📚 Eğitim Kaynakları" },
-  { key: "Kurallar", icon: <Info size={18} />, title: "📌 Katılım Kuralları" },
-  { key: "İletişim", icon: <Mail size={18} />, title: "✉️ İletişim Bilgileri" },
+  { key: "Program", title: "📅 Eğitim Programı" },
+  { key: "Katılım", title: "📝 Katılım Durumu" },
+  { key: "Eğitmenler", title: "👨‍🏫 Eğitmenler" },
+  { key: "Kaynaklar", title: "📚 Eğitim Kaynakları" },
+  { key: "Kurallar", title: "📌 Katılım Kuralları" },
+  { key: "İletişim", title: "✉️ İletişim Bilgileri" },
 ];
 
 const ParticipantDashboard = () => {
