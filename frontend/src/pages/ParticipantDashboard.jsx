@@ -249,15 +249,24 @@ const ParticipantDashboard = () => {
             📝 Medium
           </p>
           {s.mediumUrl?.trim() ? (
-            <a
-              href={s.mediumUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-semibold inline-block"
-            >
-              Oku
-            </a>
-          ) : (
+                  <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
+                    <span className="text-sm text-white flex items-center gap-2">
+                      <span className="bg-green-500/20 p-1.5 rounded-lg">📝</span>
+                      Medium
+                    </span>
+                    <a
+                      href={s.mediumUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                      Oku
+                    </a>
+                  </div>
+                ) : (
             <p className="text-gray-400 italic text-sm">Medium bağlantısı bulunamadı</p>
           )}
         </div>
@@ -268,14 +277,23 @@ const ParticipantDashboard = () => {
             🎥 Video
           </p>
           {s.videoUrl?.trim() ? (
-            <a
-              href={s.videoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-semibold inline-block"
-            >
-              İzle
-            </a>
+                  <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
+                    <span className="text-sm text-white flex items-center gap-2">
+                      <span className="bg-blue-500/20 p-1.5 rounded-lg">🎥</span>
+                      Video
+                    </span>
+                    <a
+                      href={s.videoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                      İzle
+                    </a>
+                  </div>
           ) : (
             <p className="text-gray-400 italic text-sm">Video bağlantısı bulunamadı</p>
           )}
