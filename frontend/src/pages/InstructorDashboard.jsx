@@ -405,26 +405,26 @@ const InstructorDashboard = () => {
       {/* KATILIM PANELİ */}
       {activePanel === "Katılım" && (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {/* Yeni Hafta Ekle - Küçük ve Ortalanmış */}  
+          {/* 🟨 YENİ HAFTA EKLE FORMU */} 
 <div className="w-full flex justify-center mb-6">
-  <div className="bg-white/5 border border-dashed border-yellow-400 p-4 rounded-xl backdrop-blur-sm flex flex-col items-center w-full max-w-xs">
-    <h3 className="text-sm font-semibold text-yellow-300 mb-2">➕ Yeni Hafta Ekle</h3>
+  <div className="flex items-center gap-3 bg-white/10 border border-yellow-400 rounded-xl p-3 backdrop-blur-sm w-full max-w-sm">
     <input
       type="number"
       min="1"
       placeholder="Hafta No"
       value={newWeek}
       onChange={(e) => setNewWeek(Number(e.target.value))}
-      className="w-full p-2 text-sm rounded-lg bg-black/30 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-yellow-400 mb-2"
+      className="flex-1 p-2 rounded-lg bg-black/30 border border-white/20 text-white placeholder-white/50 text-sm focus:outline-none focus:border-yellow-400"
     />
     <button
       onClick={handleCreateWeek}
-      className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm transition"
+      className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition"
     >
-      ✅ Ekle
+      ➕  Yeni Hafta Ekle
     </button>
   </div>
 </div>
+
 
           {summary.map((s) => (
             <div key={s.week} className="relative bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm">
