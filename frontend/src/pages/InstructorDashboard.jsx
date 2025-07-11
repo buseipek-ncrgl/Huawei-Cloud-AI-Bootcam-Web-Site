@@ -131,7 +131,8 @@ const InstructorDashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
+    <div className="flex flex-col lg:flex-row min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
+
       
       {/* MOBILE HEADER */}
       <div className="lg:hidden flex items-center justify-between p-4 bg-black/60 border-b border-white/30">
@@ -193,7 +194,7 @@ const InstructorDashboard = () => {
       )}
 
       {/* MAIN */}
-      <main className="lg:ml-64 p-4 lg:p-6 w-full">
+      <main className="lg:ml-64 p-4 lg:p-6 w-full min-h-screen transition-all">
         {/* Üst Başlık - Hidden on mobile */}
         <div className="hidden lg:block text-center mb-6">
           <div className="flex justify-center items-center gap-6 mb-4">
