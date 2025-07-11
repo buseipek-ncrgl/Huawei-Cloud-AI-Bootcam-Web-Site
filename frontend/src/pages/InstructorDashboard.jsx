@@ -130,7 +130,9 @@ const InstructorDashboard = () => {
   useEffect(() => {
     fetchData();
   }, []);
-const handleCreateWeek = async () => {
+
+
+  const handleCreateWeek = async () => {
   try {
     const token = localStorage.getItem("token");
     const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/session/create`, {
@@ -142,7 +144,7 @@ const handleCreateWeek = async () => {
     if (!res.data.success) throw new Error(res.data.error || "Hafta eklenemedi");
 
     alert(`✅ ${newWeek}. hafta eklendi!`);
-    fetchSummary(); // özet verileri güncelle
+    await fetchData(); // ✅ doğru şekilde güncellendi
     setNewWeek(""); // input temizle
   } catch (err) {
     alert(err.response?.data?.error || err.message);
@@ -402,6 +404,27 @@ const handleCreateWeek = async () => {
       {/* KATILIM PANELİ */}
 {activePanel === "Katılım" && (
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    {/* Yeni Hafta Ekle - Küçük ve Ortalanmış */}  
+<div className="w-full flex justify-center mb-6">
+  <div className="bg-white/5 border border-dashed border-yellow-400 p-4 rounded-xl backdrop-blur-sm flex flex-col items-center w-full max-w-xs">
+    <h3 className="text-sm font-semibold text-yellow-300 mb-2">➕ Yeni Hafta Ekle</h3>
+    <input
+      type="number"
+      min="1"
+      placeholder="Hafta No"
+      value={newWeek}
+      onChange={(e) => setNewWeek(Number(e.target.value))}
+      className="w-full p-2 text-sm rounded-lg bg-black/30 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-yellow-400 mb-2"
+    />
+    <button
+      onClick={handleCreateWeek}
+      className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm transition"
+    >
+      ✅ Ekle
+    </button>
+  </div>
+</div>
+
     {summary.map((s) => (
       <div key={s.week} className="relative bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm">
         {s.active && (
