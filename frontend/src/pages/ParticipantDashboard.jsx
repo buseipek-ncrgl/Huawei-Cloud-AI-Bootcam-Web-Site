@@ -354,9 +354,6 @@ const ParticipantDashboard = () => {
             <p>
               📧 E-posta: <a href="mailto:hsdcloud@bootcamp.com" className="text-blue-400 underline">hsdcloud@bootcamp.com</a>
             </p>
-            <p>
-              💬 Discord: <a href="https://discord.gg/örnek" target="_blank" className="text-blue-400 underline">Katılmak için tıkla</a>
-            </p>
           </div>
         )}
       </main>
