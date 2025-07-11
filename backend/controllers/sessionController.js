@@ -26,7 +26,8 @@ exports.createSession = async (req, res) => {
     }
 
     const session = await Session.create({ week, active: false });
-    res.json({ message: `${week}. hafta başarıyla oluşturuldu`, session });
+    res.json({ success: true, message: `${week}. hafta başarıyla oluşturuldu`, session });
+
   } catch (err) {
     console.error('❌ Hafta oluşturulamadı:', err);
     res.status(500).json({ error: 'Hafta oluşturulamadı' });
