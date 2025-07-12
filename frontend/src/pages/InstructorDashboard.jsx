@@ -170,9 +170,12 @@ const InstructorDashboard = () => {
     </div>
 
     {/* SIDEBAR */}
-    <aside className={`w-72 bg-black/30 backdrop-blur-md border-r border-white/20 flex flex-col z-50 transform transition-all duration-300 ease-in-out
-    fixed top-0 left-0 h-screen
-    lg:static lg:min-h-screen lg:h-auto`}>
+    <aside
+  className={`fixed top-0 left-0 h-screen w-72 bg-black/30 backdrop-blur-md border-r border-white/20 flex flex-col z-50 transform transition-all duration-300 ease-in-out
+    ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+    lg:translate-x-0 lg:static lg:min-h-screen lg:h-auto`}
+>
+
       
       {/* Mobile close button */}
       <button
