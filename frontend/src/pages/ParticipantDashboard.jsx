@@ -243,9 +243,9 @@ const ParticipantDashboard = () => {
         {activePanel === "Eğitmenler" && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
-              { name: "Ahmet Yılmaz", title: "AI Mühendisi – Huawei", linkedin: "#", image: "/profile.png" },
-              { name: "Elif Demir", title: "Veri Bilimcisi – Huawei", linkedin: "#", image: "/profile.png" },
-              { name: "Mehmet Kaya", title: "Cloud Eğitmeni – HSD", linkedin: "#", image: "/profile.png" },
+              { name: "Hakan Aktaş", title: "Data Scientist – Huawei", linkedin: "https://www.linkedin.com/in/hakanaktas1/", image: "/hakanaktas.jpg" },
+              { name: "Barış Kaplan", title: "AI & ML Engineer/Data Scientist – Huawei", linkedin: "https://www.linkedin.com/in/baris-k-896652175/", image: "/bariskaplan.png" },
+              { name: "-", title: "-", linkedin: "#", image: "/profile.png" },
             ].map((e, i) => (
               <div key={i} className="bg-white/10 border border-white/20 p-4 rounded-lg text-center transition hover:scale-[1.015] hover:border-yellow-400">
                 <img src={e.image} alt="Eğitmen" className="w-20 h-20 mx-auto rounded-full object-cover mb-3" />
