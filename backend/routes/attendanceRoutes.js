@@ -384,7 +384,7 @@ router.put('/session/:week/tasks', authenticate, async (req, res) => {
   try {
     const session = await Session.findOneAndUpdate(
       { week: weekNum },
-      { tasks: tasks || [] },
+      { 'tasks.list': tasks || [] },
       { new: true }
     );
 
