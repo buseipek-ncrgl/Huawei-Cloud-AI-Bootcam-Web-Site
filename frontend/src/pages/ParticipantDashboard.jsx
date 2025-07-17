@@ -3,12 +3,16 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const panels = [
+  { key: "Profil", title: "📅 Profil" },
   { key: "Program", title: "📅 Eğitim Programı" },
   { key: "Katılım", title: "📝 Katılım Durumu" },
   { key: "Eğitmenler", title: "👨‍🏫 Eğitmenler" },
   { key: "Kaynaklar", title: "📚 Eğitim Kaynakları" },
+  { key: "Görevler", title: " Haftalık Görevler" },
   { key: "Kurallar", title: "📌 Katılım Kuralları" },
+  { key: "Sorular", title: " Sıkça Sorulan Sorular" },
   { key: "İletişim", title: "✉️ İletişim Bilgileri" },
+  
 ];
 const panelTitles = {
   Program: "📅 Eğitim Programı",
