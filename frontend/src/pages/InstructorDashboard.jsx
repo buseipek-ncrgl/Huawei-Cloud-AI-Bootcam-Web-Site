@@ -488,15 +488,12 @@ const InstructorDashboard = () => {
             const token = localStorage.getItem("token");
             const newStatus = !publishedTasks[s.week];
             try {
-              await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks/publish`,
-                { publish: newStatus },
-                { headers: { Authorization: `Bearer ${token}` } }
-              );
-              setPublishedTasks((prev) => ({
-                ...prev,
-                [s.week]: newStatus
-              }));
+              await axios.post(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks/publish`, {
+  publish: newStatus
+}, {
+  headers: { Authorization: `Bearer ${token}` }
+});
+
               alert(newStatus ? "Görev yayınlandı ✅" : "Görev yayından kaldırıldı ⛔");
             } catch {
               alert("Görev yayını güncellenemedi ❌");
@@ -539,14 +536,12 @@ const InstructorDashboard = () => {
           onClick={async () => {
             const token = localStorage.getItem("token");
             try {
-              await axios.put(
-                `${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`,
-                {
-                  list: tempTasks[s.week] || [],
-                  published: publishedTasks[s.week]
-                },
-                { headers: { Authorization: `Bearer ${token}` } }
-              );
+              await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
+  tasks: tempTasks[s.week] || []
+}, {
+  headers: { Authorization: `Bearer ${token}` }
+});
+
               alert("Görevler kaydedildi ✅");
               fetchData(); // Görevleri güncellemek için yeniden verileri çek
             } catch {
