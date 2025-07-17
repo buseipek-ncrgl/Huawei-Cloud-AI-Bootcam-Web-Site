@@ -1,4 +1,3 @@
-// models/Session.js
 const mongoose = require("mongoose");
 
 const sessionSchema = new mongoose.Schema({
@@ -7,21 +6,27 @@ const sessionSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  active: {
-    type: Boolean,
-    default: false,
+  activeDays: {
+    day1: {
+      type: Boolean,
+      default: false
+    },
+    day2: {
+      type: Boolean,
+      default: false
+    }
   },
   topic: {
     type: String,
-    default: "", // Boş olabilir, sonra instructor tarafından eklenir
+    default: ""
   },
   videoUrl: {
     type: String,
-    default: "", // Boş olabilir, sonra instructor tarafından eklenir
+    default: ""
   },
-  mediumUrl: { 
+  mediumUrl: {
     type: String,
-    default: "",
+    default: ""
   }
 });
 

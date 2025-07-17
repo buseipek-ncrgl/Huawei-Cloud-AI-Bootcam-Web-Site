@@ -10,6 +10,11 @@ const attendanceSchema = new mongoose.Schema({
     type: Number, 
     required: true 
   },
+  day: {
+    type: Number,
+    enum: [1, 2], // sadece 1 veya 2 olabilir
+    required: true
+  },
   attended: { 
     type: Boolean, 
     default: false 
@@ -21,7 +26,7 @@ const attendanceSchema = new mongoose.Schema({
   timestamps: true 
 });
 
-// Aynı kullanıcı ve hafta için tek kayıt garantisi
-attendanceSchema.index({ userId: 1, week: 1 }, { unique: true });
+// Aynı kullanıcı, aynı hafta ve aynı gün için tek kayıt garantisi
+attendanceSchema.index({ userId: 1, week: 1, day: 1 }, { unique: true });
 
 module.exports = mongoose.model('Attendance', attendanceSchema);

@@ -51,9 +51,15 @@ router.get('/sessions', authenticate, async (req, res) => {
 // ----------------------------
 // Katılım işaretleme endpoint'i (Katılımcı)
 // ----------------------------
+// Katılım işaretleme endpoint'i (Katılımcı) – GÜN destekli
 router.post('/:week', authenticate, async (req, res) => {
   try {
     const weekNum = Number(req.params.week);
+    const dayNum = Number(req.body.day); // 👈 Gün bilgisi body’den alınıyor
+
+    if (![1, 2].includes(dayNum)) {
+      return res.status(400).json({ success: false, error: 'Gün 1 veya 2 olmalı' });
+    }
 
     // Bu hafta aktif mi?
     const activeSession = await Session.findOne({ week: weekNum, active: true });
@@ -61,13 +67,14 @@ router.post('/:week', authenticate, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Bu hafta için yoklama alınmıyor' });
     }
 
-    // Upsert: sadece bu kullanıcı/haftaya ait kaydı ekle/güncelle
+    // Upsert: kullanıcı + hafta + gün için
     const attendance = await Attendance.findOneAndUpdate(
-      { userId: req.user.id, week: weekNum },
+      { userId: req.user.id, week: weekNum, day: dayNum },
       {
         $set: {
           userId: req.user.id,
           week: weekNum,
+          day: dayNum,
           attended: true,
           timestamp: new Date()
         }
@@ -77,7 +84,7 @@ router.post('/:week', authenticate, async (req, res) => {
 
     return res.json({
       success: true,
-      message: `${weekNum}. hafta katılımı kaydedildi`,
+      message: `${weekNum}. hafta ${dayNum}. gün katılımı kaydedildi`,
       attendance
     });
   } catch (err) {
