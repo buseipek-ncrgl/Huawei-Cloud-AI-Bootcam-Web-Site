@@ -479,12 +479,13 @@ const InstructorDashboard = () => {
         </h3>
 
         <ul className="list-disc list-inside text-white text-sm mb-4 space-y-1">
-          {tempTasks[s.week]?.length > 0 ? (
-            tempTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
-          ) : (
-            <li className="italic text-gray-400">Görev yok</li>
-          )}
-        </ul>
+  {savedTasks[s.week]?.length > 0 ? (
+    savedTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
+  ) : (
+    <li className="italic text-gray-400">Görev yok</li>
+  )}
+</ul>
+
 
         <textarea
           rows={3}
@@ -500,25 +501,31 @@ const InstructorDashboard = () => {
         />
 
         <button
-          onClick={async () => {
-            const token = localStorage.getItem("token");
-            try {
-              await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
-  tasks: tempTasks[s.week] || []
-}, {
-  headers: { Authorization: `Bearer ${token}` }
-});
+  onClick={async () => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
+        list: tempTasks[s.week] || []
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-              alert("Görevler kaydedildi ✅");
-              fetchData();
-            } catch {
-              alert("Görevler kaydedilemedi ❌");
-            }
-          }}
-          className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm"
-        >
-          💾 Görevleri Kaydet
-        </button>
+      alert("Görevler kaydedildi ✅");
+
+      // 🔁 sadece savedTasks güncelleniyor
+      setSavedTasks((prev) => ({
+        ...prev,
+        [s.week]: tempTasks[s.week] || []
+      }));
+    } catch {
+      alert("Görevler kaydedilemedi ❌");
+    }
+  }}
+  className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm"
+>
+  💾 Görevleri Kaydet
+</button>
+
       </div>
     ))}
   </div>
