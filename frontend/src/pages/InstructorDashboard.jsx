@@ -405,8 +405,7 @@ const InstructorDashboard = () => {
         </div>
       )}
 
-      {/* KATILIM PANELİ */}
-{activePanel === "Katılım" && (
+      {activePanel === "Katılım" && (
   <div className="space-y-6">
     {/* Yeni Hafta Ekle Bölümü */}
     <div className="flex justify-center">
@@ -438,19 +437,25 @@ const InstructorDashboard = () => {
               🟢 Aktif
             </span>
           )}
+
           <div>
             <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
               <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
                 {s.week}. Hafta
               </span>
             </h3>
-            <div className="space-y-3 mb-4">
+
+            <div className="space-y-2 mb-4">
               <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
-                <span className="text-sm text-white">Katılım</span>
-                <span className="font-semibold">{s.attended}/{s.total}</span>
+                <span className="text-sm text-white">1. Gün Katılım</span>
+                <span className="font-semibold">{s.day1Attended}/{s.total}</span>
               </div>
               <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
-                <span className="text-sm text-white">Oran</span>
+                <span className="text-sm text-white">2. Gün Katılım</span>
+                <span className="font-semibold">{s.day2Attended}/{s.total}</span>
+              </div>
+              <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
+                <span className="text-sm text-white">Genel Oran</span>
                 <span className={`font-semibold ${
                   s.rate >= 75 ? "text-green-400" : s.rate >= 50 ? "text-yellow-300" : "text-red-400"
                 }`}>
@@ -458,35 +463,48 @@ const InstructorDashboard = () => {
                 </span>
               </div>
             </div>
-            
-            {s.active ? (
+
+            {/* Yoklama Butonları */}
+            <div className="space-y-2 mb-3">
               <button
-                onClick={() => handleStop(s.week)}
-                className="bg-red-600 hover:bg-red-700 text-white w-full rounded-lg py-2.5 mb-3 text-sm font-semibold transition flex items-center justify-center gap-2"
+                onClick={() => handleStart(s.week, 1)}
+                className="bg-green-600 hover:bg-green-700 text-white w-full rounded-lg py-2 text-sm font-semibold transition flex items-center justify-center gap-2"
               >
-                ⛔ Yoklamayı Bitir
+                ✅ 1. Gün Yoklama Başlat
               </button>
-            ) : (
               <button
-                onClick={() => handleStart(s.week)}
-                className="bg-green-600 hover:bg-green-700 text-white w-full rounded-lg py-2.5 mb-3 text-sm font-semibold transition flex items-center justify-center gap-2"
+                onClick={() => handleStop(s.week, 1)}
+                className="bg-red-600 hover:bg-red-700 text-white w-full rounded-lg py-2 text-sm font-semibold transition flex items-center justify-center gap-2"
               >
-                ✅ Yoklamayı Başlat
+                ⛔ 1. Gün Yoklama Bitir
               </button>
-            )}
+              <button
+                onClick={() => handleStart(s.week, 2)}
+                className="bg-green-600 hover:bg-green-700 text-white w-full rounded-lg py-2 text-sm font-semibold transition flex items-center justify-center gap-2"
+              >
+                ✅ 2. Gün Yoklama Başlat
+              </button>
+              <button
+                onClick={() => handleStop(s.week, 2)}
+                className="bg-red-600 hover:bg-red-700 text-white w-full rounded-lg py-2 text-sm font-semibold transition flex items-center justify-center gap-2"
+              >
+                ⛔ 2. Gün Yoklama Bitir
+              </button>
+            </div>
+
+            <button
+              onClick={() => fetchDetails(s.week)}
+              className="bg-blue-600 hover:bg-blue-700 text-white w-full rounded-lg py-2.5 text-sm font-semibold transition flex items-center justify-center gap-2"
+            >
+              📊 Detayları Gör
+            </button>
           </div>
-          
-          <button
-            onClick={() => fetchDetails(s.week)}
-            className="bg-blue-600 hover:bg-blue-700 text-white w-full rounded-lg py-2.5 text-sm font-semibold transition flex items-center justify-center gap-2"
-          >
-            📊 Detayları Gör
-          </button>
         </div>
       ))}
     </div>
   </div>
 )}
+
 
       {/* HAFTA DETAYI */}
       {selectedWeek && details.present.length > 0 && (
