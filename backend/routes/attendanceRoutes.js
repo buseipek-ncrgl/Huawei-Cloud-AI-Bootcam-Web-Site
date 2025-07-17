@@ -463,30 +463,57 @@ router.post('/session/:week/task/stop', authenticate, async (req, res) => {
 });
 
 // Görev gönderimi (katılımcı)
-router.post('/session/:week/task/submit', authenticate, async (req, res) => {
-  if (req.user.role !== 'participant') {
-    return res.status(403).json({ error: 'Yetkisiz erişim' });
-  }
-
-  const { week } = req.params;
+router.post('/:week/task', authenticate, async (req, res) => {
   const { fileUrl } = req.body;
+  const week = Number(req.params.week);
 
-  if (!fileUrl || typeof fileUrl !== 'string') {
-    return res.status(400).json({ error: 'Dosya bağlantısı gereklidir' });
+  if (!fileUrl) {
+    return res.status(400).json({ error: 'Dosya bağlantısı zorunlu' });
   }
 
   try {
-    const existing = await TaskSubmission.findOneAndUpdate(
-      { userId: req.user.id, week: Number(week) },
-      { fileUrl, submittedAt: new Date() },
-      { upsert: true, new: true }
-    );
+    const newSubmission = new TaskSubmission({
+      userId: req.user.id,
+      week,
+      fileUrl
+    });
 
-    res.json({ success: true, submission: existing });
+    await newSubmission.save();
+
+    res.json({ success: true, submission: newSubmission });
   } catch (err) {
-    console.error("❌ Görev gönderimi hatası:", err);
-    res.status(500).json({ error: 'Görev gönderilemedi' });
+    console.error("❌ Görev gönderilemedi:", err);
+    res.status(500).json({ error: 'Sunucu hatası' });
   }
 });
+
+router.get('/task-submissions', authenticate, async (req, res) => {
+  try {
+    const submissions = await TaskSubmission.find({ userId: req.user.id }).sort({ submittedAt: -1 });
+    res.json({ success: true, submissions });
+  } catch (err) {
+    console.error("❌ Görevler getirilemedi:", err);
+    res.status(500).json({ error: 'Sunucu hatası' });
+  }
+});
+
+router.delete('/task-submissions/:id', authenticate, async (req, res) => {
+  const id = req.params.id;
+  try {
+    const submission = await TaskSubmission.findById(id);
+
+    if (!submission) return res.status(404).json({ error: 'Gönderim bulunamadı' });
+    if (submission.userId.toString() !== req.user.id) {
+      return res.status(403).json({ error: 'Bu gönderimi silemezsiniz' });
+    }
+
+    await TaskSubmission.findByIdAndDelete(id);
+    res.json({ success: true, message: 'Görev gönderimi silindi' });
+  } catch (err) {
+    console.error("❌ Silme hatası:", err);
+    res.status(500).json({ error: 'Sunucu hatası' });
+  }
+});
+
 
 module.exports = router;

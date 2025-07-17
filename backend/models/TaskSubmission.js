@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const taskSubmissionSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+const TaskSubmissionSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   week: { type: Number, required: true },
-  fileUrl: { type: String, default: "" },  // Google Drive, GitHub, PDF vs.
+  fileUrl: { type: String, required: true },
   submittedAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model("TaskSubmission", taskSubmissionSchema);
+module.exports = mongoose.model('TaskSubmission', TaskSubmissionSchema);
