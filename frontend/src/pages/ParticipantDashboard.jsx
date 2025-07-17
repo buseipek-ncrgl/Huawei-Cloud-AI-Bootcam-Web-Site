@@ -101,7 +101,6 @@ const ParticipantDashboard = () => {
 
 const handleTaskSubmit = async (e, week) => {
   e.preventDefault();
-
   const fileUrl = e.target.fileUrl.value.trim();
   if (!fileUrl) return;
 
@@ -109,8 +108,8 @@ const handleTaskSubmit = async (e, week) => {
 
   try {
     const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/submissions`,
-      { week, fileUrl },
+      `${import.meta.env.VITE_API_URL}/api/attendance/session/${week}/task`,
+      { fileUrl },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
@@ -119,17 +118,16 @@ const handleTaskSubmit = async (e, week) => {
     }
 
     alert("✅ Görev gönderildi!");
-
-    // Gönderim sonrası formu temizle
     e.target.reset();
 
-    // Gönderilen dosyayı local state’e ekle
+    const newSubmission = response.data.submission;
+
     setSessions((prev) =>
       prev.map((s) =>
         s.week === week
           ? {
               ...s,
-              submissions: [...(s.submissions || []), { fileUrl, timestamp: new Date().toISOString() }]
+              submissions: [...(s.submissions || []), newSubmission]
             }
           : s
       )
@@ -139,6 +137,7 @@ const handleTaskSubmit = async (e, week) => {
     alert("Görev gönderilemedi. Lütfen bağlantıyı kontrol edin.");
   }
 };
+
 
 const handleDeleteSubmission = async (id) => {
   try {
