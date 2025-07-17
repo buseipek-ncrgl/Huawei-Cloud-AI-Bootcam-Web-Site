@@ -3,25 +3,29 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const panels = [
-  { key: "Profil", title: " Profil" },
+  { key: "Profil", title: "🙋‍♂️ Profilim" },
   { key: "Program", title: "📅 Eğitim Programı" },
   { key: "Katılım", title: "📝 Katılım Durumu" },
   { key: "Eğitmenler", title: "👨‍🏫 Eğitmenler" },
   { key: "Kaynaklar", title: "📚 Eğitim Kaynakları" },
-  { key: "Görevler", title: " Haftalık Görevler" },
+  { key: "Görevler", title: "✅ Haftalık Görevler" },
   { key: "Kurallar", title: "📌 Katılım Kuralları" },
-  { key: "Sorular", title: " Sıkça Sorulan Sorular" },
+  { key: "Sorular", title: "❓ Sıkça Sorulan Sorular" },
   { key: "İletişim", title: "✉️ İletişim Bilgileri" },
-  
 ];
+
 const panelTitles = {
+  Profil: "🙋‍♂️ Profilim",
   Program: "📅 Eğitim Programı",
   Katılım: "📝 Katılım Durumu",
   Eğitmenler: "👨‍🏫 Eğitmenler",
   Kaynaklar: "📚 Eğitim Kaynakları",
+  Görevler: "✅ Haftalık Görevler",
   Kurallar: "📌 Katılım Kuralları",
+  Sorular: "❓ Sıkça Sorulan Sorular",
   İletişim: "✉️ İletişim Bilgileri",
 };
+
 
 const ParticipantDashboard = () => {
   const [sessions, setSessions] = useState([]);
@@ -445,6 +449,52 @@ const ParticipantDashboard = () => {
             </p>
           </div>
         )}
+
+        {activePanel === "Görevler" && (
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    {sessions
+      .filter((s) => s.taskActive)
+      .map((s) => (
+        <div
+          key={s.week}
+          className="bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.01] transition"
+        >
+          <h3 className="text-lg font-bold text-yellow-300 mb-3">
+            {s.week}. Hafta Görevi
+          </h3>
+          {s.tasks?.length > 0 ? (
+            <ul className="list-disc ml-5 text-white text-sm mb-4">
+              {s.tasks.map((task, i) => (
+                <li key={i}>{task}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-300 italic text-sm mb-3">Görev tanımlanmamış</p>
+          )}
+
+          <form
+            onSubmit={(e) => handleTaskSubmit(e, s.week)}
+            className="flex flex-col gap-2"
+          >
+            <input
+              type="text"
+              name="fileUrl"
+              placeholder="Dosya bağlantısı (GitHub, Drive...)"
+              className="p-2 rounded bg-white/5 border border-white/10 text-white text-sm"
+              required
+            />
+            <button
+              type="submit"
+              className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition"
+            >
+              Gönder
+            </button>
+          </form>
+        </div>
+      ))}
+  </div>
+)}
+
       </main>
     </div>
   );
