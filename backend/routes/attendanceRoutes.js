@@ -379,12 +379,16 @@ router.put('/session/:week/tasks', authenticate, async (req, res) => {
   }
 
   const weekNum = Number(req.params.week);
- const { list } = req.body;// tasks: string[] formatında bekleniyor
+  const { list } = req.body;
+
+  if (!Array.isArray(list)) {
+    return res.status(400).json({ error: "Görev listesi dizi olmalı" });
+  }
 
   try {
     const session = await Session.findOneAndUpdate(
       { week: weekNum },
-      { 'tasks.list': list || [] },
+      { $set: { 'tasks.list': list } },
       { new: true }
     );
 
