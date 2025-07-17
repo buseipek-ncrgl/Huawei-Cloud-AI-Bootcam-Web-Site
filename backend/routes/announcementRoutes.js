@@ -10,16 +10,31 @@ router.get('/', authenticate, async (req, res) => {
 });
 
 // Create a new announcement
-router.post('/', authenticate, async (req, res) => {
-  if (req.user.role !== 'instructor') return res.status(403).json({ error: 'Yetkisiz' });
+router.post("/", authenticate, async (req, res) => {
+  if (req.user.role !== "instructor") {
+    return res.status(403).json({ error: "Yetkisiz erişim" });
+  }
 
-  const { content } = req.body;
-  if (!content) return res.status(400).json({ error: 'İçerik boş olamaz' });
+  const { title, content } = req.body;
 
-  const newAnnouncement = new Announcement({ content });
-  await newAnnouncement.save();
-  res.json({ success: true });
+  if (!title || !content) {
+    return res.status(400).json({ error: "Başlık ve içerik zorunludur" });
+  }
+
+  try {
+    const newAnnouncement = new Announcement({
+      title,
+      content
+    });
+
+    await newAnnouncement.save();
+    res.status(201).json({ message: "Duyuru eklendi", announcement: newAnnouncement });
+  } catch (err) {
+    console.error("❌ Duyuru ekleme hatası:", err);
+    res.status(500).json({ error: "Sunucu hatası" });
+  }
 });
+
 
 // Delete an announcement
 router.delete('/:id', authenticate, async (req, res) => {
