@@ -504,13 +504,24 @@ router.post('/session/:week/task', authenticate, async (req, res) => {
 
 router.get('/task-submissions', authenticate, async (req, res) => {
   try {
-    const submissions = await TaskSubmission.find({ userId: req.user.id }).sort({ submittedAt: -1 });
-    res.json({ success: true, submissions });
+    const submissions = await TaskSubmission.find({ userId: req.user.id })
+      .sort({ createdAt: -1 }); // ✅ submittedAt yerine createdAt kullan
+
+    // submittedAt alanı yoksa, frontend için özel bir alan olarak ekleyebiliriz:
+    const formattedSubmissions = submissions.map(sub => ({
+      _id: sub._id,
+      week: sub.week,
+      fileUrl: sub.fileUrl,
+      submittedAt: sub.createdAt  // 🔧 burada açıkça dönüyoruz
+    }));
+
+    res.json({ success: true, submissions: formattedSubmissions });
   } catch (err) {
     console.error("❌ Görevler getirilemedi:", err);
     res.status(500).json({ error: 'Sunucu hatası' });
   }
 });
+
 
 router.delete('/task-submissions/:id', authenticate, async (req, res) => {
   const id = req.params.id;
