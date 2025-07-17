@@ -5,34 +5,36 @@ import { useNavigate } from "react-router-dom";
 const panels = [
   { key: "Profil", title: "🙋‍♂️ Profilim" },
   { key: "Duyurular", title: "📢 Duyurular" },
-  { key: "Hakkımızda", title: " Hakkımızda" },
+  { key: "Hakkımızda", title: "ℹ️ Hakkımızda" },
   { key: "Program", title: "📅 Eğitim Programı" },
   { key: "Katılım", title: "📝 Katılım Durumu" },
   { key: "Eğitmenler", title: "👨‍🏫 Eğitmenler" },
   { key: "Kaynaklar", title: "📚 Eğitim Kaynakları" },
   { key: "Görevler", title: "✅ Haftalık Görevler" },
-  { key: "Sertifika", title: " Sertifika" },
-  { key: "Huawei Cloud Hesabı", title: "Huawei Cloud Hesabı" },
+  { key: "Sertifika", title: "🎓 Sertifika" },
+  { key: "Huawei Cloud Hesabı", title: "☁️ Huawei Cloud Hesabı" },
   { key: "Kurallar", title: "📌 Katılım Kuralları" },
   { key: "Sorular", title: "❓ Sıkça Sorulan Sorular" },
   { key: "İletişim", title: "✉️ İletişim Bilgileri" },
 ];
 
+
 const panelTitles = {
   Profil: "🙋‍♂️ Profilim",
   Duyurular: "📢 Duyurular",
-  Hakkımızda: " Hakkımızda",
+  Hakkımızda: "ℹ️ Hakkımızda",
   Program: "📅 Eğitim Programı",
   Katılım: "📝 Katılım Durumu",
   Eğitmenler: "👨‍🏫 Eğitmenler",
   Kaynaklar: "📚 Eğitim Kaynakları",
   Görevler: "✅ Haftalık Görevler",
-  Sertifika: "Sertifika",
-  HuaweiCloudHesabı: "Huawei Cloud Hesabı",
+  Sertifika: "🎓 Sertifika",
+  "Huawei Cloud Hesabı": "☁️ Huawei Cloud Hesabı",
   Kurallar: "📌 Katılım Kuralları",
   Sorular: "❓ Sıkça Sorulan Sorular",
   İletişim: "✉️ İletişim Bilgileri",
 };
+
 
 
 const ParticipantDashboard = () => {
