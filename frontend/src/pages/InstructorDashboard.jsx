@@ -525,6 +525,40 @@ const InstructorDashboard = () => {
 >
   💾 Görevleri Kaydet
 </button>
+<div className="flex items-center justify-between mb-3">
+  <h3 className="text-lg font-bold text-yellow-300">
+    📌 {s.week}. Hafta Görevleri
+  </h3>
+
+  <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
+    s.taskActive ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"
+  }`}>
+    {s.taskActive ? "Aktif" : "Pasif"}
+  </span>
+</div>
+
+<button
+  onClick={async () => {
+    const token = localStorage.getItem("token");
+    const url = `${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/task/${s.taskActive ? "stop" : "start"}`;
+    try {
+      await axios.post(url, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert(`Görev ${s.taskActive ? "durduruldu ⛔" : "başlatıldı ✅"}`);
+      fetchData();
+    } catch {
+      alert("İşlem başarısız ❌");
+    }
+  }}
+  className={`mb-4 w-full py-2 rounded-lg text-sm font-semibold transition ${
+    s.taskActive
+      ? "bg-red-600 hover:bg-red-700 text-white"
+      : "bg-green-600 hover:bg-green-700 text-white"
+  }`}
+>
+  {s.taskActive ? "⛔ Görevleri Bitir" : "✅ Görevleri Başlat"}
+</button>
 
       </div>
     ))}
