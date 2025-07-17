@@ -7,6 +7,7 @@ const Attendance = require('../models/Attendance');
 const User = require('../models/User');
 const Session = require('../models/Session');
 const TaskSubmission = require('../models/TaskSubmission');
+
 // ----------------------------
 // Katılımcı için oturum bilgilerini getir
 // ----------------------------
@@ -154,7 +155,12 @@ router.get('/summary', async (req, res) => {
       videoUrl: session.videoUrl || "",
       mediumUrl: session.mediumUrl || "",
       tasks: session.tasks || [],
-      taskActive: session.taskActive || false
+      taskActive: session.taskActive || false,
+      submissions: weekSubmissions.map(s => ({
+      id: s._id,
+      fileUrl: s.fileUrl,
+      timestamp: s.createdAt
+    }))
     };
   })
 );
