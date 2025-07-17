@@ -399,28 +399,5 @@ router.put('/session/:week/tasks', authenticate, async (req, res) => {
   }
 });
 
-// POST /session/:week/tasks/publish
-router.post('/session/:week/tasks/publish', authenticate, async (req, res) => {
-  if (req.user.role !== 'instructor') {
-    return res.status(403).json({ error: 'Yetkisiz erişim' });
-  }
-
-  const weekNum = Number(req.params.week);
-  const { publish } = req.body;
-
-  try {
-    const session = await Session.findOneAndUpdate(
-      { week: weekNum },
-      { "tasks.published": publish },
-      { new: true }
-    );
-
-    res.json({ success: true, message: publish ? "Görevler yayınlandı" : "Görevler yayından kaldırıldı", session });
-  } catch (err) {
-    console.error("❌ Yayınlama hatası:", err);
-    res.status(500).json({ error: 'Sunucu hatası' });
-  }
-});
-
 
 module.exports = router;
