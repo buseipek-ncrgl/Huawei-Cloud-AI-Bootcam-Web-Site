@@ -44,10 +44,14 @@ const InstructorDashboard = () => {
       const videoState = {};
       const mediumState = {};
       summaryRes.data.forEach((s) => {
-        topicState[s.week] = s.topic || "";
-        videoState[s.week] = s.videoUrl || "";
-        mediumState[s.week] = s.mediumUrl || "";
-      });
+  topicState[s.week] = {
+    day1: s.topicDay1 || "",
+    day2: s.topicDay2 || ""
+  };
+  videoState[s.week] = s.videoUrl || "";
+  mediumState[s.week] = s.mediumUrl || "";
+});
+
       setTempTopics(topicState);
       setTempVideos(videoState);
       setTempMediums(mediumState); 
@@ -102,26 +106,28 @@ const InstructorDashboard = () => {
 };
 
 
-  const handleUpdate = async (week, field) => {
-    const token = localStorage.getItem("token");
-    const data = {
-      topic: tempTopics[week] ?? "",
-      videoUrl: tempVideos[week] ?? "",
-      mediumUrl: tempMediums[week] ?? "",
-    };
-
-    try {
-      await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/sessions/${week}`,
-        data,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert("Güncelleme başarılı ✅");
-      fetchData();
-    } catch {
-      alert("Güncellenemedi ❌");
-    }
+ const handleUpdate = async (week) => {
+  const token = localStorage.getItem("token");
+  const data = {
+    topicDay1: tempTopics[week]?.day1 ?? "",
+    topicDay2: tempTopics[week]?.day2 ?? "",
+    videoUrl: tempVideos[week] ?? "",
+    mediumUrl: tempMediums[week] ?? "",
   };
+
+  try {
+    await axios.put(
+      `${import.meta.env.VITE_API_URL}/api/sessions/${week}`,
+      data,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    alert("Güncelleme başarılı ✅");
+    fetchData();
+  } catch {
+    alert("Güncellenemedi ❌");
+  }
+};
+
 
   const handlePanelChange = (panel) => {
     setActivePanel(panel);
@@ -245,54 +251,82 @@ const InstructorDashboard = () => {
 
       {/* PROGRAM PANELİ */}
       {activePanel === "Program" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {summary.map((s) => (
-            <div
-              key={s.week}
-              className="bg-white/10 border border-white/20 p-5 rounded-xl transition hover:scale-[1.02] hover:border-yellow-400 backdrop-blur-sm"
-            >
-              <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
-                <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
-                  {s.week}. Hafta
-                </span>
-              </h3>
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    {summary.map((s) => (
+      <div
+        key={s.week}
+        className="bg-white/10 border border-white/20 p-5 rounded-xl transition hover:scale-[1.02] hover:border-yellow-400 backdrop-blur-sm"
+      >
+        <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
+          <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+            {s.week}. Hafta
+          </span>
+        </h3>
 
-              {s.topic?.trim() ? (
-                <>
-                  <p className="text-sm font-semibold text-white mb-2">📌 Konular:</p>
-                  <ul className="list-disc list-inside text-sm text-white/90 mb-4 space-y-1">
-                    {s.topic.split("\n").map((line, i) => (
-                      <li key={i}>{line}</li>
-                    ))}
-                  </ul>
-                </>
-              ) : (
-                <p className="text-gray-400 italic text-sm mb-4">Henüz konu girilmedi.</p>
-              )}
+        {/* Gösterim Alanı */}
+        {(s.topicDay1 || s.topicDay2) ? (
+          <>
+            <p className="text-sm font-semibold text-white mb-2">📌 Konular:</p>
+            <ul className="list-disc list-inside text-sm text-white/90 mb-4 space-y-1">
+              {s.topicDay1 && s.topicDay1.split("\n").map((line, i) => (
+                <li key={`d1-${i}`}>1. Gün: {line}</li>
+              ))}
+              {s.topicDay2 && s.topicDay2.split("\n").map((line, i) => (
+                <li key={`d2-${i}`}>2. Gün: {line}</li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p className="text-gray-400 italic text-sm mb-4">Henüz konu girilmedi.</p>
+        )}
 
-              {/* Güncelleme Alanı */}
-              <div>
-                <label className="block font-semibold text-white mb-2 text-sm">📋 Konuları Güncelle</label>
-                <textarea
-                  rows={3}
-                  className="w-full p-3 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
-                  placeholder="Her satıra bir konu yazın"
-                  value={tempTopics[s.week] ?? ""}
-                  onChange={(e) =>
-                    setTempTopics((prev) => ({ ...prev, [s.week]: e.target.value }))
-                  }
-                />
-                <button
-                  onClick={() => handleUpdate(s.week)}
-                  className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm transition flex items-center justify-center gap-2"
-                >
-                  💾 Kaydet
-                </button>
-              </div>
-            </div>
-          ))}
+        {/* Güncelleme Alanı */}
+        <div className="space-y-4">
+          <p className="text-sm font-semibold text-white">📝 Konu Güncelle</p>
+
+          <div>
+            <label className="block font-semibold text-white mb-1 text-sm">📅 1. Gün Konuları</label>
+            <textarea
+              rows={2}
+              className="w-full p-3 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
+              placeholder="Her satıra bir konu yazın"
+              value={tempTopics[s.week]?.day1 ?? ""}
+              onChange={(e) =>
+                setTempTopics((prev) => ({
+                  ...prev,
+                  [s.week]: { ...prev[s.week], day1: e.target.value },
+                }))
+              }
+            />
+          </div>
+
+          <div>
+            <label className="block font-semibold text-white mb-1 text-sm">📅 2. Gün Konuları</label>
+            <textarea
+              rows={2}
+              className="w-full p-3 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
+              placeholder="Her satıra bir konu yazın"
+              value={tempTopics[s.week]?.day2 ?? ""}
+              onChange={(e) =>
+                setTempTopics((prev) => ({
+                  ...prev,
+                  [s.week]: { ...prev[s.week], day2: e.target.value },
+                }))
+              }
+            />
+          </div>
+
+          <button
+            onClick={() => handleUpdate(s.week)}
+            className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm transition flex items-center justify-center gap-2"
+          >
+            💾 Kaydet
+          </button>
         </div>
-      )}
+      </div>
+    ))}
+  </div>
+)}
 
       {/* KAYNAKLAR PANELİ */}
       {activePanel === "Kaynaklar" && (
