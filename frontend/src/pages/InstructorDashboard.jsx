@@ -470,97 +470,95 @@ const InstructorDashboard = () => {
         </div>
       )}
 
+ {/* GÖREVLER PANELİ */}
+
 {activePanel === "Görevler" && (
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
     {summary.map((s) => (
       <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl backdrop-blur-sm">
-        <h3 className="text-lg font-bold text-yellow-300 mb-3">
-          📌 {s.week}. Hafta Görevleri
-        </h3>
+  {/* BAŞLIK VE ETİKET */}
+  <div className="flex items-center justify-between mb-3">
+    <h3 className="text-lg font-bold text-yellow-300">
+      📌 {s.week}. Hafta Görevleri
+    </h3>
+    <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
+      s.taskActive ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"
+    }`}>
+      {s.taskActive ? "Aktif" : "Pasif"}
+    </span>
+  </div>
 
-        <ul className="list-disc list-inside text-white text-sm mb-4 space-y-1">
-  {savedTasks[s.week]?.length > 0 ? (
-    savedTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
-  ) : (
-    <li className="italic text-gray-400">Görev yok</li>
-  )}
-</ul>
+  {/* KAYITLI GÖREVLER */}
+  <ul className="list-disc list-inside text-white text-sm mb-4 space-y-1">
+    {savedTasks[s.week]?.length > 0 ? (
+      savedTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
+    ) : (
+      <li className="italic text-gray-400">Görev yok</li>
+    )}
+  </ul>
 
-
-        <textarea
-          rows={3}
-          className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white text-sm placeholder-white/50 focus:border-yellow-400 focus:outline-none transition"
-          placeholder="Her satıra bir görev yazın"
-          value={tempTasks[s.week]?.join('\n') || ""}
-          onChange={(e) =>
-            setTempTasks((prev) => ({
-              ...prev,
-              [s.week]: e.target.value.split('\n')
-            }))
-          }
-        />
-
-        <button
-  onClick={async () => {
-    const token = localStorage.getItem("token");
-    try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
-        list: tempTasks[s.week] || []
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      alert("Görevler kaydedildi ✅");
-
-      // 🔁 sadece savedTasks güncelleniyor
-      setSavedTasks((prev) => ({
+  {/* GÖREV DÜZENLEME ALANI */}
+  <textarea
+    rows={3}
+    className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white text-sm placeholder-white/50 focus:border-yellow-400 focus:outline-none transition"
+    placeholder="Her satıra bir görev yazın"
+    value={tempTasks[s.week]?.join('\n') || ""}
+    onChange={(e) =>
+      setTempTasks((prev) => ({
         ...prev,
-        [s.week]: tempTasks[s.week] || []
-      }));
-    } catch {
-      alert("Görevler kaydedilemedi ❌");
+        [s.week]: e.target.value.split('\n')
+      }))
     }
-  }}
-  className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm"
->
-  💾 Görevleri Kaydet
-</button>
-<div className="flex items-center justify-between mb-3">
-  <h3 className="text-lg font-bold text-yellow-300">
-    📌 {s.week}. Hafta Görevleri
-  </h3>
+    disabled={s.taskActive} // Opsiyonel: görev aktifse düzenlemeyi kapat
+  />
 
-  <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
-    s.taskActive ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"
-  }`}>
-    {s.taskActive ? "Aktif" : "Pasif"}
-  </span>
+  {/* KAYDET BUTONU */}
+  <button
+    onClick={async () => {
+      const token = localStorage.getItem("token");
+      try {
+        await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
+          list: tempTasks[s.week] || []
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        alert("Görevler kaydedildi ✅");
+        fetchData(); // 🔄 Veriyi güncelle
+      } catch {
+        alert("Görevler kaydedilemedi ❌");
+      }
+    }}
+    className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm"
+  >
+    💾 Görevleri Kaydet
+  </button>
+
+  {/* GÖREVİ BAŞLAT/BİTİR BUTONU */}
+  <button
+    onClick={async () => {
+      const token = localStorage.getItem("token");
+      const url = `${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/task/${s.taskActive ? "stop" : "start"}`;
+      try {
+        await axios.post(url, {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        alert(`Görev ${s.taskActive ? "durduruldu ⛔" : "başlatıldı ✅"}`);
+        fetchData(); // ↩️ Güncelleme burası için de gerekli
+      } catch {
+        alert("İşlem başarısız ❌");
+      }
+    }}
+    className={`mt-3 w-full py-2 rounded-lg text-sm font-semibold transition ${
+      s.taskActive
+        ? "bg-red-600 hover:bg-red-700 text-white"
+        : "bg-green-600 hover:bg-green-700 text-white"
+    }`}
+  >
+    {s.taskActive ? "⛔ Görevleri Bitir" : "✅ Görevleri Başlat"}
+  </button>
 </div>
 
-<button
-  onClick={async () => {
-    const token = localStorage.getItem("token");
-    const url = `${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/task/${s.taskActive ? "stop" : "start"}`;
-    try {
-      await axios.post(url, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      alert(`Görev ${s.taskActive ? "durduruldu ⛔" : "başlatıldı ✅"}`);
-      fetchData();
-    } catch {
-      alert("İşlem başarısız ❌");
-    }
-  }}
-  className={`mb-4 w-full py-2 rounded-lg text-sm font-semibold transition ${
-    s.taskActive
-      ? "bg-red-600 hover:bg-red-700 text-white"
-      : "bg-green-600 hover:bg-green-700 text-white"
-  }`}
->
-  {s.taskActive ? "⛔ Görevleri Bitir" : "✅ Görevleri Başlat"}
-</button>
-
-      </div>
     ))}
   </div>
 )}
