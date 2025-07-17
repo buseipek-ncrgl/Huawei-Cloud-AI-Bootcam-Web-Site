@@ -304,7 +304,7 @@ const ParticipantDashboard = () => {
             {[
               { name: "Hakan Aktaş", title: "Data Scientist – Huawei", linkedin: "https://www.linkedin.com/in/hakanaktas1/", image: "/hakanaktas.jpg" },
               { name: "Barış Kaplan", title: "AI & ML Engineer/Data Scientist – Huawei", linkedin: "https://www.linkedin.com/in/baris-k-896652175/", image: "/bariskaplan.png" },
-              { name: "-", title: "-", linkedin: "#", image: "/profile.png" },
+              { name: "Sefa Bilicier", title: "Cloud Solutions Engineer - Huawei", linkedin: "https://tr.linkedin.com/in/sefabilicier", image: "/sefabilicier.jpeg" },
             ].map((e, i) => (
               <div key={i} className="bg-white/10 border border-white/20 p-4 rounded-lg text-center transition hover:scale-[1.015] hover:border-yellow-400">
                 <img src={e.image} alt="Eğitmen" className="w-20 h-20 mx-auto rounded-full object-cover mb-3" />
@@ -444,56 +444,63 @@ const ParticipantDashboard = () => {
 
 {activePanel === "Görevler" && (
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-    {sessions
-      .filter((s) => s.taskActive)
-      .map((s) => (
-        <div
-          key={s.week}
-          className="bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.01] hover:border-yellow-400 transition backdrop-blur-sm"
-        >
-          <h3 className="text-lg font-bold text-yellow-300 mb-3">
-            <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
-              {s.week}. Hafta Görevleri
-            </span>
-          </h3>
+    {sessions.map((s) => (
+      <div
+        key={s.week}
+        className={`bg-white/10 border p-5 rounded-xl backdrop-blur-sm transition ${
+          s.taskActive
+            ? "border-white/20 hover:border-yellow-400 hover:scale-[1.01]"
+            : "border-white/10 opacity-60"
+        }`}
+      >
+        <h3 className="text-lg font-bold text-yellow-300 mb-3">
+          <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+            {s.week}. Hafta Görevleri
+          </span>
+        </h3>
 
-          {/* Görev Listesi */}
-          {s.tasks?.length > 0 ? (
-            <ul className="list-disc ml-5 text-white text-sm mb-4">
-              {s.tasks.map((task, i) => (
-                <li key={i}>{task}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-300 italic text-sm mb-3">
-              Görev tanımlanmamış
-            </p>
-          )}
+        {/* Görev içerikleri */}
+        {s.taskActive ? (
+          <>
+            {s.tasks?.length > 0 ? (
+              <ul className="list-disc ml-5 text-white text-sm mb-4">
+                {s.tasks.map((task, i) => (
+                  <li key={i}>{task}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-300 italic text-sm mb-3">
+                Görev tanımlanmamış
+              </p>
+            )}
 
-          {/* Görev Gönderme Formu */}
-          <form
-            onSubmit={(e) => handleTaskSubmit(e, s.week)}
-            className="flex flex-col gap-2"
-          >
-            <input
-              type="text"
-              name="fileUrl"
-              placeholder="Dosya bağlantısı (GitHub, Drive...)"
-              className="p-2 rounded bg-white/5 border border-white/10 text-white text-sm"
-              required
-            />
-            <button
-              type="submit"
-              className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition"
+            {/* Görev gönderme formu */}
+            <form
+              onSubmit={(e) => handleTaskSubmit(e, s.week)}
+              className="flex flex-col gap-2"
             >
-              Gönder
-            </button>
-          </form>
-        </div>
-      ))}
+              <input
+                type="text"
+                name="fileUrl"
+                placeholder="Dosya bağlantısı (GitHub, Drive...)"
+                className="p-2 rounded bg-white/5 border border-white/10 text-white text-sm"
+                required
+              />
+              <button
+                type="submit"
+                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition"
+              >
+                Gönder
+              </button>
+            </form>
+          </>
+        ) : (
+          <p className="text-gray-400 italic text-sm">Görev henüz aktif değil</p>
+        )}
+      </div>
+    ))}
   </div>
 )}
-
 
       </main>
     </div>
