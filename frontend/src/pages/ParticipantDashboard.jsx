@@ -442,26 +442,22 @@ const ParticipantDashboard = () => {
 )}
 
 
-        {activePanel === "İletişim" && (
-          <div className="space-y-3 text-sm">
-            <p>
-              📧 E-posta: <a href="mailto:hsdcloud@bootcamp.com" className="text-blue-400 underline">hsdcloud@bootcamp.com</a>
-            </p>
-          </div>
-        )}
-
-        {activePanel === "Görevler" && (
+{activePanel === "Görevler" && (
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
     {sessions
       .filter((s) => s.taskActive)
       .map((s) => (
         <div
           key={s.week}
-          className="bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.01] transition"
+          className="bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.01] hover:border-yellow-400 transition backdrop-blur-sm"
         >
           <h3 className="text-lg font-bold text-yellow-300 mb-3">
-            {s.week}. Hafta Görevi
+            <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+              {s.week}. Hafta Görevleri
+            </span>
           </h3>
+
+          {/* Görev Listesi */}
           {s.tasks?.length > 0 ? (
             <ul className="list-disc ml-5 text-white text-sm mb-4">
               {s.tasks.map((task, i) => (
@@ -469,9 +465,12 @@ const ParticipantDashboard = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-300 italic text-sm mb-3">Görev tanımlanmamış</p>
+            <p className="text-gray-300 italic text-sm mb-3">
+              Görev tanımlanmamış
+            </p>
           )}
 
+          {/* Görev Gönderme Formu */}
           <form
             onSubmit={(e) => handleTaskSubmit(e, s.week)}
             className="flex flex-col gap-2"
@@ -494,6 +493,7 @@ const ParticipantDashboard = () => {
       ))}
   </div>
 )}
+
 
       </main>
     </div>
