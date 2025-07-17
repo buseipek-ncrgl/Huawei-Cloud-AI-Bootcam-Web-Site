@@ -46,10 +46,11 @@ const sessionSchema = new mongoose.Schema({
       default: ""
     }
   },
-  tasks: {
-    list: { type: [String], default: [] },
-    published: { type: Boolean, default: false }
-  }
+  "tasks": {
+  "list": [],
+  "published": false
+}
+
 });
 
 module.exports = mongoose.model("Session", sessionSchema);
