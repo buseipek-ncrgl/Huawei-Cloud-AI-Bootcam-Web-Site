@@ -741,12 +741,12 @@ const handleDeleteSubmission = async (id) => {
       <li>
         <span className="font-semibold text-yellow-300">Resmi Siteye Giriş:</span>{" "}
         <a
-          href="https://www.youtube.com/watch?v=dkpHpOBsCMA"
+          href="https://intl.huaweicloud.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-300 underline"
+          className="underline text-blue-300 hover:text-blue-400"
         >
-          ▶️ YouTube üzerinden videoyu izlemek için buraya tıklayın
+          Huawei Cloud
         </a>
       </li>
       <li>
@@ -765,14 +765,14 @@ const handleDeleteSubmission = async (id) => {
       <p className="text-sm text-white/90 mb-3">
         Aşağıdaki bağlantıya tıklayarak Huawei Cloud hesap açma sürecini adım adım izleyebilirsiniz:
       </p>
-      <a
-        href="https://www.youtube.com/watch?v=dkpHpOBsCMA"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition"
-      >
-        🔗 Videoyu YouTube’da Aç
-      </a>
+     <a
+  href="https://www.youtube.com/watch?v=abc123XYZ"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="block text-blue-300 underline text-lg"
+>
+  ▶️ YouTube üzerinden videoyu izlemek için tıklayın
+</a>
     </div>
 
     <p className="text-white/90 text-sm leading-relaxed">
