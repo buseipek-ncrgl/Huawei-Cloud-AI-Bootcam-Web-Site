@@ -17,8 +17,14 @@ const sessionSchema = new mongoose.Schema({
     }
   },
   topic: {
-    type: String,
-    default: ""
+    day1: {
+      type: String,
+      default: ""
+    },
+    day2: {
+      type: String,
+      default: ""
+    }
   },
   videoUrl: {
     type: String,

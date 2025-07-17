@@ -331,40 +331,30 @@ router.put('/session/:week', authenticate, async (req, res) => {
   }
 
   const weekNum = Number(req.params.week);
-  const { topic, videoUrl } = req.body;
-
-  try {
-    const session = await Session.findOneAndUpdate(
-      { week: weekNum },
-      { topic, videoUrl },
-      { new: true, upsert: true }
-    );
-    res.json({ message: "Haftalık içerik güncellendi", session });
-  } catch (err) {
-    console.error("❌ İçerik güncelleme hatası:", err);
-    res.status(500).json({ error: 'Sunucu hatası' });
-  }
-});
-
-router.put('/session/:week', authenticate, async (req, res) => {
-  if (req.user.role !== 'instructor') {
-    return res.status(403).json({ error: 'Yetkisiz erişim' });
-  }
-
-  const weekNum = Number(req.params.week);
   const { topic, videoUrl, mediumUrl } = req.body;
 
+  // topic: { day1: "...", day2: "..." } şeklinde gelmeli
+  if (!topic || typeof topic !== 'object') {
+    return res.status(400).json({ error: "Geçersiz topic verisi" });
+  }
+
   try {
     const session = await Session.findOneAndUpdate(
       { week: weekNum },
-      { topic, videoUrl, mediumUrl }, // ✅ mediumUrl dahil
+      {
+        topic: {
+          day1: topic.day1 || "",
+          day2: topic.day2 || ""
+        },
+        videoUrl: videoUrl || "",
+        mediumUrl: mediumUrl || ""
+      },
       { new: true, upsert: true }
     );
+
     res.json({ message: "Haftalık içerik güncellendi", session });
   } catch (err) {
     console.error("❌ İçerik güncelleme hatası:", err);
     res.status(500).json({ error: 'Sunucu hatası' });
   }
 });
-
-module.exports = router;
