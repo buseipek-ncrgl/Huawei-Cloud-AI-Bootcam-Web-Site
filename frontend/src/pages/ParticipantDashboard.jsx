@@ -141,31 +141,26 @@ const handleTaskSubmit = async (e, week) => {
 };
 
 const handleDeleteSubmission = async (id) => {
-  const token = localStorage.getItem("token");
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/attendance/task-submissions/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const token = localStorage.getItem("token");
+    await axios.delete(
+      `${import.meta.env.VITE_API_URL}/api/attendance/task-submissions/${id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    alert("Gönderim silindi ✅");
 
-    const data = await res.json();
-    if (!data.success) throw new Error(data.error || "Silinemedi");
-    alert("Görev gönderimi silindi ✅");
-
-    // Local state'den çıkar
+    // Güncel veriyi frontend'den sil
     setSessions((prev) =>
       prev.map((s) => ({
         ...s,
-        submissions: s.submissions.filter((sub) => sub.id !== id)
+        submissions: s.submissions?.filter((sub) => sub._id !== id),
       }))
     );
   } catch (err) {
-    alert(err.message);
+    alert("Silinemedi ❌");
+    console.error("Silme hatası:", err);
   }
 };
-
 
   if (loading) {
     return (
@@ -553,11 +548,12 @@ const handleDeleteSubmission = async (id) => {
                   {new Date(submission.submittedAt).toLocaleString()}
                 </a>
                 <button
-                  onClick={() => handleDeleteSubmission(submission._id)}
-                  className="text-red-400 text-xs hover:underline"
-                >
-                  Sil
-                </button>
+  onClick={() => handleDeleteSubmission(submission._id)} // ✅ _id kullanılmalı
+  className="text-red-400 text-xs hover:underline"
+>
+  Sil
+</button>
+
               </div>
             ))}
           </div>
