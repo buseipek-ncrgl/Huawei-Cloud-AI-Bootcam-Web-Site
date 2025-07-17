@@ -530,5 +530,16 @@ router.delete('/task-submissions/:id', authenticate, async (req, res) => {
   }
 });
 
+// GET /api/announcements - Katılımcılar için
+router.get("/announcements", authenticate, async (req, res) => {
+  try {
+    const announcements = await Announcement.find().sort({ createdAt: -1 });
+    res.json({ success: true, announcements });
+  } catch (err) {
+    console.error("Duyurular alınamadı ❌", err);
+    res.status(500).json({ success: false, error: "Sunucu hatası" });
+  }
+});
+
 
 module.exports = router;
