@@ -27,12 +27,24 @@ const sessionSchema = new mongoose.Schema({
     }
   },
   videoUrl: {
-    type: String,
-    default: ""
+    day1: {
+      type: String,
+      default: ""
+    },
+    day2: {
+      type: String,
+      default: ""
+    }
   },
   mediumUrl: {
-    type: String,
-    default: ""
+    day1: {
+      type: String,
+      default: ""
+    },
+    day2: {
+      type: String,
+      default: ""
+    }
   }
 });
 

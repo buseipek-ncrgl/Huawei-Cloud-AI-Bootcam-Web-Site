@@ -333,9 +333,17 @@ router.put('/session/:week', authenticate, async (req, res) => {
   const weekNum = Number(req.params.week);
   const { topic, videoUrl, mediumUrl } = req.body;
 
-  // topic: { day1: "...", day2: "..." } şeklinde gelmeli
+  // Doğrulama
   if (!topic || typeof topic !== 'object') {
     return res.status(400).json({ error: "Geçersiz topic verisi" });
+  }
+
+  if (!videoUrl || typeof videoUrl !== 'object') {
+    return res.status(400).json({ error: "Geçersiz videoUrl verisi" });
+  }
+
+  if (!mediumUrl || typeof mediumUrl !== 'object') {
+    return res.status(400).json({ error: "Geçersiz mediumUrl verisi" });
   }
 
   try {
@@ -346,8 +354,14 @@ router.put('/session/:week', authenticate, async (req, res) => {
           day1: topic.day1 || "",
           day2: topic.day2 || ""
         },
-        videoUrl: videoUrl || "",
-        mediumUrl: mediumUrl || ""
+        videoUrl: {
+          day1: videoUrl.day1 || "",
+          day2: videoUrl.day2 || ""
+        },
+        mediumUrl: {
+          day1: mediumUrl.day1 || "",
+          day2: mediumUrl.day2 || ""
+        }
       },
       { new: true, upsert: true }
     );
