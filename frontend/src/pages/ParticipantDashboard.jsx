@@ -5,11 +5,14 @@ import { useNavigate } from "react-router-dom";
 const panels = [
   { key: "Profil", title: "🙋‍♂️ Profilim" },
   { key: "Duyurular", title: "📢 Duyurular" },
+  { key: "Hakkımızda", title: " Hakkımızda" },
   { key: "Program", title: "📅 Eğitim Programı" },
   { key: "Katılım", title: "📝 Katılım Durumu" },
   { key: "Eğitmenler", title: "👨‍🏫 Eğitmenler" },
   { key: "Kaynaklar", title: "📚 Eğitim Kaynakları" },
   { key: "Görevler", title: "✅ Haftalık Görevler" },
+  { key: "Sertifika", title: " Sertifika" },
+  { key: "Huawei Cloud Hesabı", title: "Huawei Cloud Hesabı" },
   { key: "Kurallar", title: "📌 Katılım Kuralları" },
   { key: "Sorular", title: "❓ Sıkça Sorulan Sorular" },
   { key: "İletişim", title: "✉️ İletişim Bilgileri" },
@@ -18,11 +21,14 @@ const panels = [
 const panelTitles = {
   Profil: "🙋‍♂️ Profilim",
   Duyurular: "📢 Duyurular",
+  Hakkımızda: " Hakkımızda",
   Program: "📅 Eğitim Programı",
   Katılım: "📝 Katılım Durumu",
   Eğitmenler: "👨‍🏫 Eğitmenler",
   Kaynaklar: "📚 Eğitim Kaynakları",
   Görevler: "✅ Haftalık Görevler",
+  Sertifika: "Sertifika",
+  HuaweiCloudHesabı: "Huawei Cloud Hesabı",
   Kurallar: "📌 Katılım Kuralları",
   Sorular: "❓ Sıkça Sorulan Sorular",
   İletişim: "✉️ İletişim Bilgileri",
@@ -94,22 +100,27 @@ const ParticipantDashboard = () => {
   fetchData();
 }, [navigate]);
 
-const fetchAnnouncements = async () => {
-  const token = localStorage.getItem("token");
-  try {
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/announcements`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    setAnnouncements(res.data.announcements);
-  } catch (err) {
-    console.error("Duyurular alınamadı ❌", err);
-  }
-};
-
 useEffect(() => {
+  const fetchAnnouncements = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/attendance/announcements`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (res.data.success) {
+        setAnnouncements(res.data.announcements);
+      }
+    } catch (err) {
+      console.error("Duyurular alınamadı ❌", err);
+    }
+  };
+
   fetchAnnouncements();
 }, []);
+
 
   const handleAttend = async (week, day) => {
   try {
