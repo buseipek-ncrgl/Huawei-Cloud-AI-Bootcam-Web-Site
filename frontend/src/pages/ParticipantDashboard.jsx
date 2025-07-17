@@ -139,27 +139,41 @@ const handleTaskSubmit = async (e, week) => {
 };
 
 
-const handleDeleteSubmission = async (id) => {
+const handleDeleteSubmission = async (submissionId) => {
+  if (!submissionId) {
+    console.error("❌ Geçersiz gönderim ID");
+    alert("Geçersiz gönderim ID’si.");
+    return;
+  }
+
+  const token = localStorage.getItem("token");
+
   try {
-    const token = localStorage.getItem("token");
+    // API’ye istek gönder
     await axios.delete(
-      `${import.meta.env.VITE_API_URL}/api/attendance/task-submissions/${id}`,
-      { headers: { Authorization: `Bearer ${token}` } }
+      `${import.meta.env.VITE_API_URL}/api/attendance/task-submissions/${submissionId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
     );
+
     alert("Gönderim silindi ✅");
 
-    // Güncel veriyi frontend'den sil
-    setSessions((prev) =>
-      prev.map((s) => ({
+    // Local state’den sil
+    setSessions((prevSessions) =>
+      prevSessions.map((s) => ({
         ...s,
-        submissions: s.submissions?.filter((sub) => sub._id !== id),
+        submissions: s.submissions?.filter((sub) => sub._id !== submissionId)
       }))
     );
   } catch (err) {
-    alert("Silinemedi ❌");
-    console.error("Silme hatası:", err);
+    console.error("❌ Silme hatası:", err);
+    alert("Silinemedi. Lütfen tekrar deneyin.");
   }
 };
+
 
   if (loading) {
     return (
