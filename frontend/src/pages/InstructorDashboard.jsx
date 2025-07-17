@@ -405,7 +405,7 @@ const InstructorDashboard = () => {
         </div>
       )}
 
-{/* KATILIM PANELİ */}
+      {/* KATILIM PANELİ */}
 {activePanel === "Katılım" && (
   <div className="space-y-6">
     {/* Yeni Hafta Ekle Bölümü */}
@@ -430,81 +430,79 @@ const InstructorDashboard = () => {
     </div>
 
     {/* Hafta Panelleri */}
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-      {summary.map((s) => (
-        <div
-          key={s.week}
-          className="relative bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm"
-        >
-          <div>
-            <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
-              <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
-                {s.week}. Hafta
+<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+  {summary.map((s) => (
+    <div
+      key={s.week}
+      className="relative bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm"
+    >
+      <div>
+        <h3 className="text-lg font-bold text-yellow-300 mb-4 flex items-center gap-2">
+          <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+            {s.week}. Hafta
+          </span>
+        </h3>
+
+        {/* 1. ve 2. GÜN KUTULARI */}
+        {[1, 2].map((day) => (
+          <div key={day} className="mb-4 bg-white/5 rounded-lg p-3 border border-white/10 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-white text-sm font-semibold">📅 {day}. Gün</span>
+              <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                s[`day${day}Active`] ? "bg-green-600 text-white" : "bg-gray-600 text-white/70"
+              }`}>
+                {s[`day${day}Active`] ? "Aktif" : "Pasif"}
               </span>
-            </h3>
-
-            <div className="space-y-3 mb-4">
-              <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
-                <span className="text-sm text-white">Katılım</span>
-                <span className="font-semibold">{s.attended}/{s.total}</span>
-              </div>
-              <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/10">
-                <span className="text-sm text-white">Oran</span>
-                <span
-                  className={`font-semibold ${
-                    s.rate >= 75
-                      ? "text-green-400"
-                      : s.rate >= 50
-                      ? "text-yellow-300"
-                      : "text-red-400"
-                  }`}
-                >
-                  %{s.rate}
-                </span>
-              </div>
             </div>
 
-            {/* GÜNLERE GÖRE YOKLAMA */}
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              {[1, 2].map((day) => (
-                <div
-                  key={day}
-                  className="bg-white/5 border border-white/10 p-2 rounded-lg flex items-center justify-between"
-                >
-                  <span className="text-white text-sm">📅 {day}. Gün</span>
-                  {s[`day${day}Active`] ? (
-                    <button
-                      onClick={() => handleStop(s.week, day)}
-                      className="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 py-1 rounded transition"
-                    >
-                      ⛔ Bitir
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleStart(s.week, day)}
-                      className="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-3 py-1 rounded transition"
-                    >
-                      ✅ Başlat
-                    </button>
-                  )}
-                </div>
-              ))}
+            <div className="flex justify-between items-center bg-black/10 px-3 py-2 rounded-lg">
+              <span className="text-sm text-white">Katılım</span>
+              <span className="font-semibold">
+                {s[`day${day}Attended`] ?? 0}/{s.total}
+              </span>
             </div>
 
-            {/* Detay Butonu */}
+            <div className="flex justify-between items-center bg-black/10 px-3 py-2 rounded-lg">
+              <span className="text-sm text-white">Oran</span>
+              <span className={`font-semibold ${
+                s[`day${day}Rate`] >= 75
+                  ? "text-green-400"
+                  : s[`day${day}Rate`] >= 50
+                  ? "text-yellow-300"
+                  : "text-red-400"
+              }`}>
+                %{s[`day${day}Rate`] ?? 0}
+              </span>
+            </div>
+
             <button
-              onClick={() => fetchDetails(s.week)}
-              className="bg-blue-600 hover:bg-blue-700 text-white w-full rounded-lg py-2.5 text-sm font-semibold transition flex items-center justify-center gap-2"
+              onClick={() =>
+                s[`day${day}Active`] ? handleStop(s.week, day) : handleStart(s.week, day)
+              }
+              className={`w-full text-sm font-semibold rounded-lg py-2.5 transition flex items-center justify-center gap-2 ${
+                s[`day${day}Active`]
+                  ? "bg-red-600 hover:bg-red-700 text-white"
+                  : "bg-green-600 hover:bg-green-700 text-white"
+              }`}
             >
-              📊 Detayları Gör
+              {s[`day${day}Active`] ? "⛔ Yoklamayı Bitir" : "✅ Yoklamayı Başlat"}
             </button>
           </div>
-        </div>
-      ))}
+        ))}
+
+        <button
+          onClick={() => fetchDetails(s.week)}
+          className="bg-blue-600 hover:bg-blue-700 text-white w-full rounded-lg py-2.5 text-sm font-semibold transition flex items-center justify-center gap-2"
+        >
+          📊 Detayları Gör
+        </button>
+      </div>
     </div>
+  ))}
+</div>
+
   </div>
 )}
-
 
       {/* HAFTA DETAYI */}
       {selectedWeek && details.present.length > 0 && (
