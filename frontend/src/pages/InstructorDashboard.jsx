@@ -48,8 +48,14 @@ const InstructorDashboard = () => {
     day1: s.topic?.day1 ?? "",
     day2: s.topic?.day2 ?? ""
   };
-  videoState[s.week] = s.videoUrl ?? "";
-  mediumState[s.week] = s.mediumUrl ?? "";
+  videoState[s.week] = {
+    day1: s.videoUrl?.day1 || "",
+    day2: s.videoUrl?.day2 || ""
+  };
+  mediumState[s.week] = {
+    day1: s.mediumUrl?.day1 || "",
+    day2: s.mediumUrl?.day2 || ""
+  };
 });
 
       setTempTopics(topicState);
@@ -113,8 +119,14 @@ const InstructorDashboard = () => {
     day1: tempTopics[week]?.day1 ?? "",
     day2: tempTopics[week]?.day2 ?? ""
   },
-  videoUrl: tempVideos[week] ?? "",
-  mediumUrl: tempMediums[week] ?? "",
+  videoUrl: {
+    day1: tempVideos[week]?.day1 ?? "",
+    day2: tempVideos[week]?.day2 ?? ""
+  },
+  mediumUrl: {
+    day1: tempMediums[week]?.day1 ?? "",
+    day2: tempMediums[week]?.day2 ?? ""
+  }
 };
 
 
@@ -350,99 +362,96 @@ const InstructorDashboard = () => {
               </h3>
 
               {/* Mevcut Kaynaklar */}
-              <div className="mb-5 space-y-3">
-                <p className="text-sm font-semibold text-white">📚 Mevcut Kaynaklar</p>
-                {s.videoUrl?.trim() ? (
-                  <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
-                    <span className="text-sm text-white flex items-center gap-2">
-                      <span className="bg-blue-500/20 p-1.5 rounded-lg">🎥</span>
-                      Video
-                    </span>
-                    <a
-                      href={s.videoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                      İzle
-                    </a>
-                  </div>
-                ) : (
-                  <div className="bg-white/5 p-3 rounded-lg border border-white/10">
-                    <span className="text-sm text-gray-400 flex items-center gap-2">
-                      <span className="bg-gray-500/20 p-1.5 rounded-lg">🎥</span>
-                      Video linki yok
-                    </span>
-                  </div>
-                )}
-                
-                {s.mediumUrl?.trim() ? (
-                  <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
-                    <span className="text-sm text-white flex items-center gap-2">
-                      <span className="bg-green-500/20 p-1.5 rounded-lg">📝</span>
-                      Medium
-                    </span>
-                    <a
-                      href={s.mediumUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                      Oku
-                    </a>
-                  </div>
-                ) : (
-                  <div className="bg-white/5 p-3 rounded-lg border border-white/10">
-                    <span className="text-sm text-gray-400 flex items-center gap-2">
-                      <span className="bg-gray-500/20 p-1.5 rounded-lg">📝</span>
-                      Medium linki yok
-                    </span>
-                  </div>
-                )}
-              </div>
+              <div className="mb-5 space-y-6">
+  <p className="text-sm font-semibold text-white">📚 Mevcut Kaynaklar</p>
 
-              {/* Güncelleme Alanı */}
-              <div className="space-y-4">
-                <p className="text-sm font-semibold text-white">🔄 Kaynak Güncelle</p>
-                <div>
-                  <label className="block font-semibold text-white text-sm mb-2">🔗 Video Linki</label>
-                  <input
-                    type="text"
-                    className="w-full p-3 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
-                    placeholder="https://..."
-                    value={tempVideos[s.week] ?? ""}
-                    onChange={(e) =>
-                      setTempVideos((prev) => ({ ...prev, [s.week]: e.target.value }))
-                    }
-                  />
-                </div>
-                
-                <div>
-                  <label className="block font-semibold text-white text-sm mb-2">✍️ Medium Linki</label>
-                  <input
-                    type="text"
-                    className="w-full p-3 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
-                    placeholder="https://medium.com/..."
-                    value={tempMediums[s.week] ?? ""}
-                    onChange={(e) =>
-                      setTempMediums((prev) => ({ ...prev, [s.week]: e.target.value }))
-                    }
-                  />
-                </div>
-                
-                <button
-                  onClick={() => handleUpdate(s.week)}
-                  className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2.5 rounded-lg text-sm transition flex items-center justify-center gap-2"
-                >
-                  💾 Kaydet
-                </button>
-              </div>
+  {[1, 2].map((day) => (
+    <div
+      key={day}
+      className="bg-white/5 p-4 rounded-lg border border-white/10 space-y-4"
+    >
+      <p className="text-sm font-semibold text-yellow-300">📅 {day}. Gün</p>
+
+      {/* Mevcut Video */}
+      {s.videoUrl?.[`day${day}`]?.trim() ? (
+        <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
+          <span className="text-sm text-white flex items-center gap-2">
+            <span className="bg-blue-500/20 p-1.5 rounded-lg">🎥</span> Video
+          </span>
+          <a
+            href={s.videoUrl[`day${day}`]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition"
+          >
+            İzle
+          </a>
+        </div>
+      ) : (
+        <p className="text-sm text-gray-400">🎥 Video linki yok</p>
+      )}
+
+      {/* Mevcut Medium */}
+      {s.mediumUrl?.[`day${day}`]?.trim() ? (
+        <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
+          <span className="text-sm text-white flex items-center gap-2">
+            <span className="bg-green-500/20 p-1.5 rounded-lg">📝</span> Medium
+          </span>
+          <a
+            href={s.mediumUrl[`day${day}`]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition"
+          >
+            Oku
+          </a>
+        </div>
+      ) : (
+        <p className="text-sm text-gray-400">📝 Medium linki yok</p>
+      )}
+
+      {/* Güncelleme Alanı */}
+      <div>
+        <label className="block font-semibold text-white text-sm mb-1">🎥 Video Linki</label>
+        <input
+          type="text"
+          className="w-full p-2 rounded bg-white/10 text-white border border-white/20 text-sm focus:outline-none focus:border-yellow-400"
+          placeholder="https://..."
+          value={tempVideos[s.week]?.[`day${day}`] ?? ""}
+          onChange={(e) =>
+            setTempVideos((prev) => ({
+              ...prev,
+              [s.week]: { ...prev[s.week], [`day${day}`]: e.target.value }
+            }))
+          }
+        />
+      </div>
+
+      <div>
+        <label className="block font-semibold text-white text-sm mb-1">📝 Medium Linki</label>
+        <input
+          type="text"
+          className="w-full p-2 rounded bg-white/10 text-white border border-white/20 text-sm focus:outline-none focus:border-yellow-400"
+          placeholder="https://medium.com/..."
+          value={tempMediums[s.week]?.[`day${day}`] ?? ""}
+          onChange={(e) =>
+            setTempMediums((prev) => ({
+              ...prev,
+              [s.week]: { ...prev[s.week], [`day${day}`]: e.target.value }
+            }))
+          }
+        />
+      </div>
+
+      <button
+        onClick={() => handleUpdate(s.week)}
+        className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm transition flex items-center justify-center gap-2"
+      >
+        💾 {day}. Gün Kaydet
+      </button>
+    </div>
+  ))}
+</div>
             </div>
           ))}
         </div>
