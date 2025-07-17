@@ -20,21 +20,32 @@ router.get('/sessions', authenticate, async (req, res) => {
 
     // Her hafta için verileri oluştur
     const sessionsWithAttendance = sessions.map((session) => {
-      const attended = attendanceRecords.some(
-        record =>
-          Number(record.week) === Number(session.week) &&
-          record.attended === true
-      );
+  // İlgili katılımcının bu hafta için tüm yoklamalarını bul
+  const attendedDay1 = attendanceRecords.some(
+    record =>
+      Number(record.week) === Number(session.week) &&
+      record.day === 1 &&
+      record.attended === true
+  );
+  const attendedDay2 = attendanceRecords.some(
+    record =>
+      Number(record.week) === Number(session.week) &&
+      record.day === 2 &&
+      record.attended === true
+  );
 
-      return {
-        week: session.week,
-        active: session.active,
-        attended,
-        topic: session.topic || "",       // 💡 Konu ekleniyor
-        videoUrl: session.videoUrl || "",  // 💡 Video linki ekleniyor
-        mediumUrl: session.mediumUrl || ""
-      };
-    });
+  return {
+    week: session.week,
+    topic: session.topic || { day1: "", day2: "" },
+    videoUrl: session.videoUrl || { day1: "", day2: "" },
+    mediumUrl: session.mediumUrl || { day1: "", day2: "" },
+    activeDay1: session.activeDays?.day1 || false,
+    activeDay2: session.activeDays?.day2 || false,
+    attendedDay1,
+    attendedDay2
+  };
+});
+
 
     return res.json({
       success: true,
