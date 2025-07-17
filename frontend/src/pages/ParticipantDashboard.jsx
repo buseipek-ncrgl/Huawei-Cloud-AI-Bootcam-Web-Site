@@ -729,7 +729,7 @@ const handleDeleteSubmission = async (id) => {
     </p>
   </div>
 )}
-{activePanel === "Huawei Cloud Hesap" && (
+{activePanel === "Huawei Cloud Hesabı" && (
    <div className="p-6 bg-white/5 border border-white/20 rounded-xl text-white space-y-6">
 
     <p className="text-white/90 text-sm leading-relaxed">
