@@ -49,7 +49,12 @@ const sessionSchema = new mongoose.Schema({
    tasks: {
   type: [String], // veya daha sonra nesne yapısı istersen {title, description, dueDate} yaparsın
   default: []
+},
+taskActive: {
+  type: Boolean,
+  default: false
 }
+
 });
 
 module.exports = mongoose.model("Session", sessionSchema);

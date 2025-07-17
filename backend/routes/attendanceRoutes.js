@@ -400,5 +400,45 @@ router.put('/session/:week/tasks', authenticate, async (req, res) => {
   }
 });
 
+router.post('/session/:week/task/start', authenticate, async (req, res) => {
+  if (req.user.role !== 'instructor') {
+    return res.status(403).json({ error: 'Yetkisiz erişim' });
+  }
+
+  const { week } = req.params;
+  try {
+    const session = await Session.findOneAndUpdate(
+      { week: Number(week) },
+      { $set: { taskActive: true } },
+      { new: true }
+    );
+    if (!session) return res.status(404).json({ error: 'Hafta bulunamadı' });
+
+    res.json({ success: true, message: "Görev başlatıldı" });
+  } catch {
+    res.status(500).json({ error: 'Görev başlatılamadı' });
+  }
+});
+
+router.post('/session/:week/task/stop', authenticate, async (req, res) => {
+  if (req.user.role !== 'instructor') {
+    return res.status(403).json({ error: 'Yetkisiz erişim' });
+  }
+
+  const { week } = req.params;
+  try {
+    const session = await Session.findOneAndUpdate(
+      { week: Number(week) },
+      { $set: { taskActive: false } },
+      { new: true }
+    );
+    if (!session) return res.status(404).json({ error: 'Hafta bulunamadı' });
+
+    res.json({ success: true, message: "Görev durduruldu" });
+  } catch {
+    res.status(500).json({ error: 'Görev durdurulamadı' });
+  }
+});
+
 
 module.exports = router;
