@@ -7,7 +7,7 @@ const Attendance = require('../models/Attendance');
 const User = require('../models/User');
 const Session = require('../models/Session');
 const TaskSubmission = require('../models/TaskSubmission');
-const Announcement = require('../models/Announcement');
+const Announcement = require('../models/announcement');
 
 
 // ----------------------------
