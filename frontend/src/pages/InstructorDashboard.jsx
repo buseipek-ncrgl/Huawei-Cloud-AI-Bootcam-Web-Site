@@ -27,57 +27,58 @@ const InstructorDashboard = () => {
 
 
   const fetchData = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const [summaryRes, profileRes, generalRes] = await Promise.all([
-        axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/summary`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${import.meta.env.VITE_API_URL}/api/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/general-summary`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-      ]);
-      setSummary(summaryRes.data);
-      setFullName(profileRes.data.fullName);
-      setGeneralSummary(generalRes.data);
+  const token = localStorage.getItem("token");
+  try {
+    const [summaryRes, profileRes, generalRes] = await Promise.all([
+      axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/summary`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      axios.get(`${import.meta.env.VITE_API_URL}/api/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/general-summary`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ]);
 
-      const topicState = {};
-      const videoState = {};
-      const mediumState = {};
-      const taskState = {};
-      const savedState = {};
-      summaryRes.data.forEach((s) => {
-  topicState[s.week] = {
-    day1: s.topic?.day1 ?? "",
-    day2: s.topic?.day2 ?? ""
-  };
-  videoState[s.week] = {
-    day1: s.videoUrl?.day1 || "",
-    day2: s.videoUrl?.day2 || ""
-  };
-  mediumState[s.week] = {
-    day1: s.mediumUrl?.day1 || "",
-    day2: s.mediumUrl?.day2 || ""
-  };
+    // Aynı yapı, sadece async fonksiyon olarak baştan belirlenmiş olmalı
+    setSummary(summaryRes.data);
+    setFullName(profileRes.data.fullName);
+    setGeneralSummary(generalRes.data);
 
-  const tasks = s.tasks || [];
-  taskState[s.week] = tasks;      // ✅ Artık bir array
-  savedState[s.week] = tasks;
-});
+    const topicState = {};
+    const videoState = {};
+    const mediumState = {};
+    const taskState = {};
+    const savedState = {};
 
+    summaryRes.data.forEach((s) => {
+      topicState[s.week] = {
+        day1: s.topic?.day1 ?? "",
+        day2: s.topic?.day2 ?? ""
+      };
+      videoState[s.week] = {
+        day1: s.videoUrl?.day1 || "",
+        day2: s.videoUrl?.day2 || ""
+      };
+      mediumState[s.week] = {
+        day1: s.mediumUrl?.day1 || "",
+        day2: s.mediumUrl?.day2 || ""
+      };
+      taskState[s.week] = s.tasks || [];
+      savedState[s.week] = s.tasks || [];
+    });
 
-      setTempTopics(topicState);
-      setTempVideos(videoState);
-      setTempMediums(mediumState); 
-      setTempTasks(taskState);
-      setSavedTasks(savedState);
-    } catch (err) {
-      alert("Veriler alınamadı");
-    }
-  };
+    setTempTopics(topicState);
+    setTempVideos(videoState);
+    setTempMediums(mediumState); 
+    setTempTasks(taskState);
+    setSavedTasks(savedState);
+  } catch (err) {
+    alert("Veriler alınamadı");
+  }
+};
+
 
   const fetchDetails = async (week) => {
     const token = localStorage.getItem("token");
@@ -478,14 +479,20 @@ const InstructorDashboard = () => {
       <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl backdrop-blur-sm">
   {/* BAŞLIK VE ETİKET */}
   <div className="flex items-center justify-between mb-3">
-    <h3 className="text-lg font-bold text-yellow-300">
-      📌 {s.week}. Hafta Görevleri
-    </h3>
-    <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
-      s.taskActive ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"
-    }`}>
-      {s.taskActive ? "Aktif" : "Pasif"}
-    </span>
+    <h3 className="text-lg font-bold text-yellow-300 flex items-center gap-2">
+  <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+    {s.week}. Hafta
+  </span>
+</h3>
+   <span className={`flex items-center gap-2 text-sm font-semibold px-3 py-1 rounded-full ${
+  s.taskActive ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"
+}`}>
+  <span className={`w-2 h-2 rounded-full ${
+    s.taskActive ? "bg-green-400" : "bg-red-400"
+  }`} />
+  {s.taskActive ? "Aktif" : "Pasif"}
+</span>
+
   </div>
 
   {/* KAYITLI GÖREVLER */}
