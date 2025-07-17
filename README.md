@@ -16,3 +16,6 @@ huawei cloud hesabı nasıl oluşturulur
 sertifkika kısmı 
 
 duyuru bölümü ekle  
+
+
+hakkımızda kısmı 
