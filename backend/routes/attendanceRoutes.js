@@ -379,21 +379,25 @@ router.put('/session/:week/tasks', authenticate, async (req, res) => {
   }
 
   const weekNum = Number(req.params.week);
-  const { tasks } = req.body; // tasks: string[] formatında bekleniyor
+  const { list, published } = req.body;
 
   try {
     const session = await Session.findOneAndUpdate(
       { week: weekNum },
-      { tasks: tasks || [] },
+      {
+        tasks: {
+          list: Array.isArray(list) ? list : [],
+          published: Boolean(published)
+        }
+      },
       { new: true }
     );
 
     res.json({ success: true, session });
   } catch (err) {
-    console.error("❌ Görevler güncellenemedi:", err);
+    console.error("❌ Görev güncelleme hatası:", err);
     res.status(500).json({ error: 'Sunucu hatası' });
   }
 });
-
 
 module.exports = router;
