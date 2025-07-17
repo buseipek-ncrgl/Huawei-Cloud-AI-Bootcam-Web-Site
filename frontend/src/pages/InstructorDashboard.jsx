@@ -28,58 +28,62 @@ const InstructorDashboard = () => {
 
 
   const fetchData = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const [summaryRes, profileRes, generalRes] = await Promise.all([
-        axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/summary`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${import.meta.env.VITE_API_URL}/api/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/general-summary`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-      ]);
-      setSummary(summaryRes.data);
-      setFullName(profileRes.data.fullName);
-      setGeneralSummary(generalRes.data);
+  const token = localStorage.getItem("token");
+  try {
+    const [summaryRes, profileRes, generalRes] = await Promise.all([
+      axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/summary`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      axios.get(`${import.meta.env.VITE_API_URL}/api/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/general-summary`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ]);
+    
+    setSummary(summaryRes.data);
+    setFullName(profileRes.data.fullName);
+    setGeneralSummary(generalRes.data);
 
-      const topicState = {};
-      const videoState = {};
-      const mediumState = {};
-      const taskState = {};
-      const savedState = {};
-      const publishState = {};
-      summaryRes.data.forEach((s) => {
-  topicState[s.week] = {
-    day1: s.topic?.day1 ?? "",
-    day2: s.topic?.day2 ?? ""
-  };
-  videoState[s.week] = {
-    day1: s.videoUrl?.day1 || "",
-    day2: s.videoUrl?.day2 || ""
-  };
-  mediumState[s.week] = {
-    day1: s.mediumUrl?.day1 || "",
-    day2: s.mediumUrl?.day2 || ""
-  };
-  const tasks = s.tasks || [];
-  taskState[s.week] = tasks.join('\n');  // textarea için string
-  savedState[s.week] = tasks;            // görüntüleme için liste
-  publishState[s.week] = s.tasks?.published || false;
-});
+    const topicState = {};
+    const videoState = {};
+    const mediumState = {};
+    const taskState = {};
+    const savedState = {};
+    const publishState = {};
+    
+    summaryRes.data.forEach((s) => {
+      topicState[s.week] = {
+        day1: s.topic?.day1 ?? "",
+        day2: s.topic?.day2 ?? ""
+      };
+      videoState[s.week] = {
+        day1: s.videoUrl?.day1 || "",
+        day2: s.videoUrl?.day2 || ""
+      };
+      mediumState[s.week] = {
+        day1: s.mediumUrl?.day1 || "",
+        day2: s.mediumUrl?.day2 || ""
+      };
+      
+      // Görevleri doğru şekilde ayarla
+      const tasks = s.tasks?.list || [];
+      taskState[s.week] = tasks.join('\n');  // textarea için string
+      savedState[s.week] = tasks;            // görüntüleme için array
+      publishState[s.week] = s.tasks?.published || false;
+    });
 
-      setTempTopics(topicState);
-      setTempVideos(videoState);
-      setTempMediums(mediumState); 
-      setTempTasks(taskState);
-      setSavedTasks(savedState);
-      setPublishedTasks(publishState);
-    } catch (err) {
-      alert("Veriler alınamadı");
-    }
-  };
+    setTempTopics(topicState);
+    setTempVideos(videoState);
+    setTempMediums(mediumState); 
+    setTempTasks(taskState);
+    setSavedTasks(savedState);
+    setPublishedTasks(publishState);
+  } catch (err) {
+    alert("Veriler alınamadı");
+  }
+};
 
   const fetchDetails = async (week) => {
     const token = localStorage.getItem("token");
@@ -489,13 +493,19 @@ const InstructorDashboard = () => {
             const newStatus = !publishedTasks[s.week];
             try {
               await axios.post(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks/publish`, {
-  publish: newStatus
-}, {
-  headers: { Authorization: `Bearer ${token}` }
-});
+                publish: newStatus
+              }, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
 
+              setPublishedTasks(prev => ({
+                ...prev,
+                [s.week]: newStatus
+              }));
+              
               alert(newStatus ? "Görev yayınlandı ✅" : "Görev yayından kaldırıldı ⛔");
-            } catch {
+            } catch (err) {
+              console.error("Yayın hatası:", err);
               alert("Görev yayını güncellenemedi ❌");
             }
           }}
@@ -511,7 +521,9 @@ const InstructorDashboard = () => {
         {/* Görev listesi */}
         <ul className="list-disc list-inside text-white text-sm mb-4 space-y-1">
           {Array.isArray(savedTasks[s.week]) && savedTasks[s.week].length > 0 ? (
-            savedTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
+            savedTasks[s.week].map((task, i) => (
+              task.trim() && <li key={i}>{task}</li>
+            ))
           ) : (
             <li className="italic text-gray-400">Kaydedilmiş görev yok</li>
           )}
@@ -522,11 +534,11 @@ const InstructorDashboard = () => {
           rows={3}
           className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white text-sm placeholder-white/50 focus:border-yellow-400 focus:outline-none transition"
           placeholder="Her satıra bir görev yazın"
-          value={Array.isArray(tempTasks[s.week]) ? tempTasks[s.week].join('\n') : ""}
+          value={tempTasks[s.week] || ""}
           onChange={(e) =>
             setTempTasks((prev) => ({
               ...prev,
-              [s.week]: e.target.value.split('\n')
+              [s.week]: e.target.value
             }))
           }
         />
@@ -536,15 +548,28 @@ const InstructorDashboard = () => {
           onClick={async () => {
             const token = localStorage.getItem("token");
             try {
-              await axios.put(`/api/attendance/session/${s.week}/tasks`, {
-  list: tempTasks[s.week] || [],
-  published: publishedTasks[s.week]
-});
+              // String'i array'e çevir ve boş satırları temizle
+              const taskList = (tempTasks[s.week] || "")
+                .split('\n')
+                .map(task => task.trim())
+                .filter(task => task.length > 0);
 
+              await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
+                list: taskList
+              }, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
+
+              // Local state'i güncelle
+              setSavedTasks(prev => ({
+                ...prev,
+                [s.week]: taskList
+              }));
 
               alert("Görevler kaydedildi ✅");
               fetchData(); // Görevleri güncellemek için yeniden verileri çek
-            } catch {
+            } catch (err) {
+              console.error("Görev kaydetme hatası:", err);
               alert("Görevler kaydedilemedi ❌");
             }
           }}
@@ -556,7 +581,6 @@ const InstructorDashboard = () => {
     ))}
   </div>
 )}
-
 
       {/* KATILIM PANELİ */}
 {activePanel === "Katılım" && (
