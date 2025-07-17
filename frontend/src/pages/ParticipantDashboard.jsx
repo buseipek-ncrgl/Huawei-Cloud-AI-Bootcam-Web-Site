@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const panels = [
   { key: "Profil", title: "🙋‍♂️ Profilim" },
+  { key: "Duyurular", title: "📢 Duyurular" },
   { key: "Program", title: "📅 Eğitim Programı" },
   { key: "Katılım", title: "📝 Katılım Durumu" },
   { key: "Eğitmenler", title: "👨‍🏫 Eğitmenler" },
@@ -16,6 +17,7 @@ const panels = [
 
 const panelTitles = {
   Profil: "🙋‍♂️ Profilim",
+  Duyurular: "📢 Duyurular",
   Program: "📅 Eğitim Programı",
   Katılım: "📝 Katılım Durumu",
   Eğitmenler: "👨‍🏫 Eğitmenler",
@@ -35,6 +37,7 @@ const ParticipantDashboard = () => {
   const [activePanel, setActivePanel] = useState("Program");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const [announcements, setAnnouncements] = useState([]);
 
   useEffect(() => {
   const fetchData = async () => {
@@ -91,6 +94,22 @@ const ParticipantDashboard = () => {
   fetchData();
 }, [navigate]);
 
+const fetchAnnouncements = async () => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/announcements`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    setAnnouncements(res.data.announcements);
+  } catch (err) {
+    console.error("Duyurular alınamadı ❌", err);
+  }
+};
+
+useEffect(() => {
+  fetchAnnouncements();
+}, []);
 
   const handleAttend = async (week, day) => {
   try {
@@ -622,6 +641,25 @@ const handleDeleteSubmission = async (id) => {
         )}
       </div>
     ))}
+  </div>
+)}
+
+
+{activePanel === "Duyurular" && (
+  <div className="space-y-4">
+    {announcements.length > 0 ? (
+      announcements.map((a) => (
+        <div key={a._id} className="bg-white/10 border border-white/20 p-4 rounded-xl">
+          <h3 className="text-lg font-bold text-yellow-300">{a.title}</h3>
+          <p className="text-sm text-white/90 mt-2 whitespace-pre-line">{a.content}</p>
+          <p className="text-xs text-white/50 mt-2 italic">
+            {new Date(a.createdAt).toLocaleString("tr-TR")}
+          </p>
+        </div>
+      ))
+    ) : (
+      <p className="text-white/60 italic">Henüz duyuru bulunmamaktadır.</p>
+    )}
   </div>
 )}
 
