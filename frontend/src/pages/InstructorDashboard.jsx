@@ -470,36 +470,20 @@ const InstructorDashboard = () => {
           ))}
         </div>
       )}
-      
- {/* KATILIM PANELİ */}
 
 {activePanel === "Görevler" && (
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
     {summary.map((s) => (
       <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl backdrop-blur-sm">
         <h3 className="text-lg font-bold text-yellow-300 mb-3">
-           {s.week}. Hafta
+          📌 {s.week}. Hafta Görevleri
         </h3>
 
-        <label className="flex items-center gap-2 text-sm text-white mb-2">
-          <input
-            type="checkbox"
-            checked={publishedTasks[s.week]}
-            onChange={(e) =>
-              setPublishedTasks((prev) => ({
-                ...prev,
-                [s.week]: e.target.checked
-              }))
-            }
-          />
-          Katılımcılara gösterilsin (yayında)
-        </label>
-
         <ul className="list-disc list-inside text-white text-sm mb-4 space-y-1">
-          {tempTasks[s.week]?.length > 0 ? (
-            tempTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
+          {savedTasks[s.week]?.length > 0 ? (
+            savedTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
           ) : (
-            <li className="italic text-gray-400">Görev yok</li>
+            <li className="italic text-gray-400">Henüz kayıtlı görev yok</li>
           )}
         </ul>
 
@@ -507,11 +491,11 @@ const InstructorDashboard = () => {
           rows={3}
           className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white text-sm placeholder-white/50 focus:border-yellow-400 focus:outline-none transition"
           placeholder="Her satıra bir görev yazın"
-          value={tempTasks[s.week]?.join('\n') || ""}
+          value={tempTasks[s.week] || ""}
           onChange={(e) =>
             setTempTasks((prev) => ({
               ...prev,
-              [s.week]: e.target.value.split('\n')
+              [s.week]: e.target.value
             }))
           }
         />
@@ -519,15 +503,20 @@ const InstructorDashboard = () => {
         <button
           onClick={async () => {
             const token = localStorage.getItem("token");
+            const tasksArray = tempTasks[s.week]?.split('\n').filter(Boolean) || [];
             try {
               await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
-                list: tempTasks[s.week] || [],
-                published: publishedTasks[s.week]
+                tasks: tasksArray
               }, {
                 headers: { Authorization: `Bearer ${token}` }
               });
               alert("Görevler kaydedildi ✅");
-              fetchData();
+
+              // Görevler kaydedildiyse savedTask'ı da güncelle
+              setSavedTasks((prev) => ({
+                ...prev,
+                [s.week]: tasksArray
+              }));
             } catch {
               alert("Görevler kaydedilemedi ❌");
             }
@@ -540,7 +529,6 @@ const InstructorDashboard = () => {
     ))}
   </div>
 )}
-
 
       {/* KATILIM PANELİ */}
 {activePanel === "Katılım" && (
