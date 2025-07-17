@@ -536,11 +536,11 @@ const InstructorDashboard = () => {
           onClick={async () => {
             const token = localStorage.getItem("token");
             try {
-              await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
-  tasks: tempTasks[s.week] || []
-}, {
-  headers: { Authorization: `Bearer ${token}` }
+              await axios.put(`/api/attendance/session/${s.week}/tasks`, {
+  list: tempTasks[s.week] || [],
+  published: publishedTasks[s.week]
 });
+
 
               alert("Görevler kaydedildi ✅");
               fetchData(); // Görevleri güncellemek için yeniden verileri çek
