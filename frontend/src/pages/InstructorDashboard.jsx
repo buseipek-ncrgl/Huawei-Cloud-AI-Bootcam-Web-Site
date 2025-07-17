@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const panels = ["Program", "Katılım", "Kaynaklar", "Genel Katılım"];
+const panels = ["Program", "Katılım", "Kaynaklar", "Genel Katılım", "Görevler"];
 const panelTitles = {
   Program: "📅 Eğitim Programı",
   Katılım: "📝 Katılım Yönetimi",
   Kaynaklar: "📚 Eğitim Kaynakları",
   "Genel Katılım": "📊 Genel Katılım Özeti",
+  "Görevler": "📌 Haftalık Görevler"
 };
 
 const InstructorDashboard = () => {
@@ -21,6 +22,7 @@ const InstructorDashboard = () => {
   const [tempVideos, setTempVideos] = useState({});
   const [tempMediums, setTempMediums] = useState({});
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [tempTasks, setTempTasks] = useState({});
 
   const fetchData = async () => {
     const token = localStorage.getItem("token");
@@ -456,6 +458,59 @@ const InstructorDashboard = () => {
           ))}
         </div>
       )}
+
+{activePanel === "Görevler" && (
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    {summary.map((s) => (
+      <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl backdrop-blur-sm">
+        <h3 className="text-lg font-bold text-yellow-300 mb-3">
+          📌 {s.week}. Hafta Görevleri
+        </h3>
+
+        <ul className="list-disc list-inside text-white text-sm mb-4 space-y-1">
+          {tempTasks[s.week]?.length > 0 ? (
+            tempTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
+          ) : (
+            <li className="italic text-gray-400">Görev yok</li>
+          )}
+        </ul>
+
+        <textarea
+          rows={3}
+          className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white text-sm placeholder-white/50 focus:border-yellow-400 focus:outline-none transition"
+          placeholder="Her satıra bir görev yazın"
+          value={tempTasks[s.week]?.join('\n') || ""}
+          onChange={(e) =>
+            setTempTasks((prev) => ({
+              ...prev,
+              [s.week]: e.target.value.split('\n')
+            }))
+          }
+        />
+
+        <button
+          onClick={async () => {
+            const token = localStorage.getItem("token");
+            try {
+              await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
+                tasks: tempTasks[s.week] || []
+              }, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
+              alert("Görevler kaydedildi ✅");
+              fetchData();
+            } catch {
+              alert("Görevler kaydedilemedi ❌");
+            }
+          }}
+          className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm"
+        >
+          💾 Görevleri Kaydet
+        </button>
+      </div>
+    ))}
+  </div>
+)}
 
       {/* KATILIM PANELİ */}
 {activePanel === "Katılım" && (
