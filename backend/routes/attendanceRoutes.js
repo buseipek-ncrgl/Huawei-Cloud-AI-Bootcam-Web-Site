@@ -387,10 +387,11 @@ router.put('/session/:week/tasks', authenticate, async (req, res) => {
 
   try {
     const session = await Session.findOneAndUpdate(
-      { week: weekNum },
-      { $set: { 'tasks.list': list } },
-      { new: true }
-    );
+  { week: weekNum },
+  { $set: { tasks: list } },  // ✅ 'tasks.list' değil, doğrudan 'tasks'
+  { new: true }
+);
+
 
     res.json({ success: true, session });
   } catch (err) {
