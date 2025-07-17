@@ -833,6 +833,7 @@ const fetchAnnouncements = async () => {
         await axios.post(`${import.meta.env.VITE_API_URL}/api/announcements`, newAnnouncement, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        setNewAnnouncement({ title: "", content: "" });
         fetchAnnouncements();
       } catch {
         alert("Duyuru eklenemedi ❌");
