@@ -46,9 +46,15 @@ const sessionSchema = new mongoose.Schema({
       default: ""
     }
   },
-  "tasks": {
-  "list": [],
-  "published": false
+ tasks: {
+  list: {
+    type: [String], // veya başka bir schema tipi
+    default: []
+  },
+  published: {
+    type: Boolean,
+    default: false
+  }
 }
 
 });
