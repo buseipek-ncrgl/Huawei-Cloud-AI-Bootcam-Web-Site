@@ -24,6 +24,7 @@ const InstructorDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
  const [tempTasks, setTempTasks] = useState({});
  const [savedTasks, setSavedTasks] = useState({});
+ const [publishedTasks, setPublishedTasks] = useState({});
 
 
   const fetchData = async () => {
@@ -65,6 +66,7 @@ const InstructorDashboard = () => {
   const tasks = s.tasks || [];
   taskState[s.week] = tasks.join('\n');  // textarea için string
   savedState[s.week] = tasks;            // görüntüleme için liste
+  publishState[s.week] = s.tasks?.published || false;
 });
 
       setTempTopics(topicState);
@@ -72,6 +74,7 @@ const InstructorDashboard = () => {
       setTempMediums(mediumState); 
       setTempTasks(taskState);
       setSavedTasks(savedState);
+      setPublishedTasks(publishState);
     } catch (err) {
       alert("Veriler alınamadı");
     }
@@ -473,14 +476,28 @@ const InstructorDashboard = () => {
     {summary.map((s) => (
       <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl backdrop-blur-sm">
         <h3 className="text-lg font-bold text-yellow-300 mb-3">
-          📌 {s.week}. Hafta Görevleri
+           {s.week}. Hafta
         </h3>
 
+        <label className="flex items-center gap-2 text-sm text-white mb-2">
+          <input
+            type="checkbox"
+            checked={publishedTasks[s.week]}
+            onChange={(e) =>
+              setPublishedTasks((prev) => ({
+                ...prev,
+                [s.week]: e.target.checked
+              }))
+            }
+          />
+          Katılımcılara gösterilsin (yayında)
+        </label>
+
         <ul className="list-disc list-inside text-white text-sm mb-4 space-y-1">
-          {savedTasks[s.week]?.length > 0 ? (
-            savedTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
+          {tempTasks[s.week]?.length > 0 ? (
+            tempTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
           ) : (
-            <li className="italic text-gray-400">Henüz kayıtlı görev yok</li>
+            <li className="italic text-gray-400">Görev yok</li>
           )}
         </ul>
 
@@ -488,11 +505,11 @@ const InstructorDashboard = () => {
           rows={3}
           className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white text-sm placeholder-white/50 focus:border-yellow-400 focus:outline-none transition"
           placeholder="Her satıra bir görev yazın"
-          value={tempTasks[s.week] || ""}
+          value={tempTasks[s.week]?.join('\n') || ""}
           onChange={(e) =>
             setTempTasks((prev) => ({
               ...prev,
-              [s.week]: e.target.value
+              [s.week]: e.target.value.split('\n')
             }))
           }
         />
@@ -500,20 +517,15 @@ const InstructorDashboard = () => {
         <button
           onClick={async () => {
             const token = localStorage.getItem("token");
-            const tasksArray = tempTasks[s.week]?.split('\n').filter(Boolean) || [];
             try {
               await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
-                tasks: tasksArray
+                list: tempTasks[s.week] || [],
+                published: publishedTasks[s.week]
               }, {
                 headers: { Authorization: `Bearer ${token}` }
               });
               alert("Görevler kaydedildi ✅");
-
-              // Görevler kaydedildiyse savedTask'ı da güncelle
-              setSavedTasks((prev) => ({
-                ...prev,
-                [s.week]: tasksArray
-              }));
+              fetchData();
             } catch {
               alert("Görevler kaydedilemedi ❌");
             }
@@ -526,6 +538,7 @@ const InstructorDashboard = () => {
     ))}
   </div>
 )}
+
 
       {/* KATILIM PANELİ */}
 {activePanel === "Katılım" && (
