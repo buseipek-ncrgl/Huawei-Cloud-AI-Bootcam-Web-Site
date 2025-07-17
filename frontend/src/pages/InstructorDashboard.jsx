@@ -488,11 +488,11 @@ const InstructorDashboard = () => {
             const token = localStorage.getItem("token");
             const newStatus = !publishedTasks[s.week];
             try {
-              await axios.post(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks/publish`, {
-                publish: newStatus
-              }, {
-                headers: { Authorization: `Bearer ${token}` }
-              });
+              await axios.post(
+                `${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks/publish`,
+                { publish: newStatus },
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
               setPublishedTasks((prev) => ({
                 ...prev,
                 [s.week]: newStatus
@@ -513,19 +513,19 @@ const InstructorDashboard = () => {
 
         {/* Görev listesi */}
         <ul className="list-disc list-inside text-white text-sm mb-4 space-y-1">
-          {savedTasks[s.week]?.length > 0 ? (
+          {Array.isArray(savedTasks[s.week]) && savedTasks[s.week].length > 0 ? (
             savedTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
           ) : (
-            <li className="italic text-gray-400">Görev yok</li>
+            <li className="italic text-gray-400">Kaydedilmiş görev yok</li>
           )}
         </ul>
 
-        {/* Görev güncelleme */}
+        {/* Görev güncelleme alanı */}
         <textarea
           rows={3}
           className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white text-sm placeholder-white/50 focus:border-yellow-400 focus:outline-none transition"
           placeholder="Her satıra bir görev yazın"
-          value={tempTasks[s.week]?.join('\n') || ""}
+          value={Array.isArray(tempTasks[s.week]) ? tempTasks[s.week].join('\n') : ""}
           onChange={(e) =>
             setTempTasks((prev) => ({
               ...prev,
@@ -534,17 +534,21 @@ const InstructorDashboard = () => {
           }
         />
 
+        {/* Kaydet butonu */}
         <button
           onClick={async () => {
             const token = localStorage.getItem("token");
             try {
-              await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
-                tasks: tempTasks[s.week] || []
-              }, {
-                headers: { Authorization: `Bearer ${token}` }
-              });
+              await axios.put(
+                `${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`,
+                {
+                  list: tempTasks[s.week] || [],
+                  published: publishedTasks[s.week]
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
               alert("Görevler kaydedildi ✅");
-              fetchData();
+              fetchData(); // Görevleri güncellemek için yeniden verileri çek
             } catch {
               alert("Görevler kaydedilemedi ❌");
             }
