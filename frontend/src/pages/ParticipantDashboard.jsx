@@ -99,8 +99,10 @@ const ParticipantDashboard = () => {
   }
 };
 
+// 🔧 GÜNCELLENMİŞ handleTaskSubmit
 const handleTaskSubmit = async (e, week) => {
   e.preventDefault();
+
   const fileUrl = e.target.fileUrl.value.trim();
   if (!fileUrl) return;
 
@@ -108,7 +110,7 @@ const handleTaskSubmit = async (e, week) => {
 
   try {
     const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/attendance/session/${week}/task`,
+      `${import.meta.env.VITE_API_URL}/api/attendance/session/${week}/task`, // ✅ doğru endpoint
       { fileUrl },
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -120,8 +122,9 @@ const handleTaskSubmit = async (e, week) => {
     alert("✅ Görev gönderildi!");
     e.target.reset();
 
-    const newSubmission = response.data.submission;
+    const newSubmission = response.data.submission; // ✅ _id içeren doğru veri
 
+    // State’e ekle (timestamp değil, response’tan gelen veri)
     setSessions((prev) =>
       prev.map((s) =>
         s.week === week
@@ -137,6 +140,7 @@ const handleTaskSubmit = async (e, week) => {
     alert("Görev gönderilemedi. Lütfen bağlantıyı kontrol edin.");
   }
 };
+
 
 
 const handleDeleteSubmission = async (submissionId) => {
