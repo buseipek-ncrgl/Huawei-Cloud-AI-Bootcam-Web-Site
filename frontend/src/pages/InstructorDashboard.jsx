@@ -507,23 +507,28 @@ const InstructorDashboard = () => {
 )}
 
       {/* HAFTA DETAYI */}
-      {selectedWeek && details.present.length > 0 && (
-        <div className="mt-8 bg-white/10 border border-white/20 rounded-xl p-5 lg:p-6 backdrop-blur-sm">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-bold text-white">
-              {selectedWeek}. Hafta Katılım Detayları
-            </h3>
-            <button 
-              onClick={() => setSelectedWeek(null)}
-              className="text-white/70 hover:text-white transition"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+{selectedWeek && details.present && (
+  <div className="mt-8 bg-white/10 border border-white/20 rounded-xl p-5 lg:p-6 backdrop-blur-sm">
+    <div className="flex justify-between items-center mb-4">
+      <h3 className="text-lg font-bold text-white">
+        {selectedWeek}. Hafta Katılım Detayları
+      </h3>
+      <button
+        onClick={() => setSelectedWeek(null)}
+        className="text-white/70 hover:text-white transition"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    {[1, 2].map((day) => (
+      <div key={day} className="mb-8">
+        <h4 className="text-white text-lg font-bold mb-2">📅 {day}. Gün Katılım Listesi</h4>
+        {details.present[day]?.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm text-white">
+            <table className="min-w-full text-sm text-white mb-4">
               <thead className="bg-white/10">
                 <tr>
                   <th className="text-left px-4 py-3 font-bold rounded-tl-lg">Ad Soyad</th>
@@ -533,14 +538,18 @@ const InstructorDashboard = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/10">
-                {details.present.map((p) => (
+                {details.present[day].map((p) => (
                   <tr key={p.id} className="hover:bg-white/5 transition">
                     <td className="px-4 py-3">{p.name}</td>
                     <td className="px-4 py-3">{p.email}</td>
                     <td className="px-4 py-3">{p.attended}/{p.totalWeeks}</td>
                     <td className="px-4 py-3">
                       <span className={`font-semibold ${
-                        p.rate >= 75 ? "text-green-400" : p.rate >= 50 ? "text-yellow-300" : "text-red-400"
+                        p.rate >= 75
+                          ? "text-green-400"
+                          : p.rate >= 50
+                          ? "text-yellow-300"
+                          : "text-red-400"
                       }`}>
                         %{p.rate}
                       </span>
@@ -550,8 +559,14 @@ const InstructorDashboard = () => {
               </tbody>
             </table>
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="text-white/60 italic">Bu gün için katılım yok.</p>
+        )}
+      </div>
+    ))}
+  </div>
+)}
+
 
       {/* GENEL KATILIM */}
       {activePanel === "Genel Katılım" && generalSummary.length > 0 && (
