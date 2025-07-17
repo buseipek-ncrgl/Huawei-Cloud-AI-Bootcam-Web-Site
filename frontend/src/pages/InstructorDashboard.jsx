@@ -70,35 +70,37 @@ const InstructorDashboard = () => {
     }
   };
 
-  const handleStart = async (week) => {
-    const token = localStorage.getItem("token");
-    try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/sessions/${week}/start`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert(`${week}. hafta başlatıldı ✅`);
-      fetchData();
-    } catch {
-      alert("Başlatılamadı ❌");
-    }
-  };
+  const handleStart = async (week, day) => {
+  const token = localStorage.getItem("token");
+  try {
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/attendance/${week}/day/${day}/start`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    alert(`${week}. hafta ${day}. gün başlatıldı ✅`);
+    fetchData(); // yenile
+  } catch {
+    alert("Başlatılamadı ❌");
+  }
+};
 
-  const handleStop = async (week) => {
-    const token = localStorage.getItem("token");
-    try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/sessions/${week}/stop`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert(`${week}. hafta durduruldu ⛔`);
-      fetchData();
-    } catch {
-      alert("Durdurulamadı ❌");
-    }
-  };
+
+  const handleStop = async (week, day) => {
+  const token = localStorage.getItem("token");
+  try {
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/attendance/${week}/day/${day}/stop`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    alert(`${week}. hafta ${day}. gün durduruldu ⛔`);
+    fetchData();
+  } catch {
+    alert("Durdurulamadı ❌");
+  }
+};
+
 
   const handleUpdate = async (week, field) => {
     const token = localStorage.getItem("token");
