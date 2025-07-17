@@ -463,7 +463,7 @@ router.post('/session/:week/task/stop', authenticate, async (req, res) => {
 });
 
 // Görev gönderimi (katılımcı)
-router.post('/:week/task', authenticate, async (req, res) => {
+router.post('/session/:week/task', authenticate, async (req, res) => {
   const { fileUrl } = req.body;
   const week = Number(req.params.week);
 
