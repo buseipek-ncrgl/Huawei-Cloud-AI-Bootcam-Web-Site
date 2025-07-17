@@ -101,46 +101,71 @@ const ParticipantDashboard = () => {
 
 const handleTaskSubmit = async (e, week) => {
   e.preventDefault();
+
   const fileUrl = e.target.fileUrl.value.trim();
   if (!fileUrl) return;
 
-  try {
-    const token = localStorage.getItem("token");
-   await axios.post(
-  `${import.meta.env.VITE_API_URL}/api/attendance/session/${week}/task`, // ✅ doğru rota
-  { fileUrl },
-  { headers: { Authorization: `Bearer ${token}` } }
-);
-
-
-    alert("Görev başarıyla gönderildi!");
-
-    // Formu temizle
-    e.target.reset();
-
-    // Gönderimleri yeniden çek
-    fetchSessions(); // useEffect içinde tanımladığın fonksiyon
-  } catch (err) {
-    alert(err.response?.data?.error || "Görev gönderilemedi");
-  }
-};
-
-const handleDeleteSubmission = async (submissionId) => {
-  if (!window.confirm("Gönderimi silmek istediğine emin misin?")) return;
+  const token = localStorage.getItem("token");
 
   try {
-    const token = localStorage.getItem("token");
-    await axios.delete(
-      `${import.meta.env.VITE_API_URL}/api/attendance/task-submissions/${submissionId}`,
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/submissions`,
+      { week, fileUrl },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    alert("Gönderim silindi");
-    fetchSessions();
+    if (!response.data.success) {
+      throw new Error("Görev gönderilemedi");
+    }
+
+    alert("✅ Görev gönderildi!");
+
+    // Gönderim sonrası formu temizle
+    e.target.reset();
+
+    // Gönderilen dosyayı local state’e ekle
+    setSessions((prev) =>
+      prev.map((s) =>
+        s.week === week
+          ? {
+              ...s,
+              submissions: [...(s.submissions || []), { fileUrl, timestamp: new Date().toISOString() }]
+            }
+          : s
+      )
+    );
   } catch (err) {
-    alert(err.response?.data?.error || "Silinemedi");
+    console.error("Görev gönderilemedi ❌:", err);
+    alert("Görev gönderilemedi. Lütfen bağlantıyı kontrol edin.");
   }
 };
+
+const handleDeleteSubmission = async (id) => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/attendance/task-submissions/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || "Silinemedi");
+    alert("Görev gönderimi silindi ✅");
+
+    // Local state'den çıkar
+    setSessions((prev) =>
+      prev.map((s) => ({
+        ...s,
+        submissions: s.submissions.filter((sub) => sub.id !== id)
+      }))
+    );
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
 
   if (loading) {
     return (
