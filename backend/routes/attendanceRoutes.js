@@ -174,43 +174,76 @@ router.get('/details/:week', async (req, res) => {
 });
 
 // Yoklamayı başlat
-router.post('/:week/start', async (req, res) => {
+router.post('/:week/day/:day/start', async (req, res) => {
   try {
     if (req.user.role !== 'instructor') {
       return res.status(403).json({ error: 'Yetkisiz erişim' });
     }
-    const weekNum = Number(req.params.week);
-    await Session.updateMany({}, { active: false });
-    await Session.findOneAndUpdate({ week: weekNum }, { active: true }, { upsert: true });
-    res.json({ success: true, message: `${weekNum}. hafta yoklaması başlatıldı` });
+
+    const { week, day } = req.params;
+    if (!['1', '2'].includes(day)) {
+      return res.status(400).json({ error: 'Gün 1 ya da 2 olmalı' });
+    }
+
+    const field = `activeDays.day${day}`;
+    const update = { [field]: true };
+
+    const session = await Session.findOneAndUpdate(
+      { week: Number(week) },
+      { $set: update },
+      { new: true }
+    );
+
+    if (!session) return res.status(404).json({ error: 'Hafta bulunamadı' });
+
+    res.json({ success: true, message: `${week}. hafta ${day}. gün başlatıldı` });
   } catch (err) {
-    console.error('❌ Başlatma başarısız:', err);
+    console.error("❌ Gün başlatılamadı:", err);
     res.status(500).json({ error: 'Sunucu hatası' });
   }
 });
+
 
 // Yoklamayı durdur
-router.post('/:week/stop', async (req, res) => {
+router.post('/:week/day/:day/stop', async (req, res) => {
   try {
     if (req.user.role !== 'instructor') {
       return res.status(403).json({ error: 'Yetkisiz erişim' });
     }
-    const weekNum = Number(req.params.week);
-    await Session.findOneAndUpdate({ week: weekNum }, { active: false });
-    res.json({ success: true, message: `${weekNum}. hafta yoklaması durduruldu` });
+
+    const { week, day } = req.params;
+    if (!['1', '2'].includes(day)) {
+      return res.status(400).json({ error: 'Gün 1 ya da 2 olmalı' });
+    }
+
+    const field = `activeDays.day${day}`;
+    const update = { [field]: false };
+
+    const session = await Session.findOneAndUpdate(
+      { week: Number(week) },
+      { $set: update },
+      { new: true }
+    );
+
+    if (!session) return res.status(404).json({ error: 'Hafta bulunamadı' });
+
+    res.json({ success: true, message: `${week}. hafta ${day}. gün durduruldu` });
   } catch (err) {
-    console.error('❌ Durdurma başarısız:', err);
+    console.error("❌ Gün durdurulamadı:", err);
     res.status(500).json({ error: 'Sunucu hatası' });
   }
 });
 
-// Katılımcıların genel katılım oranları
+
 router.get('/participants-summary', async (req, res) => {
   try {
     if (req.user.role !== 'instructor') {
       return res.status(403).json({ error: 'Yetkisiz erişim' });
     }
-    const totalWeeks = await Session.countDocuments();
+
+    const sessions = await Session.find();
+    const totalPossibleAttendances = sessions.length * 2; // Her hafta 2 gün
+
     const participants = await User.find({ role: 'participant' }).select('_id fullName');
     const allAttendance = await Attendance.find({ attended: true });
 
@@ -218,20 +251,26 @@ router.get('/participants-summary', async (req, res) => {
       const attendedCount = allAttendance.filter(a =>
         a.userId.toString() === p._id.toString()
       ).length;
-      const rate = totalWeeks > 0 ? Math.round((attendedCount / totalWeeks) * 100) : 0;
+
+      const rate = totalPossibleAttendances > 0
+        ? Math.round((attendedCount / totalPossibleAttendances) * 100)
+        : 0;
+
       return {
         name: p.fullName,
         attended: attendedCount,
-        totalWeeks,
+        totalPossible: totalPossibleAttendances,
         rate
       };
     });
+
     res.json(result);
   } catch (err) {
     console.error('❌ Katılım oranları alınamadı:', err);
     res.status(500).json({ error: 'Sunucu hatası' });
   }
 });
+
 
 // Genel katılım özeti - tüm kullanıcılar
 router.get('/general-summary', authenticate, async (req, res) => {
