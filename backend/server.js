@@ -7,12 +7,28 @@ dotenv.config();
 const app = express();
 
 // ✅ CORS yapılandırması
+const allowedOrigins = [
+  "https://huawei-cloud-ai-bootcamp.vercel.app", // ✅ Production
+];
+
+// ⛔ Geçici olarak localhost'u da ekliyoruz
+if (process.env.NODE_ENV !== "production") {
+  allowedOrigins.push("http://localhost:5174");
+}
+
 const corsOptions = {
-  origin: "https://huawei-cloud-ai-bootcamp.vercel.app",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS: " + origin));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
+  credentials: true,
 };
+
 app.use(cors(corsOptions));
 
 // Diğer middleware’ler
