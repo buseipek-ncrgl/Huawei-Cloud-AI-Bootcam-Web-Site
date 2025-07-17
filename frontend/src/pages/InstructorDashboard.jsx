@@ -45,11 +45,11 @@ const InstructorDashboard = () => {
       const mediumState = {};
       summaryRes.data.forEach((s) => {
   topicState[s.week] = {
-    day1: s.topicDay1 || "",
-    day2: s.topicDay2 || ""
+    day1: s.topic?.day1 ?? "",
+    day2: s.topic?.day2 ?? ""
   };
-  videoState[s.week] = s.videoUrl || "";
-  mediumState[s.week] = s.mediumUrl || "";
+  videoState[s.week] = s.videoUrl ?? "";
+  mediumState[s.week] = s.mediumUrl ?? "";
 });
 
       setTempTopics(topicState);
