@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const panels = ["Program", "Katılım", "Kaynaklar", "Görevler", "Genel Katılım"];
+const panels = ["Program", "Katılım", "Kaynaklar", "Görevler", "Genel Katılım", "Duyurular"];
 const panelTitles = {
   Program: "📅 Eğitim Programı",
   Katılım: "📝 Katılım Yönetimi",
   Kaynaklar: "📚 Eğitim Kaynakları",
   "Görevler": "📌 Haftalık Görevler",
   "Genel Katılım": "📊 Genel Katılım Özeti",
+  "Duyurular": "📣 Duyurular"
 };
 
 const InstructorDashboard = () => {
@@ -24,6 +25,8 @@ const InstructorDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
  const [tempTasks, setTempTasks] = useState({});
  const [savedTasks, setSavedTasks] = useState({});
+ const [announcements, setAnnouncements] = useState([]);
+ const [newAnnouncement, setNewAnnouncement] = useState("");
 
 
   const fetchData = async () => {
@@ -79,6 +82,17 @@ const InstructorDashboard = () => {
   }
 };
 
+const fetchAnnouncements = async () => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/announcements`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setAnnouncements(res.data);
+  } catch {
+    alert("Duyurular alınamadı");
+  }
+};
 
   const fetchDetails = async (week) => {
     const token = localStorage.getItem("token");
@@ -787,6 +801,66 @@ const InstructorDashboard = () => {
           </div>
         </div>
       )}
+
+      {activePanel === "Duyurular" && (
+  <div className="space-y-6">
+    {/* Yeni duyuru alanı */}
+    <div className="bg-white/5 p-4 rounded-lg border border-white/10 backdrop-blur-sm">
+      <textarea
+        rows={3}
+        placeholder="Yeni duyuru yaz..."
+        value={newAnnouncement}
+        onChange={(e) => setNewAnnouncement(e.target.value)}
+        className="w-full p-3 rounded bg-white/10 text-white border border-white/30 text-sm placeholder-white/50 focus:outline-none focus:border-yellow-400"
+      />
+      <button
+        onClick={async () => {
+          const token = localStorage.getItem("token");
+          try {
+            await axios.post(`${import.meta.env.VITE_API_URL}/api/announcements`, {
+              content: newAnnouncement
+            }, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            setNewAnnouncement("");
+            fetchAnnouncements();
+          } catch {
+            alert("Duyuru eklenemedi ❌");
+          }
+        }}
+        className="mt-3 bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg font-semibold text-sm transition"
+      >
+        ➕ Duyuru Ekle
+      </button>
+    </div>
+
+    {/* Mevcut duyurular */}
+    <div className="space-y-4">
+      {announcements.map((a) => (
+        <div key={a._id} className="bg-white/10 border border-white/20 p-4 rounded-lg text-white text-sm relative">
+          <p>{a.content}</p>
+          <button
+            onClick={async () => {
+              const token = localStorage.getItem("token");
+              try {
+                await axios.delete(`${import.meta.env.VITE_API_URL}/api/announcements/${a._id}`, {
+                  headers: { Authorization: `Bearer ${token}` }
+                });
+                fetchAnnouncements();
+              } catch {
+                alert("Silinemedi ❌");
+              }
+            }}
+            className="absolute top-2 right-2 text-red-400 hover:text-red-600"
+          >
+            ❌
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
     </main>
   </div>
 )};
