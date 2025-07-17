@@ -732,7 +732,7 @@ const handleDeleteSubmission = async (id) => {
 
 {activePanel === "Huawei Cloud Hesabı" && (
   <div className="p-6 bg-white/5 border border-white/20 rounded-xl text-white space-y-6">
-
+    
     <p className="text-white/90 text-sm leading-relaxed">
       Huawei Cloud üzerinde ücretsiz bir hesap oluşturmak oldukça kolaydır. Aşağıdaki adımları takip ederek dakikalar içinde hesabınızı aktif hâle getirebilirsiniz:
     </p>
@@ -750,7 +750,8 @@ const handleDeleteSubmission = async (id) => {
         </a>
       </li>
       <li>
-        Sağ üstteki <span className="font-semibold text-yellow-300">“Register”</span> veya <span className="font-semibold text-yellow-300">“Sign Up”</span> butonuna tıklayın.
+        Sağ üstteki <span className="font-semibold text-yellow-300">“Register”</span> veya{" "}
+        <span className="font-semibold text-yellow-300">“Sign Up”</span> butonuna tıklayın.
       </li>
       <li>E-posta adresi ile kayıt olun ve gelen doğrulama kodunu girin.</li>
       <li>Şifre ve kişisel bilgileri doldurun.</li>
@@ -765,23 +766,22 @@ const handleDeleteSubmission = async (id) => {
       <p className="text-sm text-white/90 mb-3">
         Aşağıdaki bağlantıya tıklayarak Huawei Cloud hesap açma sürecini adım adım izleyebilirsiniz:
       </p>
-     <a
-  href="https://www.youtube.com/watch?v=abc123XYZ"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="block text-blue-300 underline text-lg"
->
-  ▶️ YouTube üzerinden videoyu izlemek için tıklayın
-</a>
+      <a
+        href="https://www.youtube.com/watch?v=abc123XYZ"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block text-blue-400 hover:text-blue-500 font-medium underline text-base"
+      >
+        ▶️ YouTube üzerinden videoyu izlemek için tıklayın
+      </a>
     </div>
 
     <p className="text-white/90 text-sm leading-relaxed">
-      Hesabınızı başarıyla açtıktan sonra <span className="text-yellow-300 font-medium">Huawei Cloud Console</span> üzerinden servisleri keşfetmeye başlayabilirsiniz.
+      Hesabınızı başarıyla açtıktan sonra{" "}
+      <span className="text-yellow-300 font-medium">Huawei Cloud Console</span> üzerinden servisleri keşfetmeye başlayabilirsiniz.
     </p>
   </div>
 )}
-
-
 
       </main>
     </div>
