@@ -73,10 +73,17 @@ router.post('/:week', authenticate, async (req, res) => {
     }
 
     // Bu hafta aktif mi?
-    const activeSession = await Session.findOne({ week: weekNum, active: true });
-    if (!activeSession && req.user.role === 'participant') {
-      return res.status(400).json({ success: false, error: 'Bu hafta için yoklama alınmıyor' });
-    }
+    // Bu hafta aktif mi?
+const activeSession = await Session.findOne({ week: weekNum });
+
+if (
+  !activeSession ||
+  !activeSession.activeDays ||
+  !activeSession.activeDays[`day${dayNum}`]
+) {
+  return res.status(400).json({ success: false, error: 'Bu gün için yoklama alınmıyor' });
+}
+
 
     // Upsert: kullanıcı + hafta + gün için
     const attendance = await Attendance.findOneAndUpdate(
