@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const panels = [
-  { key: "Profil", title: "📅 Profil" },
+  { key: "Profil", title: " Profil" },
   { key: "Program", title: "📅 Eğitim Programı" },
   { key: "Katılım", title: "📝 Katılım Durumu" },
   { key: "Eğitmenler", title: "👨‍🏫 Eğitmenler" },
@@ -68,8 +68,8 @@ const ParticipantDashboard = () => {
   try {
     const token = localStorage.getItem("token");
     const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/attendance/${week}/day/${day}`,
-      {},
+      `${import.meta.env.VITE_API_URL}/api/attendance/${week}`,  // ✅ Doğru endpoint
+      { day },  // 👈 Gün bilgisi body içinde gönderiliyor
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
@@ -94,7 +94,6 @@ const ParticipantDashboard = () => {
     alert(err.response?.data?.error || err.message);
   }
 };
-
 
   if (loading) {
     return (
