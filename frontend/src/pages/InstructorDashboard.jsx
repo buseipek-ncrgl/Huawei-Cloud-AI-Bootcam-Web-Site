@@ -28,62 +28,57 @@ const InstructorDashboard = () => {
 
 
   const fetchData = async () => {
-  const token = localStorage.getItem("token");
-  try {
-    const [summaryRes, profileRes, generalRes] = await Promise.all([
-      axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/summary`, {
-        headers: { Authorization: `Bearer ${token}` },
-      }),
-      axios.get(`${import.meta.env.VITE_API_URL}/api/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      }),
-      axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/general-summary`, {
-        headers: { Authorization: `Bearer ${token}` },
-      }),
-    ]);
-    
-    setSummary(summaryRes.data);
-    setFullName(profileRes.data.fullName);
-    setGeneralSummary(generalRes.data);
+    const token = localStorage.getItem("token");
+    try {
+      const [summaryRes, profileRes, generalRes] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/summary`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/general-summary`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+      setSummary(summaryRes.data);
+      setFullName(profileRes.data.fullName);
+      setGeneralSummary(generalRes.data);
 
-    const topicState = {};
-    const videoState = {};
-    const mediumState = {};
-    const taskState = {};
-    const savedState = {};
-    const publishState = {};
-    
-    summaryRes.data.forEach((s) => {
-      topicState[s.week] = {
-        day1: s.topic?.day1 ?? "",
-        day2: s.topic?.day2 ?? ""
-      };
-      videoState[s.week] = {
-        day1: s.videoUrl?.day1 || "",
-        day2: s.videoUrl?.day2 || ""
-      };
-      mediumState[s.week] = {
-        day1: s.mediumUrl?.day1 || "",
-        day2: s.mediumUrl?.day2 || ""
-      };
-      
-      // Görevleri doğru şekilde ayarla
-      const tasks = s.tasks?.list || [];
-      taskState[s.week] = tasks.join('\n');  // textarea için string
-      savedState[s.week] = tasks;            // görüntüleme için array
-      publishState[s.week] = s.tasks?.published || false;
-    });
+      const topicState = {};
+      const videoState = {};
+      const mediumState = {};
+      const taskState = {};
+      const savedState = {};
+      summaryRes.data.forEach((s) => {
+  topicState[s.week] = {
+    day1: s.topic?.day1 ?? "",
+    day2: s.topic?.day2 ?? ""
+  };
+  videoState[s.week] = {
+    day1: s.videoUrl?.day1 || "",
+    day2: s.videoUrl?.day2 || ""
+  };
+  mediumState[s.week] = {
+    day1: s.mediumUrl?.day1 || "",
+    day2: s.mediumUrl?.day2 || ""
+  };
+  const tasks = s.tasks || [];
+  taskState[s.week] = tasks.join('\n');  // textarea için string
+  savedState[s.week] = tasks;            // görüntüleme için liste
+  publishState[s.week] = s.tasks?.published || false;
+});
 
-    setTempTopics(topicState);
-    setTempVideos(videoState);
-    setTempMediums(mediumState); 
-    setTempTasks(taskState);
-    setSavedTasks(savedState);
-    setPublishedTasks(publishState);
-  } catch (err) {
-    alert("Veriler alınamadı");
-  }
-};
+      setTempTopics(topicState);
+      setTempVideos(videoState);
+      setTempMediums(mediumState); 
+      setTempTasks(taskState);
+      setSavedTasks(savedState);
+      setPublishedTasks(publishState);
+    } catch (err) {
+      alert("Veriler alınamadı");
+    }
+  };
 
   const fetchDetails = async (week) => {
     const token = localStorage.getItem("token");
@@ -475,101 +470,65 @@ const InstructorDashboard = () => {
           ))}
         </div>
       )}
-
- {/* GÖREVLER PANELİ */}
+      
+ {/* KATILIM PANELİ */}
 
 {activePanel === "Görevler" && (
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
     {summary.map((s) => (
       <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl backdrop-blur-sm">
         <h3 className="text-lg font-bold text-yellow-300 mb-3">
-          📌 {s.week}. Hafta Görevleri
+           {s.week}. Hafta
         </h3>
 
-        {/* Yayın durumu butonu */}
-        <button
-          onClick={async () => {
-            const token = localStorage.getItem("token");
-            const newStatus = !publishedTasks[s.week];
-            try {
-              await axios.post(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks/publish`, {
-                publish: newStatus
-              }, {
-                headers: { Authorization: `Bearer ${token}` }
-              });
-
-              setPublishedTasks(prev => ({
+        <label className="flex items-center gap-2 text-sm text-white mb-2">
+          <input
+            type="checkbox"
+            checked={publishedTasks[s.week]}
+            onChange={(e) =>
+              setPublishedTasks((prev) => ({
                 ...prev,
-                [s.week]: newStatus
-              }));
-              
-              alert(newStatus ? "Görev yayınlandı ✅" : "Görev yayından kaldırıldı ⛔");
-            } catch (err) {
-              console.error("Yayın hatası:", err);
-              alert("Görev yayını güncellenemedi ❌");
+                [s.week]: e.target.checked
+              }))
             }
-          }}
-          className={`w-full mb-4 text-sm font-semibold rounded-lg py-2.5 transition flex items-center justify-center gap-2 ${
-            publishedTasks[s.week]
-              ? "bg-red-600 hover:bg-red-700 text-white"
-              : "bg-green-600 hover:bg-green-700 text-white"
-          }`}
-        >
-          {publishedTasks[s.week] ? "⛔ Yayından Kaldır" : "📢 Görevleri Yayınla"}
-        </button>
+          />
+          Katılımcılara gösterilsin (yayında)
+        </label>
 
-        {/* Görev listesi */}
         <ul className="list-disc list-inside text-white text-sm mb-4 space-y-1">
-          {Array.isArray(savedTasks[s.week]) && savedTasks[s.week].length > 0 ? (
-            savedTasks[s.week].map((task, i) => (
-              task.trim() && <li key={i}>{task}</li>
-            ))
+          {tempTasks[s.week]?.length > 0 ? (
+            tempTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
           ) : (
-            <li className="italic text-gray-400">Kaydedilmiş görev yok</li>
+            <li className="italic text-gray-400">Görev yok</li>
           )}
         </ul>
 
-        {/* Görev güncelleme alanı */}
         <textarea
           rows={3}
           className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white text-sm placeholder-white/50 focus:border-yellow-400 focus:outline-none transition"
           placeholder="Her satıra bir görev yazın"
-          value={tempTasks[s.week] || ""}
+          value={tempTasks[s.week]?.join('\n') || ""}
           onChange={(e) =>
             setTempTasks((prev) => ({
               ...prev,
-              [s.week]: e.target.value
+              [s.week]: e.target.value.split('\n')
             }))
           }
         />
 
-        {/* Kaydet butonu */}
         <button
           onClick={async () => {
             const token = localStorage.getItem("token");
             try {
-              // String'i array'e çevir ve boş satırları temizle
-              const taskList = (tempTasks[s.week] || "")
-                .split('\n')
-                .map(task => task.trim())
-                .filter(task => task.length > 0);
-
               await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
-                list: taskList
+                list: tempTasks[s.week] || [],
+                published: publishedTasks[s.week]
               }, {
                 headers: { Authorization: `Bearer ${token}` }
               });
-
-              // Local state'i güncelle
-              setSavedTasks(prev => ({
-                ...prev,
-                [s.week]: taskList
-              }));
-
               alert("Görevler kaydedildi ✅");
-              fetchData(); // Görevleri güncellemek için yeniden verileri çek
-            } catch (err) {
-              console.error("Görev kaydetme hatası:", err);
+              fetchData();
+            } catch {
               alert("Görevler kaydedilemedi ❌");
             }
           }}
@@ -581,6 +540,7 @@ const InstructorDashboard = () => {
     ))}
   </div>
 )}
+
 
       {/* KATILIM PANELİ */}
 {activePanel === "Katılım" && (
