@@ -298,6 +298,8 @@ const InstructorDashboard = () => {
             <label className="block font-semibold text-white mb-1 text-sm">📋 1. Gün Konuları</label>
 <textarea
   rows={3}
+  className="w-full p-3 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
+  placeholder="Her satıra bir konu yazın"
   value={tempTopics[s.week]?.day1 ?? ""}
   onChange={(e) =>
     setTempTopics((prev) => ({
@@ -307,17 +309,21 @@ const InstructorDashboard = () => {
   }
 />
 
+
 <label className="block font-semibold text-white mb-2 mt-3 text-sm">📋 2. Gün Konuları</label>
 <textarea
   rows={3}
-  value={tempTopics[s.week]?.day2 ?? ""}
+  className="w-full p-3 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
+  placeholder="Her satıra bir konu yazın"
+  value={tempTopics[s.week]?.day1 ?? ""}
   onChange={(e) =>
     setTempTopics((prev) => ({
       ...prev,
-      [s.week]: { ...prev[s.week], day2: e.target.value },
+      [s.week]: { ...prev[s.week], day1: e.target.value },
     }))
   }
 />
+
 
           </div>
 
