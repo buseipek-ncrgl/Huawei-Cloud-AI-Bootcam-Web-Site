@@ -658,14 +658,26 @@ const handleDeleteSubmission = async (id) => {
 
 {activePanel === "Duyurular" && (
   <div className="space-y-4">
-    {announcements.length > 0 ? (
+    {announcements?.length > 0 ? (
       announcements.map((a) => (
-        <div key={a._id} className="bg-white/10 border border-white/20 p-4 rounded-xl">
-          <h3 className="text-lg font-bold text-yellow-300">{a.title}</h3>
-          <p className="text-sm text-white/90 mt-2 whitespace-pre-line">{a.content}</p>
-          <p className="text-xs text-white/50 mt-2 italic">
-            {new Date(a.createdAt).toLocaleString("tr-TR")}
+        <div
+          key={a._id}
+          className="relative bg-yellow-50/10 hover:scale-[1.02] transition-transform duration-300 border border-yellow-400/60 hover:border-yellow-400/90 p-5 rounded-2xl shadow-md group"
+        >
+          {/* Başlık kutusu */}
+          <div className="inline-block bg-yellow-300/20 text-yellow-300 text-xl font-bold px-4 py-2 rounded-md mb-2">
+            {a.title}
+          </div>
+
+          {/* İçerik */}
+          <p className="text-white/90 text-sm whitespace-pre-line leading-relaxed mt-2">
+            {a.content}
           </p>
+
+          {/* Tarih - sağ üst köşede */}
+          <div className="absolute top-3 right-4 text-yellow-200 text-xs italic">
+            {new Date(a.createdAt).toLocaleString("tr-TR")}
+          </div>
         </div>
       ))
     ) : (
