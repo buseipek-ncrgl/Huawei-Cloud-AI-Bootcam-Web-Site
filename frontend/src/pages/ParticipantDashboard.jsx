@@ -60,27 +60,37 @@ const ParticipantDashboard = () => {
     fetchSessions();
   }, [navigate]);
 
-  const handleAttend = async (week) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/attendance/${week}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  const handleAttend = async (week, day) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/attendance/${week}/day/${day}`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-      if (!response.data.success) {
-        throw new Error(response.data.error || "Katılım kaydedilemedi");
-      }
-
-      alert(`Hafta ${week} için yoklama alındı ✅`);
-      setSessions((prev) =>
-        prev.map((s) => (s.week === week ? { ...s, attended: true } : s))
-      );
-    } catch (err) {
-      alert(err.response?.data?.error || err.message);
+    if (!response.data.success) {
+      throw new Error(response.data.error || "Katılım kaydedilemedi");
     }
-  };
+
+    alert(`${week}. Hafta ${day}. Gün için katılım alındı ✅`);
+
+    // Local state güncelle
+    setSessions((prev) =>
+      prev.map((s) =>
+        s.week === week
+          ? {
+              ...s,
+              [`attendedDay${day}`]: true,
+            }
+          : s
+      )
+    );
+  } catch (err) {
+    alert(err.response?.data?.error || err.message);
+  }
+};
+
 
   if (loading) {
     return (
@@ -234,30 +244,53 @@ const ParticipantDashboard = () => {
         )}
 
         {activePanel === "Katılım" && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-            {sessions.map((s) => (
-              <div key={s.week} className="relative bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm">
-                <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
-                  <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
-                    {s.week}. Hafta
-                  </span>
-                </h3>
-                {s.attended ? (
-                  <p className="text-green-400 font-bold">✔ Katıldınız</p>
-                ) : s.active ? (
-                  <button
-                    onClick={() => handleAttend(s.week)}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold text-sm"
-                  >
-                    Katıldım
-                  </button>
-                ) : (
-                  <p className="text-gray-400 italic">Katılım Kapalı</p>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    {sessions.map((s) => (
+      <div key={s.week} className="relative bg-white/10 border border-white/20 p-5 rounded-xl hover:scale-[1.02] hover:border-yellow-400 transition backdrop-blur-sm">
+        <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
+          <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+            {s.week}. Hafta
+          </span>
+        </h3>
+
+        {/* 1. Gün Katılım */}
+        <div className="mb-3">
+          <p className="text-sm font-semibold text-white mb-1">📅 1. Gün</p>
+          {s.attendedDay1 ? (
+            <p className="text-green-400 font-bold">✔ Katıldınız</p>
+          ) : s.activeDay1 ? (
+            <button
+              onClick={() => handleAttend(s.week, 1)}
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold text-sm"
+            >
+              Katıldım
+            </button>
+          ) : (
+            <p className="text-gray-400 italic text-sm">Katılım kapalı</p>
+          )}
+        </div>
+
+        {/* 2. Gün Katılım */}
+        <div>
+          <p className="text-sm font-semibold text-white mb-1">📅 2. Gün</p>
+          {s.attendedDay2 ? (
+            <p className="text-green-400 font-bold">✔ Katıldınız</p>
+          ) : s.activeDay2 ? (
+            <button
+              onClick={() => handleAttend(s.week, 2)}
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold text-sm"
+            >
+              Katıldım
+            </button>
+          ) : (
+            <p className="text-gray-400 italic text-sm">Katılım kapalı</p>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
 
         {activePanel === "Eğitmenler" && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
