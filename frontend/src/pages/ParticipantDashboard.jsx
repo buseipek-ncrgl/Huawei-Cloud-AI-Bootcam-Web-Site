@@ -280,112 +280,98 @@ const ParticipantDashboard = () => {
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
     {sessions.map((s) => (
       <div
-              key={s.week}
-              className="bg-white/10 border border-white/20 p-5 rounded-xl transition hover:scale-[1.02] hover:border-yellow-400 backdrop-blur-sm"
-            >
-              <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
-                <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
-                  {s.week}. Hafta Kaynakları
-                </span>
-              </h3>
-        {/* Medium Link */}
-        <div className="mb-3">
-          <p className="text-sm text-white font-semibold mb-1 flex items-center gap-2">
-            📝 Medium
-          </p>
-          {/* 1. Gün Kaynaklar */}
-<div className="mb-5">
-  <p className="text-sm font-semibold text-white mb-2">📅 1. Gün Kaynakları</p>
+        key={s.week}
+        className="bg-white/10 border border-white/20 p-5 rounded-xl transition hover:scale-[1.02] hover:border-yellow-400 backdrop-blur-sm"
+      >
+        <h3 className="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
+          <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
+            {s.week}. Hafta Kaynakları
+          </span>
+        </h3>
 
-  {/* Medium */}
-  {s.mediumUrl?.day1 ? (
-    <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10 mb-2">
-      <span className="text-sm text-white flex items-center gap-2">
-        <span className="bg-green-500/20 p-1.5 rounded-lg">📝</span> Medium
-      </span>
-      <a href={s.mediumUrl.day1} target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1">
-        Oku
-      </a>
-    </div>
-  ) : (
-    <p className="text-gray-400 italic text-sm mb-2">Medium bağlantısı yok</p>
-  )}
+        {/* 1. Gün Kaynaklar */}
+        <div className="mb-5">
+          <p className="text-sm font-semibold text-white mb-2">📅 1. Gün Kaynakları</p>
 
-  {/* Video */}
-  {s.videoUrl?.day1 ? (
-    <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
-      <span className="text-sm text-white flex items-center gap-2">
-        <span className="bg-blue-500/20 p-1.5 rounded-lg">🎥</span> Video
-      </span>
-      <a href={s.videoUrl.day1} target="_blank" rel="noopener noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1">
-        İzle
-      </a>
-    </div>
-  ) : (
-    <p className="text-gray-400 italic text-sm mb-2">Video bağlantısı yok</p>
-  )}
-</div>
+          {/* Medium */}
+          {s.mediumUrl?.day1 ? (
+            <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10 mb-2">
+              <span className="text-sm text-white flex items-center gap-2">
+                <span className="bg-green-500/20 p-1.5 rounded-lg">📝</span> Medium
+              </span>
+              <a
+                href={s.mediumUrl.day1}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1"
+              >
+                Oku
+              </a>
+            </div>
+          ) : (
+            <p className="text-gray-400 italic text-sm mb-2">Medium bağlantısı yok</p>
+          )}
 
-{/* 2. Gün Kaynaklar */}
-<div>
-  <p className="text-sm font-semibold text-white mb-2">📅 2. Gün Kaynakları</p>
-
-  {/* Medium */}
-  {s.mediumUrl?.day2 ? (
-    <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10 mb-2">
-      <span className="text-sm text-white flex items-center gap-2">
-        <span className="bg-green-500/20 p-1.5 rounded-lg">📝</span> Medium
-      </span>
-      <a href={s.mediumUrl.day2} target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1">
-        Oku
-      </a>
-    </div>
-  ) : (
-    <p className="text-gray-400 italic text-sm mb-2">Medium bağlantısı yok</p>
-  )}
-
-  {/* Video */}
-  {s.videoUrl?.day2 ? (
-    <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
-      <span className="text-sm text-white flex items-center gap-2">
-        <span className="bg-blue-500/20 p-1.5 rounded-lg">🎥</span> Video
-      </span>
-      <a href={s.videoUrl.day2} target="_blank" rel="noopener noreferrer" className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1">
-        İzle
-      </a>
-    </div>
-  ) : (
-    <p className="text-gray-400 italic text-sm mb-2">Video bağlantısı yok</p>
-  )}
-</div>
-
+          {/* Video */}
+          {s.videoUrl?.day1 ? (
+            <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
+              <span className="text-sm text-white flex items-center gap-2">
+                <span className="bg-blue-500/20 p-1.5 rounded-lg">🎥</span> Video
+              </span>
+              <a
+                href={s.videoUrl.day1}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1"
+              >
+                İzle
+              </a>
+            </div>
+          ) : (
+            <p className="text-gray-400 italic text-sm mb-2">Video bağlantısı yok</p>
+          )}
         </div>
 
-        {/* Video Link */}
+        {/* 2. Gün Kaynaklar */}
         <div>
-          <p className="text-sm text-white font-semibold mb-1 flex items-center gap-2">
-            🎥 Video
-          </p>
-          {s.videoUrl?.trim() ? (
-                  <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
-                    <span className="text-sm text-white flex items-center gap-2">
-                      <span className="bg-blue-500/20 p-1.5 rounded-lg">🎥</span>
-                      Video
-                    </span>
-                    <a
-                      href={s.videoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                      İzle
-                    </a>
-                  </div>
+          <p className="text-sm font-semibold text-white mb-2">📅 2. Gün Kaynakları</p>
+
+          {/* Medium */}
+          {s.mediumUrl?.day2 ? (
+            <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10 mb-2">
+              <span className="text-sm text-white flex items-center gap-2">
+                <span className="bg-green-500/20 p-1.5 rounded-lg">📝</span> Medium
+              </span>
+              <a
+                href={s.mediumUrl.day2}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1"
+              >
+                Oku
+              </a>
+            </div>
           ) : (
-            <p className="text-gray-400 italic text-sm">Video bağlantısı bulunamadı</p>
+            <p className="text-gray-400 italic text-sm mb-2">Medium bağlantısı yok</p>
+          )}
+
+          {/* Video */}
+          {s.videoUrl?.day2 ? (
+            <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
+              <span className="text-sm text-white flex items-center gap-2">
+                <span className="bg-blue-500/20 p-1.5 rounded-lg">🎥</span> Video
+              </span>
+              <a
+                href={s.videoUrl.day2}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition flex items-center gap-1"
+              >
+                İzle
+              </a>
+            </div>
+          ) : (
+            <p className="text-gray-400 italic text-sm mb-2">Video bağlantısı yok</p>
           )}
         </div>
       </div>
