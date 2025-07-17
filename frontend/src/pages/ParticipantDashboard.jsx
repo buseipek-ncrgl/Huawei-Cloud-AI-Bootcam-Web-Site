@@ -37,36 +37,60 @@ const ParticipantDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/login");
-          return;
-        }
-
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/sessions`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!res.data.success) {
-          throw new Error(res.data.error || "Veri alınamadı");
-        }
-
-        setSessions(res.data.sessions);
-        setFullName(res.data.fullName);
-      } catch (err) {
-        setError(err.response?.data?.error || err.message);
-        if (err.response?.status === 403) {
-          navigate("/login");
-        }
-      } finally {
-        setLoading(false);
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
       }
-    };
 
-    fetchSessions();
-  }, [navigate]);
+      // 1️⃣ Sessions verisini çek
+      const sessionRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/sessions`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!sessionRes.data.success) {
+        throw new Error(sessionRes.data.error || "Veri alınamadı");
+      }
+
+      let initialSessions = sessionRes.data.sessions;
+      setFullName(sessionRes.data.fullName);
+
+      // 2️⃣ Submissions verisini çek
+      const submissionRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/attendance/task-submissions`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const submissions = submissionRes.data.submissions;
+
+      // Gönderimleri haftaya göre grupla
+      const grouped = {};
+      submissions.forEach((s) => {
+        if (!grouped[s.week]) grouped[s.week] = [];
+        grouped[s.week].push(s);
+      });
+
+      // Gönderimleri haftalara ekle
+      const mergedSessions = initialSessions.map((s) => ({
+        ...s,
+        submissions: grouped[s.week] || [],
+      }));
+
+      setSessions(mergedSessions);
+    } catch (err) {
+      setError(err.response?.data?.error || err.message);
+      if (err.response?.status === 403) {
+        navigate("/login");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [navigate]);
+
 
   const handleAttend = async (week, day) => {
   try {
@@ -110,27 +134,23 @@ const handleTaskSubmit = async (e, week) => {
 
   try {
     const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/attendance/session/${week}/task`, // ✅ doğru endpoint
+      `${import.meta.env.VITE_API_URL}/api/attendance/session/${week}/task`,
       { fileUrl },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    if (!response.data.success) {
-      throw new Error("Görev gönderilemedi");
-    }
+    const newSubmission = response.data.submission;
 
     alert("✅ Görev gönderildi!");
     e.target.reset();
 
-    const newSubmission = response.data.submission; // ✅ _id içeren doğru veri
-
-    // State’e ekle (timestamp değil, response’tan gelen veri)
+    // 🔁 Yeni gönderimi ekle
     setSessions((prev) =>
       prev.map((s) =>
         s.week === week
           ? {
               ...s,
-              submissions: [...(s.submissions || []), newSubmission]
+              submissions: [...(s.submissions || []), newSubmission],
             }
           : s
       )
@@ -143,40 +163,33 @@ const handleTaskSubmit = async (e, week) => {
 
 
 
-const handleDeleteSubmission = async (submissionId) => {
-  if (!submissionId) {
-    console.error("❌ Geçersiz gönderim ID");
-    alert("Geçersiz gönderim ID’si.");
-    return;
-  }
 
+const handleDeleteSubmission = async (id) => {
   const token = localStorage.getItem("token");
 
   try {
-    // API’ye istek gönder
     await axios.delete(
-      `${import.meta.env.VITE_API_URL}/api/attendance/task-submissions/${submissionId}`,
+      `${import.meta.env.VITE_API_URL}/api/attendance/task-submissions/${id}`,
       {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
 
     alert("Gönderim silindi ✅");
 
-    // Local state’den sil
-    setSessions((prevSessions) =>
-      prevSessions.map((s) => ({
+    // ⛔️ _id ile eşleşen gönderimi kaldır
+    setSessions((prev) =>
+      prev.map((s) => ({
         ...s,
-        submissions: s.submissions?.filter((sub) => sub._id !== submissionId)
+        submissions: s.submissions?.filter((sub) => sub._id !== id),
       }))
     );
   } catch (err) {
-    console.error("❌ Silme hatası:", err);
-    alert("Silinemedi. Lütfen tekrar deneyin.");
+    console.error("Silme hatası ❌:", err);
+    alert("Gönderim silinemedi.");
   }
 };
+
 
 
   if (loading) {
