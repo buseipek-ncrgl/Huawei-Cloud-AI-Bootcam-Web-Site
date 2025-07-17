@@ -12,6 +12,7 @@ const TaskSubmission = require('../models/TaskSubmission');
 // Katılımcı için oturum bilgilerini getir
 // ----------------------------
 // Katılımcı için oturum bilgilerini getir
+// Katılımcı için oturum bilgilerini getir
 router.get('/sessions', authenticate, async (req, res) => {
   try {
     const sessions = await Session.find().sort({ week: 1 });
@@ -19,36 +20,47 @@ router.get('/sessions', authenticate, async (req, res) => {
     // Katılımcının kendi yoklama kayıtları
     const attendanceRecords = await Attendance.find({ userId: req.user.id });
 
+    // ✅ Katılımcının tüm görev gönderimlerini çek
+    const submissions = await TaskSubmission.find({ userId: req.user.id });
+
     // Her hafta için verileri oluştur
     const sessionsWithAttendance = sessions.map((session) => {
-  // İlgili katılımcının bu hafta için tüm yoklamalarını bul
-  const attendedDay1 = attendanceRecords.some(
-    record =>
-      Number(record.week) === Number(session.week) &&
-      record.day === 1 &&
-      record.attended === true
-  );
-  const attendedDay2 = attendanceRecords.some(
-    record =>
-      Number(record.week) === Number(session.week) &&
-      record.day === 2 &&
-      record.attended === true
-  );
+      const attendedDay1 = attendanceRecords.some(
+        record =>
+          Number(record.week) === Number(session.week) &&
+          record.day === 1 &&
+          record.attended === true
+      );
+      const attendedDay2 = attendanceRecords.some(
+        record =>
+          Number(record.week) === Number(session.week) &&
+          record.day === 2 &&
+          record.attended === true
+      );
 
-  return {
-    week: session.week,
-    topic: session.topic || { day1: "", day2: "" },
-    videoUrl: session.videoUrl || { day1: "", day2: "" },
-    mediumUrl: session.mediumUrl || { day1: "", day2: "" },
-    activeDay1: session.activeDays?.day1 || false,
-    activeDay2: session.activeDays?.day2 || false,
-    attendedDay1,
-    attendedDay2,
-    tasks: session.tasks || [],
-  taskActive: session.taskActive || false
-  };
-});
+      // ✅ Bu haftaya ait gönderilen görevleri filtrele
+      const weekSubmissions = submissions
+        .filter(s => Number(s.week) === Number(session.week))
+        .map(s => ({
+          id: s._id,
+          fileUrl: s.fileUrl,
+          submittedAt: s.createdAt,
+        }));
 
+      return {
+        week: session.week,
+        topic: session.topic || { day1: "", day2: "" },
+        videoUrl: session.videoUrl || { day1: "", day2: "" },
+        mediumUrl: session.mediumUrl || { day1: "", day2: "" },
+        activeDay1: session.activeDays?.day1 || false,
+        activeDay2: session.activeDays?.day2 || false,
+        attendedDay1,
+        attendedDay2,
+        tasks: session.tasks || [],
+        taskActive: session.taskActive || false,
+        submissions: weekSubmissions  // ✅ Yeni alan
+      };
+    });
 
     return res.json({
       success: true,
@@ -61,10 +73,6 @@ router.get('/sessions', authenticate, async (req, res) => {
   }
 });
 
-
-// ----------------------------
-// Katılım işaretleme endpoint'i (Katılımcı)
-// ----------------------------
 // Katılım işaretleme endpoint'i (Katılımcı) – GÜN destekli
 router.post('/:week', authenticate, async (req, res) => {
   try {
@@ -139,31 +147,32 @@ router.get('/summary', async (req, res) => {
     const day1Attended = attendedRecords.filter(a => a.day === 1).length;
     const day2Attended = attendedRecords.filter(a => a.day === 2).length;
 
+    // 👇 EKLE — eksik olan bu!
+    const weekSubmissions = await TaskSubmission.find({ week: session.week });
+
     return {
       week: session.week,
       total,
-      // 👇 Günlere göre katılım oranları
       day1Attended,
       day2Attended,
       day1Rate: total > 0 ? Math.round((day1Attended / total) * 100) : 0,
       day2Rate: total > 0 ? Math.round((day2Attended / total) * 100) : 0,
-      // 👇 Aktiflik bilgileri (EN KRİTİK NOKTA)
       day1Active: session.activeDays?.day1 || false,
       day2Active: session.activeDays?.day2 || false,
-      // Diğer bilgiler
       topic: session.topic || "",
       videoUrl: session.videoUrl || "",
       mediumUrl: session.mediumUrl || "",
       tasks: session.tasks || [],
       taskActive: session.taskActive || false,
       submissions: weekSubmissions.map(s => ({
-      id: s._id,
-      fileUrl: s.fileUrl,
-      timestamp: s.createdAt
-    }))
+        id: s._id,
+        fileUrl: s.fileUrl,
+        timestamp: s.createdAt
+      }))
     };
   })
 );
+
 
     res.json(summaryData);
   } catch (err) {
