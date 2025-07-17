@@ -132,7 +132,9 @@ router.get('/summary', async (req, res) => {
       // Diğer bilgiler
       topic: session.topic || "",
       videoUrl: session.videoUrl || "",
-      mediumUrl: session.mediumUrl || ""
+      mediumUrl: session.mediumUrl || "",
+      tasks: session.tasks || [],
+      taskActive: session.taskActive || false
     };
   })
 );
