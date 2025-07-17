@@ -471,28 +471,46 @@ const InstructorDashboard = () => {
         </div>
       )}
 
+ {/* KATILIM PANELİ */}
+
 {activePanel === "Görevler" && (
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
     {summary.map((s) => (
       <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl backdrop-blur-sm">
         <h3 className="text-lg font-bold text-yellow-300 mb-3">
-           {s.week}. Hafta
+          📌 {s.week}. Hafta Görevleri
         </h3>
 
-        <label className="flex items-center gap-2 text-sm text-white mb-2">
-          <input
-            type="checkbox"
-            checked={publishedTasks[s.week]}
-            onChange={(e) =>
+        {/* Yayın durumu butonu */}
+        <button
+          onClick={async () => {
+            const token = localStorage.getItem("token");
+            const newStatus = !publishedTasks[s.week];
+            try {
+              await axios.post(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks/publish`, {
+                publish: newStatus
+              }, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
               setPublishedTasks((prev) => ({
                 ...prev,
-                [s.week]: e.target.checked
-              }))
+                [s.week]: newStatus
+              }));
+              alert(newStatus ? "Görev yayınlandı ✅" : "Görev yayından kaldırıldı ⛔");
+            } catch {
+              alert("Görev yayını güncellenemedi ❌");
             }
-          />
-          Katılımcılara gösterilsin (yayında)
-        </label>
+          }}
+          className={`w-full mb-4 text-sm font-semibold rounded-lg py-2.5 transition flex items-center justify-center gap-2 ${
+            publishedTasks[s.week]
+              ? "bg-red-600 hover:bg-red-700 text-white"
+              : "bg-green-600 hover:bg-green-700 text-white"
+          }`}
+        >
+          {publishedTasks[s.week] ? "⛔ Yayından Kaldır" : "📢 Görevleri Yayınla"}
+        </button>
 
+        {/* Görev listesi */}
         <ul className="list-disc list-inside text-white text-sm mb-4 space-y-1">
           {tempTasks[s.week]?.length > 0 ? (
             tempTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
@@ -501,6 +519,7 @@ const InstructorDashboard = () => {
           )}
         </ul>
 
+        {/* Görev güncelleme */}
         <textarea
           rows={3}
           className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white text-sm placeholder-white/50 focus:border-yellow-400 focus:outline-none transition"
@@ -538,7 +557,6 @@ const InstructorDashboard = () => {
     ))}
   </div>
 )}
-
 
       {/* KATILIM PANELİ */}
 {activePanel === "Katılım" && (
