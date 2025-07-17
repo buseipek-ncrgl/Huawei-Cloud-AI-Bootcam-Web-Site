@@ -373,4 +373,27 @@ router.put('/session/:week', authenticate, async (req, res) => {
   }
 });
 
+router.put('/session/:week/tasks', authenticate, async (req, res) => {
+  if (req.user.role !== 'instructor') {
+    return res.status(403).json({ error: 'Yetkisiz erişim' });
+  }
+
+  const weekNum = Number(req.params.week);
+  const { tasks } = req.body; // tasks: string[] formatında bekleniyor
+
+  try {
+    const session = await Session.findOneAndUpdate(
+      { week: weekNum },
+      { tasks: tasks || [] },
+      { new: true }
+    );
+
+    res.json({ success: true, session });
+  } catch (err) {
+    console.error("❌ Görevler güncellenemedi:", err);
+    res.status(500).json({ error: 'Sunucu hatası' });
+  }
+});
+
+
 module.exports = router;
