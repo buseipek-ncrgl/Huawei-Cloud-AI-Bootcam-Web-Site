@@ -688,6 +688,102 @@ const handleDeleteSubmission = async (id) => {
   </div>
 )}
 
+{activePanel === "Hakkımızda" && (
+  <div className="space-y-4 text-white">
+    <h1 className="text-3xl font-bold text-yellow-300">Hakkımızda</h1>
+
+    <p className="text-white/90 text-sm leading-relaxed">
+      <span className="font-semibold text-yellow-200">Huawei Cloud AI Bootcamp</span>, yapay zekâ ve bulut bilişim alanında kendini geliştirmek isteyen katılımcılar için özel olarak tasarlanmış teknik ve kişisel gelişim odaklı bir eğitim programıdır. Bu platform, yeni nesil teknolojileri tanıtmak, katılımcıların pratik projelerle deneyim kazanmasını sağlamak ve sektörel farkındalıklarını artırmak amacıyla oluşturulmuştur.
+    </p>
+
+    <p className="text-white/90 text-sm leading-relaxed">
+      Program süresince katılımcılar:
+    </p>
+
+    <ul className="list-disc list-inside text-sm text-white/90 space-y-1">
+      <li>📌 Gerçek dünya problemlerini çözen projeler üretir</li>
+      <li>📌 Huawei Cloud altyapısı üzerinde uygulamalı deneyim kazanır</li>
+      <li>📌 Mentor desteği ile bireysel gelişimlerini destekler</li>
+      <li>📌 Haftalık görevler, videolar ve kaynaklarla düzenli olarak ilerleme sağlar</li>
+    </ul>
+
+    <p className="text-white/90 text-sm leading-relaxed">
+      Ayrıca her katılımcının ilerlemesi şeffaf bir şekilde takip edilir; katılım, görev gönderimi ve başarı oranları düzenli olarak değerlendirilir.
+    </p>
+
+    <div className="bg-yellow-100/10 border border-yellow-300/30 p-4 rounded-xl">
+      <h2 className="text-lg font-semibold text-yellow-300 mb-2">🎯 Vizyonumuz</h2>
+      <p className="text-sm text-white/90">
+        Geleceğin teknoloji liderlerini bulut ve yapay zekâ alanında yetkin bireyler olarak yetiştirmek.
+      </p>
+    </div>
+
+    <div className="bg-yellow-100/10 border border-yellow-300/30 p-4 rounded-xl">
+      <h2 className="text-lg font-semibold text-yellow-300 mb-2">🚀 Misyonumuz</h2>
+      <p className="text-sm text-white/90">
+        Erişilebilir, kaliteli ve uygulamalı bir eğitim ortamı sunarak, bilgiye dayalı üretkenliği ve ekip çalışmasını teşvik etmek.
+      </p>
+    </div>
+
+    <p className="text-white/90 text-sm leading-relaxed">
+      Bu platform, sadece bir eğitim alanı değil; aynı zamanda bir topluluk, bir üretim ortamı ve yeni yeteneklerin keşfedildiği bir yolculuktur.
+    </p>
+  </div>
+)}
+
+{activePanel === "Huawei Cloud Hesabı" && (
+  <div className="space-y-4 text-white">
+    <h1 className="text-3xl font-bold text-yellow-300">Huawei Cloud Hesabı Nasıl Açılır?</h1>
+
+    <p className="text-white/90 text-sm leading-relaxed">
+      Huawei Cloud üzerinde ücretsiz bir hesap oluşturmak oldukça kolaydır. Aşağıdaki adımları takip ederek dakikalar içinde hesabınızı aktif hâle getirebilirsiniz:
+    </p>
+
+    <ol className="list-decimal list-inside space-y-2 text-sm text-white/90">
+      <li>
+        <span className="font-semibold text-yellow-300">Resmi Siteye Giriş:</span>{" "}
+        <a
+          href="https://intl.huaweicloud.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline text-blue-300 hover:text-blue-400"
+        >
+          Huawei Cloud
+        </a>
+      </li>
+      <li>Sağ üstteki <span className="font-semibold text-yellow-300">“Register”</span> veya <span className="font-semibold text-yellow-300">“Sign Up”</span> butonuna tıklayın.</li>
+      <li>E-posta adresi ile kayıt olun ve gelen doğrulama kodunu girin.</li>
+      <li>Şifre ve kişisel bilgileri doldurun.</li>
+      <li>
+        <span className="font-semibold text-yellow-300">“Individual”</span> seçeneği ile devam ederek kredi kartı bilginizi girin (ücret alınmaz).
+      </li>
+      <li>Doğrulama sonrası hesabınız aktif hâle gelecektir.</li>
+    </ol>
+
+    <div className="bg-yellow-100/10 border border-yellow-300/30 p-4 rounded-xl">
+      <h2 className="text-lg font-semibold text-yellow-300 mb-2">📺 Video Rehber</h2>
+      <p className="text-sm text-white/90 mb-3">
+        Aşağıdaki videoyu izleyerek adım adım Huawei Cloud hesap açma sürecini görsel olarak takip edebilirsiniz:
+      </p>
+      <div className="aspect-w-16 aspect-h-9">
+        <iframe
+          className="rounded-xl w-full h-full"
+          src="https://www.youtube.com/watch?v=dkpHpOBsCMA"
+          title="Huawei Cloud Hesap Açma Rehberi"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    </div>
+
+    <p className="text-white/90 text-sm leading-relaxed">
+      Hesabınızı başarıyla açtıktan sonra <span className="text-yellow-300 font-medium">Huawei Cloud Console</span> üzerinden servisleri keşfetmeye başlayabilirsiniz.
+    </p>
+  </div>
+)}
+
+
       </main>
     </div>
   );
