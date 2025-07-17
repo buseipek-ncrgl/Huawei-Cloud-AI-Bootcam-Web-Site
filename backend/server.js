@@ -22,6 +22,7 @@ app.use(express.json());
 app.use('/api/sessions', require('./routes/sessionRoutes'));
 app.use('/api/attendance', require('./routes/attendanceRoutes'));
 app.use('/api', require('./routes/authRoutes'));
+app.use('/api/announcements', require('./routes/announcementRoutes'));
 
 app.get('/', (req, res) => res.send('API Çalışıyor'));
 
