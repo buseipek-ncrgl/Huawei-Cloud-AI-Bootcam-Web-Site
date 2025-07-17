@@ -6,7 +6,7 @@ const authenticate = require('../middleware/authMiddleware');
 const Attendance = require('../models/Attendance');
 const User = require('../models/User');
 const Session = require('../models/Session');
-
+const TaskSubmission = require('../models/TaskSubmission');
 // ----------------------------
 // Katılımcı için oturum bilgilerini getir
 // ----------------------------
@@ -460,5 +460,31 @@ router.post('/session/:week/task/stop', authenticate, async (req, res) => {
   }
 });
 
+// Görev gönderimi (katılımcı)
+router.post('/session/:week/task/submit', authenticate, async (req, res) => {
+  if (req.user.role !== 'participant') {
+    return res.status(403).json({ error: 'Yetkisiz erişim' });
+  }
+
+  const { week } = req.params;
+  const { fileUrl } = req.body;
+
+  if (!fileUrl || typeof fileUrl !== 'string') {
+    return res.status(400).json({ error: 'Dosya bağlantısı gereklidir' });
+  }
+
+  try {
+    const existing = await TaskSubmission.findOneAndUpdate(
+      { userId: req.user.id, week: Number(week) },
+      { fileUrl, submittedAt: new Date() },
+      { upsert: true, new: true }
+    );
+
+    res.json({ success: true, submission: existing });
+  } catch (err) {
+    console.error("❌ Görev gönderimi hatası:", err);
+    res.status(500).json({ error: 'Görev gönderilemedi' });
+  }
+});
 
 module.exports = router;
