@@ -267,28 +267,28 @@ const InstructorDashboard = () => {
         </h3>
 
         {/* Gösterim Alanı */}
-        {s.topicDay1 && (
+        {/* Gösterim Alanı */}
+{s.topic?.day1 && (
   <>
     <p className="text-sm font-semibold text-white mb-1">📅 1. Gün Konuları</p>
     <ul className="list-disc list-inside text-sm text-white/90 mb-2 space-y-1">
-      {s.topicDay1.split("\n").map((line, i) => (
+      {s.topic.day1.split("\n").map((line, i) => (
         <li key={`d1-${i}`}>{line}</li>
       ))}
     </ul>
   </>
 )}
 
-{s.topicDay2 && (
+{s.topic?.day2 && (
   <>
     <p className="text-sm font-semibold text-white mb-1">📅 2. Gün Konuları</p>
     <ul className="list-disc list-inside text-sm text-white/90 mb-4 space-y-1">
-      {s.topicDay2.split("\n").map((line, i) => (
+      {s.topic.day2.split("\n").map((line, i) => (
         <li key={`d2-${i}`}>{line}</li>
       ))}
     </ul>
   </>
 )}
-
 
         {/* Güncelleme Alanı */}
         <div className="space-y-4">
