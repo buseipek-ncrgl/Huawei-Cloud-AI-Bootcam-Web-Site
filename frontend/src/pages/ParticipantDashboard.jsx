@@ -99,6 +99,48 @@ const ParticipantDashboard = () => {
   }
 };
 
+const handleTaskSubmit = async (e, week) => {
+  e.preventDefault();
+  const fileUrl = e.target.fileUrl.value.trim();
+  if (!fileUrl) return;
+
+  try {
+    const token = localStorage.getItem("token");
+    await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/attendance/${week}/task`,
+      { fileUrl },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    alert("Görev başarıyla gönderildi!");
+
+    // Formu temizle
+    e.target.reset();
+
+    // Gönderimleri yeniden çek
+    fetchSessions(); // useEffect içinde tanımladığın fonksiyon
+  } catch (err) {
+    alert(err.response?.data?.error || "Görev gönderilemedi");
+  }
+};
+
+const handleDeleteSubmission = async (submissionId) => {
+  if (!window.confirm("Gönderimi silmek istediğine emin misin?")) return;
+
+  try {
+    const token = localStorage.getItem("token");
+    await axios.delete(
+      `${import.meta.env.VITE_API_URL}/api/attendance/task-submissions/${submissionId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    alert("Gönderim silindi");
+    fetchSessions();
+  } catch (err) {
+    alert(err.response?.data?.error || "Silinemedi");
+  }
+};
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900">
@@ -304,7 +346,7 @@ const ParticipantDashboard = () => {
             {[
               { name: "Hakan Aktaş", title: "Data Scientist – Huawei", linkedin: "https://www.linkedin.com/in/hakanaktas1/", image: "/hakanaktas.jpg" },
               { name: "Barış Kaplan", title: "AI & ML Engineer/Data Scientist – Huawei", linkedin: "https://www.linkedin.com/in/baris-k-896652175/", image: "/bariskaplan.png" },
-              { name: "Sefa Bilicier", title: "Cloud Solutions Engineer - Huawei", linkedin: "https://tr.linkedin.com/in/sefabilicier", image: "/sefabilicier.jpeg" },
+              { name: "Sefa Bilicier", title: "Cloud Solutions Engineer - Huawei", linkedin: "https://tr.linkedin.com/in/sefabilicier", image: "/sefabilicier.jpg" },
             ].map((e, i) => (
               <div key={i} className="bg-white/10 border border-white/20 p-4 rounded-lg text-center transition hover:scale-[1.015] hover:border-yellow-400">
                 <img src={e.image} alt="Eğitmen" className="w-20 h-20 mx-auto rounded-full object-cover mb-3" />
@@ -447,55 +489,84 @@ const ParticipantDashboard = () => {
     {sessions.map((s) => (
       <div
         key={s.week}
-        className={`bg-white/10 border p-5 rounded-xl backdrop-blur-sm transition ${
+        className={`p-5 rounded-xl border ${
           s.taskActive
-            ? "border-white/20 hover:border-yellow-400 hover:scale-[1.01]"
-            : "border-white/10 opacity-60"
+            ? "bg-white/10 border-white/20"
+            : "bg-white/5 border-white/10 opacity-60"
         }`}
       >
         <h3 className="text-lg font-bold text-yellow-300 mb-3">
-          <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
-            {s.week}. Hafta Görevleri
-          </span>
+          {s.week}. Hafta Görevleri
         </h3>
 
-        {/* Görev içerikleri */}
-        {s.taskActive ? (
-          <>
-            {s.tasks?.length > 0 ? (
-              <ul className="list-disc ml-5 text-white text-sm mb-4">
-                {s.tasks.map((task, i) => (
-                  <li key={i}>{task}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-300 italic text-sm mb-3">
-                Görev tanımlanmamış
-              </p>
-            )}
-
-            {/* Görev gönderme formu */}
-            <form
-              onSubmit={(e) => handleTaskSubmit(e, s.week)}
-              className="flex flex-col gap-2"
-            >
-              <input
-                type="text"
-                name="fileUrl"
-                placeholder="Dosya bağlantısı (GitHub, Drive...)"
-                className="p-2 rounded bg-white/5 border border-white/10 text-white text-sm"
-                required
-              />
-              <button
-                type="submit"
-                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition"
-              >
-                Gönder
-              </button>
-            </form>
-          </>
+        {s.tasks?.length > 0 ? (
+          <ul className="list-disc ml-5 text-white text-sm mb-4">
+            {s.tasks.map((task, i) => (
+              <li key={i}>{task}</li>
+            ))}
+          </ul>
         ) : (
-          <p className="text-gray-400 italic text-sm">Görev henüz aktif değil</p>
+          <p className="text-gray-300 italic text-sm mb-4">Görev tanımlanmamış</p>
+        )}
+
+        {/* Gönderilmiş dosyalar */}
+        {s.submissions?.length > 0 && (
+          <div className="mb-3">
+            <p className="text-white font-semibold mb-2 text-sm">📂 Gönderilen Dosyalar</p>
+            {s.submissions.map((submission) => (
+              <div
+                key={submission._id}
+                className="flex justify-between items-center bg-white/5 p-2 rounded border border-white/10 mb-2"
+              >
+                <a
+                  href={submission.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-300 text-sm underline"
+                >
+                  {new Date(submission.submittedAt).toLocaleString()}
+                </a>
+                <button
+                  onClick={() => handleDeleteSubmission(submission._id)}
+                  className="text-red-400 text-xs hover:underline"
+                >
+                  Sil
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Yeni Gönderim Formu */}
+        <form
+          onSubmit={(e) => handleTaskSubmit(e, s.week)}
+          className="flex flex-col gap-2 mt-3"
+        >
+          <input
+            type="text"
+            name="fileUrl"
+            placeholder="Dosya bağlantısı (GitHub, Drive...)"
+            className="p-2 rounded bg-white/5 border border-white/10 text-white text-sm"
+            required
+          />
+          <button
+            type="submit"
+            className={`${
+              s.taskActive
+                ? "bg-green-600 hover:bg-green-700"
+                : "bg-gray-500 cursor-not-allowed"
+            } text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition`}
+            disabled={!s.taskActive}
+          >
+            Gönder
+          </button>
+        </form>
+
+        {/* Aktif değilse uyarı */}
+        {!s.taskActive && (
+          <p className="text-yellow-300 text-xs italic mt-2">
+            Bu haftanın görevi henüz aktif değil.
+          </p>
         )}
       </div>
     ))}
