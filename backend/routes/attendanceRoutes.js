@@ -150,35 +150,40 @@ router.get('/details/:week', async (req, res) => {
     if (req.user.role !== 'instructor') {
       return res.status(403).json({ error: 'Yetkisiz erişim' });
     }
+
     const weekNum = Number(req.params.week);
     const totalWeeks = await Session.countDocuments();
     const participants = await User.find({ role: 'participant' }).select('_id fullName email');
-    const attendanceRecords = await Attendance.find({ attended: true });
+    const attendanceRecords = await Attendance.find({ attended: true, week: weekNum });
 
-    const present = participants
-      .filter(p =>
-        attendanceRecords.some(r =>
-          r.week === weekNum &&
-          r.userId.toString() === p._id.toString() &&
-          r.attended === true
-        )
-      )
-      .map(p => {
-        const attendedWeeks = attendanceRecords.filter(r =>
-          r.userId.toString() === p._id.toString() && r.attended === true
-        ).length;
-        const rate = totalWeeks > 0 ? Math.round((attendedWeeks / totalWeeks) * 100) : 0;
-        return {
-          id: p._id,
-          name: p.fullName,
-          email: p.email,
-          attended: attendedWeeks,
-          totalWeeks,
-          rate
-        };
-      });
+    // Gün bazlı ayır
+    const result = { 1: [], 2: [] };
 
-    res.json({ present });
+    for (const p of participants) {
+      for (const day of [1, 2]) {
+        const attended = attendanceRecords.some(
+          r => r.userId.toString() === p._id.toString() && r.day === day
+        );
+        if (attended) {
+          const userAllWeeks = await Attendance.find({
+            userId: p._id,
+            attended: true
+          });
+          const rate = totalWeeks > 0 ? Math.round((userAllWeeks.length / (totalWeeks * 2)) * 100) : 0;
+
+          result[day].push({
+            id: p._id,
+            name: p.fullName,
+            email: p.email,
+            attended: userAllWeeks.length,
+            totalWeeks: totalWeeks * 2,
+            rate
+          });
+        }
+      }
+    }
+
+    res.json({ present: result });
   } catch (err) {
     console.error('❌ Detaylar alınamadı:', err);
     res.status(500).json({ error: 'Sunucu hatası' });
