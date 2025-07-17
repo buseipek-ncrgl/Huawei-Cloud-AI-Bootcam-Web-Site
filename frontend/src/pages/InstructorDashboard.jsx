@@ -26,7 +26,8 @@ const InstructorDashboard = () => {
  const [tempTasks, setTempTasks] = useState({});
  const [savedTasks, setSavedTasks] = useState({});
  const [announcements, setAnnouncements] = useState([]);
- const [newAnnouncement, setNewAnnouncement] = useState("");
+ const [newAnnouncement, setNewAnnouncement] = useState({ title: "", content: "" });
+
 
 
   const fetchData = async () => {
@@ -804,60 +805,78 @@ const fetchAnnouncements = async () => {
 
       {activePanel === "Duyurular" && (
   <div className="space-y-6">
-    {/* Yeni duyuru alanı */}
-    <div className="bg-white/5 p-4 rounded-lg border border-white/10 backdrop-blur-sm">
-      <textarea
-        rows={3}
-        placeholder="Yeni duyuru yaz..."
-        value={newAnnouncement}
-        onChange={(e) => setNewAnnouncement(e.target.value)}
-        className="w-full p-3 rounded bg-white/10 text-white border border-white/30 text-sm placeholder-white/50 focus:outline-none focus:border-yellow-400"
-      />
+    {/* Yeni duyuru formu */}
+<div className="bg-white/5 p-4 rounded-lg border border-white/10 backdrop-blur-sm space-y-4">
+  <input
+    type="text"
+    placeholder="Duyuru Başlığı"
+    value={newAnnouncement.title}
+    onChange={(e) =>
+      setNewAnnouncement((prev) => ({ ...prev, title: e.target.value }))
+    }
+    className="w-full p-3 rounded bg-white/10 text-white border border-white/30 text-sm placeholder-white/50 focus:outline-none focus:border-yellow-400"
+  />
+  <textarea
+    rows={3}
+    placeholder="Duyuru İçeriği"
+    value={newAnnouncement.content}
+    onChange={(e) =>
+      setNewAnnouncement((prev) => ({ ...prev, content: e.target.value }))
+    }
+    className="w-full p-3 rounded bg-white/10 text-white border border-white/30 text-sm placeholder-white/50 focus:outline-none focus:border-yellow-400"
+  />
+  <button
+    onClick={async () => {
+      const token = localStorage.getItem("token");
+      try {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/announcements`, newAnnouncement, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setNewAnnouncement({ title: "", content: "" });
+        fetchAnnouncements();
+      } catch {
+        alert("Duyuru eklenemedi ❌");
+      }
+    }}
+    className="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg font-semibold text-sm transition"
+  >
+    ➕ Duyuru Ekle
+  </button>
+</div>
+
+
+    {/* Mevcut duyurular */}
+    {/* Duyuru listesi */}
+<div className="space-y-4">
+  {announcements.map((a) => (
+    <div
+      key={a._id}
+      className="group bg-white/10 border border-white/20 p-5 rounded-xl text-white text-sm relative transition hover:scale-[1.02] hover:border-yellow-400"
+    >
+      <h4 className="text-yellow-300 font-bold text-base mb-1">
+        {a.title || "Başlıksız"}
+      </h4>
+      <p className="text-white/90">{a.content}</p>
       <button
         onClick={async () => {
           const token = localStorage.getItem("token");
           try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/api/announcements`, {
-              content: newAnnouncement
-            }, {
+            await axios.delete(`${import.meta.env.VITE_API_URL}/api/announcements/${a._id}`, {
               headers: { Authorization: `Bearer ${token}` }
             });
-            setNewAnnouncement("");
             fetchAnnouncements();
           } catch {
-            alert("Duyuru eklenemedi ❌");
+            alert("Silinemedi ❌");
           }
         }}
-        className="mt-3 bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg font-semibold text-sm transition"
+        className="absolute top-2 right-2 text-red-400 hover:text-red-600"
       >
-        ➕ Duyuru Ekle
+        ❌
       </button>
     </div>
+  ))}
+</div>
 
-    {/* Mevcut duyurular */}
-    <div className="space-y-4">
-      {announcements.map((a) => (
-        <div key={a._id} className="bg-white/10 border border-white/20 p-4 rounded-lg text-white text-sm relative">
-          <p>{a.content}</p>
-          <button
-            onClick={async () => {
-              const token = localStorage.getItem("token");
-              try {
-                await axios.delete(`${import.meta.env.VITE_API_URL}/api/announcements/${a._id}`, {
-                  headers: { Authorization: `Bearer ${token}` }
-                });
-                fetchAnnouncements();
-              } catch {
-                alert("Silinemedi ❌");
-              }
-            }}
-            className="absolute top-2 right-2 text-red-400 hover:text-red-600"
-          >
-            ❌
-          </button>
-        </div>
-      ))}
-    </div>
   </div>
 )}
 
