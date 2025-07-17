@@ -50,6 +50,7 @@ const InstructorDashboard = () => {
       const mediumState = {};
       const taskState = {};
       const savedState = {};
+      const publishState = {};
       summaryRes.data.forEach((s) => {
   topicState[s.week] = {
     day1: s.topic?.day1 ?? "",
@@ -471,7 +472,7 @@ const InstructorDashboard = () => {
         </div>
       )}
 
- {/* KATILIM PANELİ */}
+ {/* GÖREVLER PANELİ */}
 
 {activePanel === "Görevler" && (
   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -512,8 +513,8 @@ const InstructorDashboard = () => {
 
         {/* Görev listesi */}
         <ul className="list-disc list-inside text-white text-sm mb-4 space-y-1">
-          {tempTasks[s.week]?.length > 0 ? (
-            tempTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
+          {savedTasks[s.week]?.length > 0 ? (
+            savedTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
           ) : (
             <li className="italic text-gray-400">Görev yok</li>
           )}
@@ -538,8 +539,7 @@ const InstructorDashboard = () => {
             const token = localStorage.getItem("token");
             try {
               await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
-                list: tempTasks[s.week] || [],
-                published: publishedTasks[s.week]
+                tasks: tempTasks[s.week] || []
               }, {
                 headers: { Authorization: `Bearer ${token}` }
               });
@@ -557,6 +557,7 @@ const InstructorDashboard = () => {
     ))}
   </div>
 )}
+
 
       {/* KATILIM PANELİ */}
 {activePanel === "Katılım" && (
