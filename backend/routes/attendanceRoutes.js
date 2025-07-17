@@ -108,23 +108,35 @@ router.get('/summary', async (req, res) => {
     const participants = await User.countDocuments({ role: 'participant' });
 
     const summaryData = await Promise.all(
-      sessions.map(async session => {
-        const attended = await Attendance.countDocuments({
-          week: session.week,
-          attended: true
-        });
-        return {
-          week: session.week,
-          attended,
-          total: participants,
-          rate: participants > 0 ? Math.round((attended / participants) * 100) : 0,
-          active: session.active,
-          topic: session.topic || "",       // 🔧 Ekledik
-          videoUrl: session.videoUrl || "",  // 🔧 Ekledik
-          mediumUrl: session.mediumUrl || "" 
-        };
-      })
-    );
+  sessions.map(async session => {
+    const attendedRecords = await Attendance.find({
+      week: session.week,
+      attended: true
+    });
+
+    const total = participants;
+    const day1Attended = attendedRecords.filter(a => a.day === 1).length;
+    const day2Attended = attendedRecords.filter(a => a.day === 2).length;
+
+    return {
+      week: session.week,
+      total,
+      // 👇 Günlere göre katılım oranları
+      day1Attended,
+      day2Attended,
+      day1Rate: total > 0 ? Math.round((day1Attended / total) * 100) : 0,
+      day2Rate: total > 0 ? Math.round((day2Attended / total) * 100) : 0,
+      // 👇 Aktiflik bilgileri (EN KRİTİK NOKTA)
+      day1Active: session.activeDays?.day1 || false,
+      day2Active: session.activeDays?.day2 || false,
+      // Diğer bilgiler
+      topic: session.topic || "",
+      videoUrl: session.videoUrl || "",
+      mediumUrl: session.mediumUrl || ""
+    };
+  })
+);
+
     res.json(summaryData);
   } catch (err) {
     console.error('❌ Özet alınamadı:', err);
