@@ -62,10 +62,12 @@ const InstructorDashboard = () => {
     day1: s.mediumUrl?.day1 || "",
     day2: s.mediumUrl?.day2 || ""
   };
+
   const tasks = s.tasks || [];
-  taskState[s.week] = tasks.join('\n');  // textarea için string
-  savedState[s.week] = tasks;            // görüntüleme için liste
+  taskState[s.week] = tasks;      // ✅ Artık bir array
+  savedState[s.week] = tasks;
 });
+
 
       setTempTopics(topicState);
       setTempVideos(videoState);
@@ -502,10 +504,11 @@ const InstructorDashboard = () => {
             const token = localStorage.getItem("token");
             try {
               await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
-                tasks: tempTasks[s.week] || []
-              }, {
-                headers: { Authorization: `Bearer ${token}` }
-              });
+  tasks: tempTasks[s.week] || []
+}, {
+  headers: { Authorization: `Bearer ${token}` }
+});
+
               alert("Görevler kaydedildi ✅");
               fetchData();
             } catch {
