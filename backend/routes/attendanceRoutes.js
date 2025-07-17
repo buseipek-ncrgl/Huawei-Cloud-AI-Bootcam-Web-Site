@@ -42,7 +42,9 @@ router.get('/sessions', authenticate, async (req, res) => {
     activeDay1: session.activeDays?.day1 || false,
     activeDay2: session.activeDays?.day2 || false,
     attendedDay1,
-    attendedDay2
+    attendedDay2,
+    tasks: session.tasks || [],
+  taskActive: session.taskActive || false
   };
 });
 
