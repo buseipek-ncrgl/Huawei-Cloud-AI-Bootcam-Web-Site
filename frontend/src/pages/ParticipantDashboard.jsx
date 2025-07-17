@@ -689,8 +689,7 @@ const handleDeleteSubmission = async (id) => {
 )}
 
 {activePanel === "Hakkımızda" && (
-  <div className="space-y-4 text-white">
-    <h1 className="text-3xl font-bold text-yellow-300">Hakkımızda</h1>
+   <div className="p-6 bg-white/5 border border-white/20 rounded-xl text-white space-y-6">
 
     <p className="text-white/90 text-sm leading-relaxed">
       <span className="font-semibold text-yellow-200">Huawei Cloud AI Bootcamp</span>, yapay zekâ ve bulut bilişim alanında kendini geliştirmek isteyen katılımcılar için özel olarak tasarlanmış teknik ve kişisel gelişim odaklı bir eğitim programıdır. Bu platform, yeni nesil teknolojileri tanıtmak, katılımcıların pratik projelerle deneyim kazanmasını sağlamak ve sektörel farkındalıklarını artırmak amacıyla oluşturulmuştur.
@@ -730,10 +729,8 @@ const handleDeleteSubmission = async (id) => {
     </p>
   </div>
 )}
-
-{activePanel === "Huawei Cloud Hesabı" && (
-  <div className="space-y-4 text-white">
-    <h1 className="text-3xl font-bold text-yellow-300">Huawei Cloud Hesabı Nasıl Açılır?</h1>
+{activePanel === "Huawei Cloud Hesap" && (
+   <div className="p-6 bg-white/5 border border-white/20 rounded-xl text-white space-y-6">
 
     <p className="text-white/90 text-sm leading-relaxed">
       Huawei Cloud üzerinde ücretsiz bir hesap oluşturmak oldukça kolaydır. Aşağıdaki adımları takip ederek dakikalar içinde hesabınızı aktif hâle getirebilirsiniz:
@@ -743,13 +740,14 @@ const handleDeleteSubmission = async (id) => {
       <li>
         <span className="font-semibold text-yellow-300">Resmi Siteye Giriş:</span>{" "}
         <a
-          href="https://intl.huaweicloud.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline text-blue-300 hover:text-blue-400"
-        >
-          Huawei Cloud
-        </a>
+  href="https://www.youtube.com/watch?v=dkpHpOBsCMA"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="block text-blue-300 underline text-lg"
+>
+  ▶️ YouTube üzerinden videoyu izlemek için tıklayın
+</a>
+
       </li>
       <li>Sağ üstteki <span className="font-semibold text-yellow-300">“Register”</span> veya <span className="font-semibold text-yellow-300">“Sign Up”</span> butonuna tıklayın.</li>
       <li>E-posta adresi ile kayıt olun ve gelen doğrulama kodunu girin.</li>
