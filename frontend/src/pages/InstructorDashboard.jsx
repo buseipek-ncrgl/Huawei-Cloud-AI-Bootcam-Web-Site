@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const panels = ["Program", "Katılım", "Kaynaklar", "Genel Katılım", "Görevler"];
+const panels = ["Program", "Katılım", "Kaynaklar", "Görevler", "Genel Katılım"];
 const panelTitles = {
   Program: "📅 Eğitim Programı",
   Katılım: "📝 Katılım Yönetimi",
   Kaynaklar: "📚 Eğitim Kaynakları",
+  "Görevler": "📌 Haftalık Görevler",
   "Genel Katılım": "📊 Genel Katılım Özeti",
-  "Görevler": "📌 Haftalık Görevler"
 };
 
 const InstructorDashboard = () => {
@@ -22,7 +22,9 @@ const InstructorDashboard = () => {
   const [tempVideos, setTempVideos] = useState({});
   const [tempMediums, setTempMediums] = useState({});
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [tempTasks, setTempTasks] = useState({});
+ const [tempTasks, setTempTasks] = useState({});
+ const [savedTasks, setSavedTasks] = useState({});
+
 
   const fetchData = async () => {
     const token = localStorage.getItem("token");
@@ -45,6 +47,8 @@ const InstructorDashboard = () => {
       const topicState = {};
       const videoState = {};
       const mediumState = {};
+      const taskState = {};
+      const savedState = {};
       summaryRes.data.forEach((s) => {
   topicState[s.week] = {
     day1: s.topic?.day1 ?? "",
@@ -58,11 +62,16 @@ const InstructorDashboard = () => {
     day1: s.mediumUrl?.day1 || "",
     day2: s.mediumUrl?.day2 || ""
   };
+  const tasks = s.tasks || [];
+  taskState[s.week] = tasks.join('\n');  // textarea için string
+  savedState[s.week] = tasks;            // görüntüleme için liste
 });
 
       setTempTopics(topicState);
       setTempVideos(videoState);
       setTempMediums(mediumState); 
+      setTempTasks(taskState);
+      setSavedTasks(savedState);
     } catch (err) {
       alert("Veriler alınamadı");
     }
