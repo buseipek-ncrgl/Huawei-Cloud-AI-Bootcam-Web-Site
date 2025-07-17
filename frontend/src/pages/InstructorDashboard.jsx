@@ -24,7 +24,6 @@ const InstructorDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
  const [tempTasks, setTempTasks] = useState({});
  const [savedTasks, setSavedTasks] = useState({});
- const [publishedTasks, setPublishedTasks] = useState({});
 
 
   const fetchData = async () => {
@@ -66,7 +65,6 @@ const InstructorDashboard = () => {
   const tasks = s.tasks || [];
   taskState[s.week] = tasks.join('\n');  // textarea için string
   savedState[s.week] = tasks;            // görüntüleme için liste
-  publishState[s.week] = s.tasks?.published || false;
 });
 
       setTempTopics(topicState);
@@ -74,7 +72,6 @@ const InstructorDashboard = () => {
       setTempMediums(mediumState); 
       setTempTasks(taskState);
       setSavedTasks(savedState);
-      setPublishedTasks(publishState);
     } catch (err) {
       alert("Veriler alınamadı");
     }
