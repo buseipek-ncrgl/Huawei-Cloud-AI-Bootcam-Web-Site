@@ -729,8 +729,9 @@ const handleDeleteSubmission = async (id) => {
     </p>
   </div>
 )}
+
 {activePanel === "Huawei Cloud Hesabı" && (
-   <div className="p-6 bg-white/5 border border-white/20 rounded-xl text-white space-y-6">
+  <div className="p-6 bg-white/5 border border-white/20 rounded-xl text-white space-y-6">
 
     <p className="text-white/90 text-sm leading-relaxed">
       Huawei Cloud üzerinde ücretsiz bir hesap oluşturmak oldukça kolaydır. Aşağıdaki adımları takip ederek dakikalar içinde hesabınızı aktif hâle getirebilirsiniz:
@@ -740,16 +741,17 @@ const handleDeleteSubmission = async (id) => {
       <li>
         <span className="font-semibold text-yellow-300">Resmi Siteye Giriş:</span>{" "}
         <a
-  href="https://www.youtube.com/watch?v=dkpHpOBsCMA"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="block text-blue-300 underline text-lg"
->
-  ▶️ YouTube üzerinden videoyu izlemek için tıklayın
-</a>
-
+          href="https://www.youtube.com/watch?v=dkpHpOBsCMA"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-300 underline"
+        >
+          ▶️ YouTube üzerinden videoyu izlemek için buraya tıklayın
+        </a>
       </li>
-      <li>Sağ üstteki <span className="font-semibold text-yellow-300">“Register”</span> veya <span className="font-semibold text-yellow-300">“Sign Up”</span> butonuna tıklayın.</li>
+      <li>
+        Sağ üstteki <span className="font-semibold text-yellow-300">“Register”</span> veya <span className="font-semibold text-yellow-300">“Sign Up”</span> butonuna tıklayın.
+      </li>
       <li>E-posta adresi ile kayıt olun ve gelen doğrulama kodunu girin.</li>
       <li>Şifre ve kişisel bilgileri doldurun.</li>
       <li>
@@ -761,18 +763,16 @@ const handleDeleteSubmission = async (id) => {
     <div className="bg-yellow-100/10 border border-yellow-300/30 p-4 rounded-xl">
       <h2 className="text-lg font-semibold text-yellow-300 mb-2">📺 Video Rehber</h2>
       <p className="text-sm text-white/90 mb-3">
-        Aşağıdaki videoyu izleyerek adım adım Huawei Cloud hesap açma sürecini görsel olarak takip edebilirsiniz:
+        Aşağıdaki bağlantıya tıklayarak Huawei Cloud hesap açma sürecini adım adım izleyebilirsiniz:
       </p>
-      <div className="aspect-w-16 aspect-h-9">
-        <iframe
-          className="rounded-xl w-full h-full"
-          src="https://www.youtube.com/watch?v=dkpHpOBsCMA"
-          title="Huawei Cloud Hesap Açma Rehberi"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </div>
+      <a
+        href="https://www.youtube.com/watch?v=dkpHpOBsCMA"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition"
+      >
+        🔗 Videoyu YouTube’da Aç
+      </a>
     </div>
 
     <p className="text-white/90 text-sm leading-relaxed">
@@ -780,6 +780,7 @@ const handleDeleteSubmission = async (id) => {
     </p>
   </div>
 )}
+
 
 
       </main>
