@@ -449,13 +449,22 @@ const InstructorDashboard = () => {
         {[1, 2].map((day) => (
           <div key={day} className="mb-4 bg-white/5 rounded-lg p-3 border border-white/10 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-white text-sm font-semibold">📅 {day}. Gün</span>
-              <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                s[`day${day}Active`] ? "bg-green-600 text-white" : "bg-gray-600 text-white/70"
-              }`}>
-                {s[`day${day}Active`] ? "Aktif" : "Pasif"}
-              </span>
-            </div>
+  <span className="text-white text-sm font-semibold">📅 {day}. Gün</span>
+  <div className="flex items-center gap-2">
+    <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+      s[`day${day}Active`] ? "bg-green-600 text-white" : "bg-gray-600 text-white/70"
+    }`}>
+      {s[`day${day}Active`] ? "Aktif" : "Pasif"}
+    </span>
+    <span
+      className={`w-3 h-3 rounded-full ${
+        s[`day${day}Active`] ? "bg-green-400" : "bg-red-400"
+      }`}
+      title={s[`day${day}Active`] ? "Aktif" : "Pasif"}
+    ></span>
+  </div>
+</div>
+
 
             <div className="flex justify-between items-center bg-black/10 px-3 py-2 rounded-lg">
               <span className="text-sm text-white">Katılım</span>
