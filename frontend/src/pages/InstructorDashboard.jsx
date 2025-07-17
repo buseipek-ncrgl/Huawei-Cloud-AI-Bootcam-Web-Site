@@ -266,84 +266,74 @@ const InstructorDashboard = () => {
           </span>
         </h3>
 
-        {/* Gösterim Alanı */}
-        {/* Gösterim Alanı */}
-{s.topic?.day1 && (
-  <>
-    <p className="text-sm font-semibold text-white mb-1">📅 1. Gün Konuları</p>
-    <ul className="list-disc list-inside text-sm text-white/90 mb-2 space-y-1">
-      {s.topic.day1.split("\n").map((line, i) => (
-        <li key={`d1-${i}`}>{line}</li>
-      ))}
-    </ul>
-  </>
-)}
+        {/* 1. Gün */}
+        <div className="mb-6">
+          <p className="text-sm font-semibold text-white mb-1">📅 1. Gün Konuları</p>
+          {s.topic?.day1 ? (
+            <ul className="list-disc list-inside text-sm text-white/90 mb-2 space-y-1">
+              {s.topic.day1.split("\n").map((line, i) => (
+                <li key={`d1-${i}`}>{line}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-400 italic text-sm mb-2">Henüz konu girilmedi.</p>
+          )}
 
-{s.topic?.day2 && (
-  <>
-    <p className="text-sm font-semibold text-white mb-1">📅 2. Gün Konuları</p>
-    <ul className="list-disc list-inside text-sm text-white/90 mb-4 space-y-1">
-      {s.topic.day2.split("\n").map((line, i) => (
-        <li key={`d2-${i}`}>{line}</li>
-      ))}
-    </ul>
-  </>
-)}
-
-        {/* Güncelleme Alanı */}
-        <div className="space-y-4">
-          <p className="text-sm font-semibold text-white">📝 Konu Güncelle</p>
-
-          <div>
-{/* 1. GÜN */}
-<label className="block font-semibold text-white mb-1 text-sm">📋 1. Gün Konuları</label>
-<textarea
-  rows={3}
-  className="w-full p-3 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
-  placeholder="Her satıra bir konu yazın"
-  value={tempTopics[s.week]?.day1 ?? ""}
-  onChange={(e) =>
-    setTempTopics((prev) => ({
-      ...prev,
-      [s.week]: {
-        ...(prev[s.week] || {}),
-        day1: e.target.value
-      }
-    }))
-  }
-/>
-
-{/* 2. GÜN */}
-<label className="block font-semibold text-white mt-4 mb-1 text-sm">📋 2. Gün Konuları</label>
-<textarea
-  rows={3}
-  className="w-full p-3 rounded-lg bg-white/10 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
-  placeholder="Her satıra bir konu yazın"
-  value={tempTopics[s.week]?.day2 ?? ""}
-  onChange={(e) =>
-    setTempTopics((prev) => ({
-      ...prev,
-      [s.week]: {
-        ...(prev[s.week] || {}),
-        day2: e.target.value
-      }
-    }))
-  }
-/>
-
-          </div>
-
+          <textarea
+            rows={3}
+            className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
+            value={tempTopics[s.week]?.day1 ?? ""}
+            onChange={(e) =>
+              setTempTopics((prev) => ({
+                ...prev,
+                [s.week]: { ...prev[s.week], day1: e.target.value },
+              }))
+            }
+          />
           <button
             onClick={() => handleUpdate(s.week)}
-            className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm transition flex items-center justify-center gap-2"
+            className="mt-2 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm transition flex items-center justify-center gap-2"
           >
-            💾 Kaydet
+            💾 1. Gün Kaydet
+          </button>
+        </div>
+
+        {/* 2. Gün */}
+        <div>
+          <p className="text-sm font-semibold text-white mb-1">📅 2. Gün Konuları</p>
+          {s.topic?.day2 ? (
+            <ul className="list-disc list-inside text-sm text-white/90 mb-2 space-y-1">
+              {s.topic.day2.split("\n").map((line, i) => (
+                <li key={`d2-${i}`}>{line}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-400 italic text-sm mb-2">Henüz konu girilmedi.</p>
+          )}
+
+          <textarea
+            rows={3}
+            className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
+            value={tempTopics[s.week]?.day2 ?? ""}
+            onChange={(e) =>
+              setTempTopics((prev) => ({
+                ...prev,
+                [s.week]: { ...prev[s.week], day2: e.target.value },
+              }))
+            }
+          />
+          <button
+            onClick={() => handleUpdate(s.week)}
+            className="mt-2 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm transition flex items-center justify-center gap-2"
+          >
+            💾 2. Gün Kaydet
           </button>
         </div>
       </div>
     ))}
   </div>
 )}
+
 
       {/* KAYNAKLAR PANELİ */}
       {activePanel === "Kaynaklar" && (
