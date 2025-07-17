@@ -83,17 +83,23 @@ const InstructorDashboard = () => {
   }
 };
 
-const fetchAnnouncements = async () => {
-  const token = localStorage.getItem("token");
-  try {
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/announcements`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    setAnnouncements(res.data);  // ❗️ Yeni listeyle overwrite ediyor
-  } catch (err) {
-    console.error("❌ Duyurular alınamadı:", err);
-  }
-};
+// ✅ Duyuruları getir
+  const fetchAnnouncements = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/announcements`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAnnouncements(res.data); // 🔁 State'e yükle
+    } catch (err) {
+      console.error("❌ Duyurular alınamadı:", err);
+    }
+  };
+
+  // ✅ Burası en önemli kısım: Sayfa yüklendiğinde çalışır
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
 
 
   const fetchDetails = async (week) => {
