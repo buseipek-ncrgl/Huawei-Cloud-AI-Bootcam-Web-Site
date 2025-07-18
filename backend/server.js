@@ -12,9 +12,7 @@ const allowedOrigins = [
 ];
 
 // ⛔ Geçici olarak localhost'u da ekliyoruz
-if (process.env.NODE_ENV !== "production") {
-  allowedOrigins.push("http://localhost:5174");
-}
+
 
 const corsOptions = {
   origin: function (origin, callback) {
