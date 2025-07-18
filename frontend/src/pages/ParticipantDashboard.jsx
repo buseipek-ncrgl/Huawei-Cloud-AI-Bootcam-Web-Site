@@ -1082,6 +1082,127 @@ useEffect(() => {
   </div>
 )}
 
+{activePanel === "Sorular" && (
+  <div className="flex justify-center text-white mt-6">
+    <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-yellow-300 shadow-lg w-full max-w-2xl text-center">
+      <h2 className="text-2xl font-bold text-yellow-300 mb-4">📬 İletişim</h2>
+      <p className="text-white/70 mb-6">Bizimle aşağıdaki kanallardan iletişime geçebilirsiniz:</p>
+
+      <div className="flex justify-center gap-6 text-yellow-300 text-3xl">
+        {/* Instagram */}
+        <a
+          href="https://www.instagram.com/hsdturkiye/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-yellow-400 transition transform hover:scale-110"
+        >
+          <i className="fab fa-instagram"></i>
+        </a>
+
+        {/* LinkedIn */}
+        <a
+          href="https://www.linkedin.com/company/hsdturkiye/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-yellow-400 transition transform hover:scale-110"
+        >
+          <i className="fab fa-linkedin"></i>
+        </a>
+
+        {/* Medium */}
+        <a
+          href="https://medium.com/huawei-developers-tr"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-yellow-400 transition transform hover:scale-110"
+        >
+          <i className="fab fa-medium"></i>
+        </a>
+
+        {/* E-posta */}
+        <a
+          href="mailto:KubraBilgic1@huawei.com"
+          className="hover:text-yellow-400 transition transform hover:scale-110"
+        >
+          <i className="fas fa-envelope"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+)}
+
+{activePanel === "Sorular" && (
+  <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 text-white shadow-lg max-w-4xl mx-auto space-y-6">
+    <h2 className="text-2xl font-bold text-yellow-300 flex items-center gap-2">
+      📌 Huawei Cloud AI Bootcamp – Sıkça Sorulan Sorular (SSS)
+    </h2>
+
+    <p className="text-sm text-white/80">
+      🧠 Bu bölüm, seçilmiş katılımcıların süreçle ilgili tüm merak ettiklerini net bir şekilde yanıtlamak için hazırlanmıştır.
+    </p>
+
+    {/* Teknik ve Platformlar */}
+    <div>
+      <h3 className="text-xl text-yellow-200 font-semibold mb-2">🔧 Teknik ve Platformlar</h3>
+      <ul className="list-disc list-inside space-y-2 text-sm text-white/90">
+        <li><strong>Huawei Cloud hesabımı ne zaman ve nasıl oluşturmalıyım?</strong> Bootcamp başlamadan önce Huawei Cloud sitesinden hesap oluşturmalısınız. ModelArts, OBS, ECS gibi servislerde bu gereklidir. Tanışma toplantısında gösterilecektir.</li>
+        <li><strong>Eğitimlerde hangi platformları kullanacağız?</strong> ModelArts, CloudIDE, OBS, FunctionGraph, ECS, Mattermost ve Zoom/YouTube.</li>
+        <li><strong>Kodlama ortamı olarak ne kullanacağız?</strong> Genellikle Jupyter Notebook veya CloudIDE; gerekirse Colab, FastAPI, Ollama.</li>
+      </ul>
+    </div>
+
+    {/* Eğitim Yapısı */}
+    <div>
+      <h3 className="text-xl text-yellow-200 font-semibold mb-2">📚 Eğitim Yapısı ve İçerik</h3>
+      <ul className="list-disc list-inside space-y-2 text-sm text-white/90">
+        <li><strong>Eğitimlerde hangi konular işlenecek?</strong> ModelArts, görüntü işleme, LLM fine-tuning, REST API, FunctionGraph, ECS deploy, RAG uygulamaları.</li>
+        <li><strong>Haftalık ders programına nereden ulaşabilirim?</strong> Mattermost üzerinden ve görsel haftalık özetlerle paylaşılır.</li>
+        <li><strong>Ders kayıtları paylaşılacak mı?</strong> Evet, tüm oturum kayıtları Mattermost üzerinden paylaşılır.</li>
+      </ul>
+    </div>
+
+    {/* Proje ve Uygulama */}
+    <div>
+      <h3 className="text-xl text-yellow-200 font-semibold mb-2">🧪 Uygulama ve Proje Süreci</h3>
+      <ul className="list-disc list-inside space-y-2 text-sm text-white/90">
+        <li><strong>Proje/ödev teslimleri olacak mı?</strong> Evet, mini uygulamalar veya yarışmalar ile değerlendirme yapılır.</li>
+        <li><strong>Finalde proje sunumu olacak mı?</strong> İsteğe bağlı olarak mini proje yapılabilir. Katılanlar öne çıkma şansı yakalar.</li>
+      </ul>
+    </div>
+
+    {/* Soft Skills */}
+    <div>
+      <h3 className="text-xl text-yellow-200 font-semibold mb-2">🧑‍💻 Soft Skill & Kariyer Gelişimi</h3>
+      <ul className="list-disc list-inside space-y-2 text-sm text-white/90">
+        <li><strong>Soft skill eğitimleri olacak mı?</strong> Evet, LinkedIn, GitHub, CV hazırlama gibi içerikler sunulur.</li>
+        <li><strong>Sertifikalar nelerdir?</strong> Katılım sertifikası verilir. Ayrıca HCCDA-AI ve HCCDP-AI için içerik hazırlar.</li>
+      </ul>
+    </div>
+
+    {/* İletişim ve Topluluk */}
+    <div>
+      <h3 className="text-xl text-yellow-200 font-semibold mb-2">📣 İletişim ve Topluluk</h3>
+      <ul className="list-disc list-inside space-y-2 text-sm text-white/90">
+        <li><strong>Mattermost hesabımı nasıl açarım?</strong> Kayıt bağlantısından hesap oluşturulur. Workspace: <code>hsd-turkiye</code>, Server: <code>hsdhuaweimattermost.site</code></li>
+        <li><strong>Destek için kimle iletişime geçmeliyim?</strong> 👩‍💼 Kübra Bilgiç – <code>KubraBilgic1@huawei.com</code>, 📱 +90 507 714 12 47</li>
+        <li><strong>Topluluk kuralları nelerdir?</strong> Saygı, destekleyicilik, ayrımcılıktan kaçınma. Uymayanlar yazılı uyarı alır, tekrarında programdan çıkarılır.</li>
+      </ul>
+    </div>
+
+    {/* Ekstra */}
+    <div>
+      <h3 className="text-xl text-yellow-200 font-semibold mb-2">🧭 Ekstra Sorular için Hızlı Yanıtlar</h3>
+      <div className="text-sm text-white/90 space-y-1">
+        <p><strong>Eğitim dili:</strong> Türkçe</p>
+        <p><strong>Katılım zorunlu mu?</strong> Evet, %70 devam şartı vardır.</p>
+        <p><strong>Sertifikalar ne zaman verilir?</strong> Program sonunda.</p>
+        <p><strong>Ek kaynak paylaşımı olacak mı?</strong> Evet, Mattermost üzerinden.</p>
+        <p><strong>Mobil uygulama kullanılabilir mi?</strong> Evet, Mattermost mobil uygulaması mevcuttur.</p>
+      </div>
+    </div>
+  </div>
+)}
+
       </main>
     </div>
   );
