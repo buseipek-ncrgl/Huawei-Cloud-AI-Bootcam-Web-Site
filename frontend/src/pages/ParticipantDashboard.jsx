@@ -1033,54 +1033,6 @@ useEffect(() => {
   </div>
 )}
 
-{activePanel === "İletişim" && (
-  <div className="flex justify-center text-white mt-6">
-    <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-yellow-300 shadow-lg w-full max-w-2xl text-center">
-      <h2 className="text-2xl font-bold text-yellow-300 mb-4">📬 İletişim</h2>
-      <p className="text-white/70 mb-6">Bizimle aşağıdaki kanallardan iletişime geçebilirsiniz:</p>
-
-      <div className="flex justify-center gap-6 text-yellow-300 text-3xl">
-        {/* Instagram */}
-        <a
-          href="https://www.instagram.com/hsdturkiye/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-yellow-400 transition transform hover:scale-110"
-        >
-          <i className="fab fa-instagram"></i>
-        </a>
-
-        {/* LinkedIn */}
-        <a
-          href="https://www.linkedin.com/company/hsdturkiye/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-yellow-400 transition transform hover:scale-110"
-        >
-          <i className="fab fa-linkedin"></i>
-        </a>
-
-        {/* Medium */}
-        <a
-          href="https://medium.com/huawei-developers-tr"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-yellow-400 transition transform hover:scale-110"
-        >
-          <i className="fab fa-medium"></i>
-        </a>
-
-        {/* E-posta */}
-        <a
-          href="mailto:KubraBilgic1@huawei.com"
-          className="hover:text-yellow-400 transition transform hover:scale-110"
-        >
-          <i className="fas fa-envelope"></i>
-        </a>
-      </div>
-    </div>
-  </div>
-)}
 
 {activePanel === "İletişim" && (
   <div className="flex justify-center text-white mt-6">
@@ -1132,11 +1084,7 @@ useEffect(() => {
 )}
 
 {activePanel === "Sorular" && (
-  <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 text-white shadow-lg max-w-4xl mx-auto space-y-6">
-    <h2 className="text-2xl font-bold text-yellow-300 flex items-center gap-2">
-      📌 Huawei Cloud AI Bootcamp – Sıkça Sorulan Sorular (SSS)
-    </h2>
-
+  <div className="w-full md:max-w-5xl mx-auto p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl text-white shadow-xl space-y-6">
     <p className="text-sm text-white/80">
       🧠 Bu bölüm, seçilmiş katılımcıların süreçle ilgili tüm merak ettiklerini net bir şekilde yanıtlamak için hazırlanmıştır.
     </p>
