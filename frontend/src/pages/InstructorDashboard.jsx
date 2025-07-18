@@ -1135,8 +1135,8 @@ const updateSubmissionStatus = async (id, status) => {
             .filter((u) => (u.rate ?? 0) >= 80 && (u.taskRate ?? 0) >= 75)
             .map((student) => {
               const cert = certificates.find(
-                (c) => c.userId._id === student.id
-              );
+  (c) => c.userId._id?.toString?.() === student.id
+);
 
               return (
                 <tr key={student.id} className="hover:bg-white/5 transition">
