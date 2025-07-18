@@ -1082,7 +1082,7 @@ useEffect(() => {
   </div>
 )}
 
-{activePanel === "Sorular" && (
+{activePanel === "İletişim" && (
   <div className="flex justify-center text-white mt-6">
     <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-yellow-300 shadow-lg w-full max-w-2xl text-center">
       <h2 className="text-2xl font-bold text-yellow-300 mb-4">📬 İletişim</h2>
@@ -1202,7 +1202,6 @@ useEffect(() => {
     </div>
   </div>
 )}
-
       </main>
     </div>
   );
