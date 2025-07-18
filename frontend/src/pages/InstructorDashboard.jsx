@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const panels = ["Program", "Katılım", "Kaynaklar", "Görevler", "Genel Katılım", "Duyurular"];
+const panels = ["Program", "Katılım", "Kaynaklar", "Görevler", "Genel Katılım", "Sertifikalar", "Duyurular"];
 const panelTitles = {
   Program: "📅 Eğitim Programı",
   Katılım: "📝 Katılım Yönetimi",
   Kaynaklar: "📚 Eğitim Kaynakları",
   "Görevler": "📌 Haftalık Görevler",
   "Genel Katılım": "📊 Genel Katılım Özeti",
+  Sertifikalar: "🎓 Sertifika Yönetimi",
   "Duyurular": "📣 Duyurular"
 };
 
@@ -27,7 +28,13 @@ const InstructorDashboard = () => {
  const [savedTasks, setSavedTasks] = useState({});
  const [announcements, setAnnouncements] = useState([]);
  const [newAnnouncement, setNewAnnouncement] = useState({ title: "", content: "" });
+ const [showDetails, setShowDetails] = useState({});
+ const [certificates, setCertificates] = useState([]);
+ const [certUrlInputs, setCertUrlInputs] = useState({});
+ const [newTaskInput, setNewTaskInput] = useState({});
 
+
+ const user = JSON.parse(localStorage.getItem("user"));
 
 
   const fetchData = async () => {
@@ -101,6 +108,18 @@ const InstructorDashboard = () => {
     fetchAnnouncements();
   }, []);
 
+const fetchCertificates = async () => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/certificates`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setCertificates(response.data);
+  } catch (err) {
+    console.error("Sertifikalar alınamadı ❌", err);
+  }
+};
+
 
   const fetchDetails = async (week) => {
     const token = localStorage.getItem("token");
@@ -115,6 +134,9 @@ const InstructorDashboard = () => {
       alert("Katılım detayları alınamadı");
     }
   };
+  useEffect(() => {
+  fetchCertificates();
+}, []);
 
   const handleStart = async (week, day) => {
   const token = localStorage.getItem("token");
@@ -210,6 +232,36 @@ const InstructorDashboard = () => {
   }
 };
 
+const updateSubmissionStatus = async (id, status) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    await axios.patch(
+      `${import.meta.env.VITE_API_URL}/api/attendance/task-submissions/${id}/status`,
+      { status },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // Güncellemeyi doğru ID ile yap
+    setSummary((prev) =>
+      prev.map((week) => ({
+        ...week,
+        submissions: week.submissions.map((sub) =>
+          (sub._id === id || sub.id === id) ? { ...sub, status } : sub
+        ),
+      }))
+    );
+
+    alert("Görev durumu güncellendi ✅");
+  } catch (err) {
+    console.error("Görev güncelleme hatası:", err);
+    alert("Görev durumu güncellenemedi ❌");
+  }
+};
 
  return (
   <div className="flex flex-col lg:flex-row min-h-screen w-full bg-cover bg-center bg-no-repeat text-white" style={{ backgroundImage: "url('/background1.png')" }}>
@@ -331,6 +383,7 @@ const InstructorDashboard = () => {
             rows={3}
             className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
             value={tempTopics[s.week]?.day1 ?? ""}
+             placeholder="Her satıra bir konu giriniz."
             onChange={(e) =>
               setTempTopics((prev) => ({
                 ...prev,
@@ -363,6 +416,7 @@ const InstructorDashboard = () => {
             rows={3}
             className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white placeholder-white/50 backdrop-blur-sm text-sm focus:border-yellow-400 focus:outline-none transition"
             value={tempTopics[s.week]?.day2 ?? ""}
+            placeholder="Her satıra bir konu giriniz."
             onChange={(e) =>
               setTempTopics((prev) => ({
                 ...prev,
@@ -493,103 +547,250 @@ const InstructorDashboard = () => {
         </div>
       )}
 
- {/* GÖREVLER PANELİ */}
-
+{/* GÖREVLER PANELİ */}
 {activePanel === "Görevler" && (
-  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-    {summary.map((s) => (
-      <div key={s.week} className="bg-white/10 border border-white/20 p-5 rounded-xl backdrop-blur-sm">
-  {/* BAŞLIK VE ETİKET */}
-  <div className="flex items-center justify-between mb-3">
-    <h3 className="text-lg font-bold text-yellow-300 flex items-center gap-2">
-  <span className="bg-yellow-400/20 border border-yellow-400/30 rounded-lg px-3 py-1">
-    {s.week}. Hafta
-  </span>
-</h3>
-   <span className={`flex items-center gap-2 text-sm font-semibold px-3 py-1 rounded-full ${
-  s.taskActive ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"
-}`}>
-  <span className={`w-2 h-2 rounded-full ${
-    s.taskActive ? "bg-green-400" : "bg-red-400"
-  }`} />
-  {s.taskActive ? "Aktif" : "Pasif"}
-</span>
+  <>
+    {/* Üstte HAFTA KARTLARI */}
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+      {summary.map((s) => (
+        <div key={s.week} className="bg-white/10 border border-yellow-400 p-5 rounded-xl backdrop-blur-sm hover:scale-[1.02] transition-transform">
+          
+          {/* Başlık ve Etiket */}
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xl font-bold text-yellow-300">
+              {s.week}. Hafta
+            </h3>
+            <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
+              s.taskActive ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"
+            }`}>
+              {s.taskActive ? "Aktif" : "Pasif"}
+            </span>
+          </div>
 
-  </div>
+          {/* Görev listesi */}
+          <ul className="text-white text-sm space-y-1 mb-2">
+            {(tempTasks[s.week] || []).map((task, i) => (
+              <li key={i}>
+                {i + 1}. {task}
+                <button
+                  onClick={() =>
+                    setTempTasks((prev) => ({
+                      ...prev,
+                      [s.week]: prev[s.week].filter((_, idx) => idx !== i)
+                    }))
+                  }
+                  className="ml-2 text-red-400 text-xs hover:underline"
+                >
+                  🗑 Sil
+                </button>
+              </li>
+            ))}
+          </ul>
 
-  {/* KAYITLI GÖREVLER */}
-  <ul className="list-disc list-inside text-white text-sm mb-4 space-y-1">
-    {savedTasks[s.week]?.length > 0 ? (
-      savedTasks[s.week].map((task, i) => <li key={i}>{task}</li>)
-    ) : (
-      <li className="italic text-gray-400">Görev yok</li>
-    )}
-  </ul>
+          {/* Yeni görev ekleme */}
+          <div className="flex gap-2 mb-3">
+            <input
+              type="text"
+              placeholder="Yeni görev"
+              value={newTaskInput[s.week] || ""}
+              onChange={(e) =>
+                setNewTaskInput((prev) => ({ ...prev, [s.week]: e.target.value }))
+              }
+              className="flex-1 p-2 rounded bg-white/5 border border-white/20 text-white text-sm"
+            />
+            <button
+              onClick={() => {
+                if (!newTaskInput[s.week]?.trim()) return;
+                setTempTasks((prev) => ({
+                  ...prev,
+                  [s.week]: [...(prev[s.week] || []), newTaskInput[s.week]]
+                }));
+                setNewTaskInput((prev) => ({ ...prev, [s.week]: "" }));
+              }}
+              className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1.5 rounded text-sm font-semibold"
+            >
+              ➕ Ekle
+            </button>
+          </div>
 
-  {/* GÖREV DÜZENLEME ALANI */}
-  <textarea
-    rows={3}
-    className="w-full p-3 rounded-lg bg-white/5 border border-white/30 text-white text-sm placeholder-white/50 focus:border-yellow-400 focus:outline-none transition"
-    placeholder="Her satıra bir görev yazın"
-    value={tempTasks[s.week]?.join('\n') || ""}
-    onChange={(e) =>
-      setTempTasks((prev) => ({
-        ...prev,
-        [s.week]: e.target.value.split('\n')
-      }))
-    }
-    disabled={s.taskActive} // Opsiyonel: görev aktifse düzenlemeyi kapat
-  />
+          {/* Kaydet butonu */}
+          <button
+            onClick={async () => {
+              const token = localStorage.getItem("token");
+              try {
+                await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
+                  list: tempTasks[s.week] || []
+                }, {
+                  headers: { Authorization: `Bearer ${token}` }
+                });
+                alert("Görevler kaydedildi ✅");
+                fetchData();
+              } catch {
+                alert("Görevler kaydedilemedi ❌");
+              }
+            }}
+            className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm"
+          >
+            💾 Görevleri Kaydet
+          </button>
 
-  {/* KAYDET BUTONU */}
-  <button
-    onClick={async () => {
-      const token = localStorage.getItem("token");
-      try {
-        await axios.put(`${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/tasks`, {
-          list: tempTasks[s.week] || []
-        }, {
-          headers: { Authorization: `Bearer ${token}` }
+          {/* Başlat / Durdur */}
+          <button
+            onClick={async () => {
+              const token = localStorage.getItem("token");
+              const url = `${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/task/${s.taskActive ? "stop" : "start"}`;
+              try {
+                await axios.post(url, {}, {
+                  headers: { Authorization: `Bearer ${token}` }
+                });
+                alert(`Görev ${s.taskActive ? "durduruldu ⛔" : "başlatıldı ✅"}`);
+                fetchData();
+              } catch {
+                alert("İşlem başarısız ❌");
+              }
+            }}
+            className={`mt-3 w-full py-2 rounded-lg text-sm font-semibold transition ${
+              s.taskActive
+                ? "bg-red-600 hover:bg-red-700 text-white"
+                : "bg-green-600 hover:bg-green-700 text-white"
+            }`}
+          >
+            {s.taskActive ? "⛔ Görevleri Bitir" : "✅ Görevleri Başlat"}
+          </button>
+
+          {/* Detay Butonu */}
+          <button
+            onClick={() =>
+              setShowDetails((prev) => ({
+                ...prev,
+                [s.week]: !prev[s.week]
+              }))
+            }
+            className="mt-4 w-full text-sm text-yellow-300 hover:underline"
+          >
+            {showDetails[s.week] ? "🔽 Detayları Gizle" : "📂 Detayları Gör"}
+          </button>
+        </div>
+      ))}
+    </div>
+
+    {/* EN ALTTA: Görev Gönderim Detayları */}
+    {Object.entries(showDetails).map(([week, isVisible]) => {
+      if (!isVisible) return null;
+
+      const weekData = summary.find((s) => s.week == week);
+      const submissions = weekData?.submissions || [];
+
+      const groupedSubmissions = submissions.reduce((acc, sub) => {
+        if (!acc[sub.email]) {
+          acc[sub.email] = {
+            name: sub.name,
+            email: sub.email,
+            files: [],
+          };
+        }
+        acc[sub.email].files.push({
+          id: sub.id || sub._id,
+          url: sub.fileUrl,
+          status: sub.status,
         });
+        return acc;
+      }, {});
 
-        alert("Görevler kaydedildi ✅");
-        fetchData(); // 🔄 Veriyi güncelle
-      } catch {
-        alert("Görevler kaydedilemedi ❌");
-      }
-    }}
-    className="mt-3 w-full bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 rounded-lg text-sm"
-  >
-    💾 Görevleri Kaydet
-  </button>
+      return (
+        <div
+          key={`week-${week}`}
+          className="mt-10 bg-white/5 border border-white/20 rounded-xl p-5 backdrop-blur-sm"
+        >
+          <h2 className="text-xl font-bold text-yellow-300 mb-4">
+            📂 {week}. Hafta Görev Gönderimleri
+          </h2>
 
-  {/* GÖREVİ BAŞLAT/BİTİR BUTONU */}
-  <button
-    onClick={async () => {
-      const token = localStorage.getItem("token");
-      const url = `${import.meta.env.VITE_API_URL}/api/attendance/session/${s.week}/task/${s.taskActive ? "stop" : "start"}`;
-      try {
-        await axios.post(url, {}, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        alert(`Görev ${s.taskActive ? "durduruldu ⛔" : "başlatıldı ✅"}`);
-        fetchData(); // ↩️ Güncelleme burası için de gerekli
-      } catch {
-        alert("İşlem başarısız ❌");
-      }
-    }}
-    className={`mt-3 w-full py-2 rounded-lg text-sm font-semibold transition ${
-      s.taskActive
-        ? "bg-red-600 hover:bg-red-700 text-white"
-        : "bg-green-600 hover:bg-green-700 text-white"
-    }`}
-  >
-    {s.taskActive ? "⛔ Görevleri Bitir" : "✅ Görevleri Başlat"}
-  </button>
-</div>
-
-    ))}
+{Object.keys(groupedSubmissions).length > 0 ? (
+  <div className="overflow-x-auto">
+    <table className="min-w-full text-sm text-white">
+      <thead className="bg-yellow-500/20 text-yellow-200">
+        <tr>
+          <th className="px-4 py-2 text-left">Ad Soyad</th>
+          <th className="px-4 py-2 text-left">E-posta</th>
+          <th className="px-4 py-2 text-left">Görev Dosyaları</th>
+          <th className="px-4 py-2 text-left">Durum</th>
+          <th className="px-4 py-2 text-left">İşlem</th>
+        </tr>
+      </thead>
+      <tbody className="bg-white/5 divide-y divide-white/10">
+        {Object.entries(groupedSubmissions).map(([email, data]) => (
+          <tr key={`row-${email}`}>
+            <td className="px-4 py-2 align-top">{data.name}</td>
+            <td className="px-4 py-2 align-top">{email}</td>
+            <td className="px-4 py-2 space-y-2">
+              {data.files.map((file, idx) => (
+                <div key={file.id} className="mb-2">
+                  <a
+                    href={file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-yellow-300 hover:underline"
+                  >
+                    Dosya {idx + 1}
+                  </a>
+                </div>
+              ))}
+            </td>
+            <td className="px-4 py-2 space-y-2">
+              {data.files.map((file) => (
+                <div key={`status-${file.id}`}>
+                  <span
+                    className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${
+                      file.status === "approved"
+                        ? "bg-green-600/20 text-green-300"
+                        : file.status === "rejected"
+                        ? "bg-red-600/20 text-red-300"
+                        : "bg-yellow-600/20 text-yellow-200"
+                    }`}
+                  >
+                    {file.status === "approved"
+                      ? "Onaylandı"
+                      : file.status === "rejected"
+                      ? "Reddedildi"
+                      : "Bekliyor"}
+                  </span>
+                </div>
+              ))}
+            </td>
+            <td className="px-4 py-2 space-y-2">
+              {data.files.map((file) => (
+                <div key={`actions-${file.id}`} className="flex gap-2 mb-2">
+                  <button
+                    onClick={() => updateSubmissionStatus(file.id, "approved")}
+                    className="px-2 py-1 bg-green-500/20 hover:bg-green-500/40 text-green-300 text-xs rounded transition"
+                  >
+                    ✅ Onayla
+                  </button>
+                  <button
+                    onClick={() => updateSubmissionStatus(file.id, "rejected")}
+                    className="px-2 py-1 bg-red-500/20 hover:bg-red-500/40 text-red-300 text-xs rounded transition"
+                  >
+                    ❌ Reddet
+                  </button>
+                </div>
+              ))}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   </div>
+) : (
+  <p className="text-gray-400 italic">
+    Bu hafta gönderilen görev bulunmamaktadır.
+  </p>
+)}
+
+        </div>
+      );
+    })}
+  </>
 )}
 
 
@@ -764,51 +965,70 @@ const InstructorDashboard = () => {
 
 
       {/* GENEL KATILIM */}
-      {activePanel === "Genel Katılım" && generalSummary.length > 0 && (
-        <div className="bg-white/10 border border-white/20 rounded-xl p-5 lg:p-6 backdrop-blur-sm">
-          <h3 className="text-lg font-bold mb-5 text-white">📊 Tüm Katılımcı Özeti</h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm text-white">
-              <thead className="bg-white/10">
-                <tr>
-                  <th className="text-left px-4 py-3 font-bold rounded-tl-lg">Ad Soyad</th>
-                  <th className="text-left px-4 py-3 font-bold">E-posta</th>
-                  <th className="text-left px-4 py-3 font-bold">Katılım</th>
-                  <th className="text-left px-4 py-3 font-bold">Oran</th>
-                  <th className="text-left px-4 py-3 font-bold rounded-tr-lg">Durum</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/10">
-                {generalSummary.map((user) => (
-                  <tr key={user.id} className="hover:bg-white/5 transition">
-                    <td className="px-4 py-3">{user.name}</td>
-                    <td className="px-4 py-3">{user.email}</td>
-                    <td className="px-4 py-3">{user.attended}/{user.totalWeeks}</td>
-                    <td className="px-4 py-3">
-                      <span className={`font-semibold ${
-                        user.rate >= 75 ? "text-green-400" : user.rate >= 50 ? "text-yellow-300" : "text-red-400"
-                      }`}>
-                        %{user.rate}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                        user.rate >= 75
-                          ? "bg-green-600/20 text-green-400"
-                          : user.rate >= 50
-                          ? "bg-yellow-600/20 text-yellow-400"
-                          : "bg-red-600/20 text-red-400"
-                      }`}>
-                        {user.rate >= 75 ? "Başarılı" : user.rate >= 50 ? "Orta" : "Düşük"}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+{activePanel === "Genel Katılım" && generalSummary.length > 0 && (
+  <div className="bg-white/10 border border-white/20 rounded-xl p-5 lg:p-6 backdrop-blur-sm">
+    <h3 className="text-lg font-bold mb-5 text-white">📊 Tüm Katılımcı Özeti</h3>
+    <div className="overflow-x-auto">
+      <table className="min-w-full text-sm text-white">
+        <thead className="bg-white/10">
+          <tr>
+            <th className="text-left px-4 py-3 font-bold rounded-tl-lg">Ad Soyad</th>
+            <th className="text-left px-4 py-3 font-bold">E-posta</th>
+            <th className="text-left px-4 py-3 font-bold">Katılım</th>
+            <th className="text-left px-4 py-3 font-bold">Görev</th>
+            <th className="text-left px-4 py-3 font-bold">Oran</th>
+            <th className="text-left px-4 py-3 font-bold rounded-tr-lg">Durum</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-white/10">
+          {generalSummary.map((user) => {
+  const attendanceRate = user.rate ?? 0;
+  const taskRate = user.taskRate ?? 0;
+
+  let badgeLabel = "";
+  let badgeClass = "";
+
+  if (attendanceRate >= 80 && taskRate >= 75) {
+    badgeLabel = "Başarılı";
+    badgeClass = "bg-green-600/20 text-green-400";
+  } else if (attendanceRate >= 80 || taskRate >= 75) {
+    badgeLabel = "Orta";
+    badgeClass = "bg-yellow-600/20 text-yellow-400";
+  } else {
+    badgeLabel = "Düşük";
+    badgeClass = "bg-red-600/20 text-red-400";
+  }
+
+  return (
+    <tr key={user.id} className="hover:bg-white/5 transition">
+      <td className="px-4 py-3">{user.name}</td>
+      <td className="px-4 py-3">{user.email}</td>
+      <td className="px-4 py-3">
+        {user.attended}/{user.totalWeeks}
+      </td>
+      <td className="px-4 py-3">
+        {user.taskSubmissions ?? 0}/{user.totalTasks ?? 0}
+      </td>
+      <td className="px-4 py-3">
+        <span className="font-semibold text-white">
+          Katılım: %{attendanceRate} / Görev: %{taskRate}
+        </span>
+      </td>
+      <td className="px-4 py-3">
+        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${badgeClass}`}>
+          {badgeLabel}
+        </span>
+      </td>
+    </tr>
+  );
+})}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
+
 
       {activePanel === "Duyurular" && (
   <div className="space-y-6">
@@ -886,6 +1106,147 @@ const InstructorDashboard = () => {
 
   </div>
 )}
+
+{activePanel === "Sertifikalar" && (
+  <div className="bg-white/5 border border-white/20 rounded-xl p-5 backdrop-blur-md shadow-lg">
+    <h3 className="text-xl font-semibold mb-6 text-white flex items-center gap-2">
+      🎓 Sertifika Verilecek Katılımcılar
+    </h3>
+
+    <div className="overflow-x-auto">
+      <table className="min-w-full text-sm text-white">
+        <thead className="bg-yellow-500/20 text-yellow-200">
+          <tr>
+            <th className="px-4 py-2 text-left">Ad Soyad</th>
+            <th className="px-4 py-2 text-left">E-posta</th>
+            <th className="px-4 py-2 text-left">Katılım</th>
+            <th className="px-4 py-2 text-left">Görev</th>
+            <th className="px-4 py-2 text-left">Sertifika</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-white/10">
+          {generalSummary
+            .filter((u) => (u.rate ?? 0) >= 80 && (u.taskRate ?? 0) >= 75)
+            .map((student) => {
+              const cert = certificates.find(
+                (c) => c.userId._id === student.id
+              );
+
+              return (
+                <tr key={student.id} className="hover:bg-white/5 transition">
+                  <td className="px-4 py-2">{student.name}</td>
+                  <td className="px-4 py-2">{student.email}</td>
+                  <td className="px-4 py-2">%{student.rate}</td>
+                  <td className="px-4 py-2">%{student.taskRate}</td>
+                  <td className="px-4 py-2 space-y-2">
+                    {cert?.url ? (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <a
+                          href={cert.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-1 bg-green-600/20 text-green-300 rounded text-xs hover:bg-green-600/30 transition"
+                        >
+                          Sertifikayı Görüntüle
+                        </a>
+                        <button
+                          onClick={async () => {
+                            const confirmDelete = window.confirm(
+                              "Bu sertifikayı silmek istiyor musun?"
+                            );
+                            if (!confirmDelete) return;
+
+                            const token = localStorage.getItem("token");
+                            try {
+                              await axios.delete(
+                                `${import.meta.env.VITE_API_URL}/api/certificates/${cert._id}`,
+                                {
+                                  headers: {
+                                    Authorization: `Bearer ${token}`,
+                                  },
+                                }
+                              );
+                              alert("Sertifika silindi ✅");
+                              fetchCertificates(); // Güncelle
+                            } catch (err) {
+                              console.error("Silinemedi ❌", err);
+                              alert("Sertifika silinemedi ❌");
+                            }
+                          }}
+                          className="px-2 py-1 bg-red-500/20 text-red-300 rounded text-xs hover:bg-red-500/40 transition"
+                        >
+                          ❌ Sil
+                        </button>
+                      </div>
+                    ) : (
+                      <p className="text-red-400 italic text-xs">
+                        Henüz yüklenmedi
+                      </p>
+                    )}
+
+                    <div className="flex items-center gap-2 mt-2">
+                      <input
+                        type="text"
+                        placeholder="Sertifika bağlantısı"
+                        className="flex-1 p-1.5 text-sm rounded bg-white/10 backdrop-blur-sm text-white placeholder:text-white/50 border border-white/20"
+
+                        value={certUrlInputs[student.id] || ""}
+                        onChange={(e) =>
+                          setCertUrlInputs((prev) => ({
+                            ...prev,
+                            [student.id]: e.target.value,
+                          }))
+                        }
+                      />
+                      <button
+                        className="bg-yellow-400 hover:bg-yellow-300 text-black px-3 py-1 rounded text-xs font-semibold transition"
+                        onClick={async () => {
+                          const token = localStorage.getItem("token");
+                          const certUrl = certUrlInputs[student.id];
+
+                          if (!certUrl?.trim()) {
+                            alert("Lütfen sertifika bağlantısı girin.");
+                            return;
+                          }
+
+                          try {
+                            await axios.post(
+                              `${import.meta.env.VITE_API_URL}/api/certificates`,
+                              {
+                                userId: student.id,
+                                url: certUrl,
+                              },
+                              {
+                                headers: {
+                                  Authorization: `Bearer ${token}`,
+                                },
+                              }
+                            );
+
+                            alert("Sertifika kaydedildi ✅");
+                            fetchCertificates(); // Güncelle
+                          } catch (err) {
+                            console.error(
+                              "Sertifika gönderilemedi ❌",
+                              err.response?.data || err.message
+                            );
+                            alert("Kaydedilemedi ❌");
+                          }
+                        }}
+                      >
+                        Gönder
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
+
 
     </main>
   </div>
