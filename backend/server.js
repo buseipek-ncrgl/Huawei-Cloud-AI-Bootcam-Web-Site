@@ -24,7 +24,7 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS: " + origin));
     }
   },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"], // ✅ PATCH eklendi
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
@@ -39,6 +39,10 @@ app.use('/api/sessions', require('./routes/sessionRoutes'));
 app.use('/api/attendance', require('./routes/attendanceRoutes'));
 app.use('/api', require('./routes/authRoutes'));
 app.use('/api/announcements', require('./routes/announcementRoutes'));
+const certificateRoutes = require("./routes/certificateRoutes");
+app.use("/api/certificates", certificateRoutes);
+app.use("/api/profile", require("./routes/profileRoutes"));
+
 
 app.get('/', (req, res) => res.send('API Çalışıyor'));
 

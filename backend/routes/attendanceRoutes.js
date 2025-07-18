@@ -41,13 +41,16 @@ router.get('/sessions', authenticate, async (req, res) => {
       );
 
       // ✅ Bu haftaya ait gönderilen görevleri filtrele
-      const weekSubmissions = submissions
-        .filter(s => Number(s.week) === Number(session.week))
-        .map(s => ({
-          id: s._id,
-          fileUrl: s.fileUrl,
-          submittedAt: s.createdAt,
-        }));
+     const weekSubmissions = submissions
+  .filter(s => Number(s.week) === Number(session.week))
+  .map(s => ({
+    id: s._id,
+    fileUrl: s.fileUrl,
+    submittedAt: s.createdAt,
+    status: s.status,             // 👈 Bunu ekle
+    feedback: s.feedback || "",   // 👈 Geri bildirim de gösterilsin
+  }));
+
 
       return {
         week: session.week,
@@ -67,6 +70,7 @@ router.get('/sessions', authenticate, async (req, res) => {
     return res.json({
       success: true,
       fullName: req.user.fullName,
+      email: req.user.email,  // 👈 bunu ekle
       sessions: sessionsWithAttendance
     });
   } catch (err) {
@@ -79,39 +83,40 @@ router.get('/sessions', authenticate, async (req, res) => {
 router.post('/:week', authenticate, async (req, res) => {
   try {
     const weekNum = Number(req.params.week);
-    const dayNum = Number(req.body.day); // 👈 Gün bilgisi body’den alınıyor
+    const dayNum = Number(req.body.day);
 
     if (![1, 2].includes(dayNum)) {
       return res.status(400).json({ success: false, error: 'Gün 1 veya 2 olmalı' });
     }
 
-    // Bu hafta aktif mi?
-    // Bu hafta aktif mi?
-const activeSession = await Session.findOne({ week: weekNum });
+    // Aktif gün kontrolü
+    const activeSession = await Session.findOne({ week: weekNum });
 
-if (
-  !activeSession ||
-  !activeSession.activeDays ||
-  !activeSession.activeDays[`day${dayNum}`]
-) {
-  return res.status(400).json({ success: false, error: 'Bu gün için yoklama alınmıyor' });
-}
+    if (
+      !activeSession ||
+      !activeSession.activeDays ||
+      !activeSession.activeDays[`day${dayNum}`]
+    ) {
+      return res.status(400).json({ success: false, error: 'Bu gün için yoklama alınmıyor' });
+    }
+
+    // ❗ Yalnızca güncellenecek alanları set ediyoruz (unique alanları değil!)
+   const attendance = await Attendance.findOneAndUpdate(
+  { userId: req.user.id, week: weekNum, day: dayNum },
+  {
+    $set: {
+      attended: true,
+      timestamp: new Date()
+    }
+  },
+  {
+    upsert: true,
+    new: true,
+    setDefaultsOnInsert: true
+  }
+);
 
 
-    // Upsert: kullanıcı + hafta + gün için
-    const attendance = await Attendance.findOneAndUpdate(
-      { userId: req.user.id, week: weekNum, day: dayNum },
-      {
-        $set: {
-          userId: req.user.id,
-          week: weekNum,
-          day: dayNum,
-          attended: true,
-          timestamp: new Date()
-        }
-      },
-      { upsert: true, new: true }
-    );
 
     return res.json({
       success: true,
@@ -119,10 +124,12 @@ if (
       attendance
     });
   } catch (err) {
-    console.error('❌ Katılım kaydedilemedi:', err);
+    console.error('❌ Katılım kaydedilemedi:', err.message);
+    console.error(err.stack);
     return res.status(500).json({ success: false, error: 'Katılım kaydedilemedi' });
   }
 });
+
 
 // ----------------------------
 // Eğitmen rotaları – tümü authenticate altında
@@ -150,28 +157,35 @@ router.get('/summary', async (req, res) => {
     const day2Attended = attendedRecords.filter(a => a.day === 2).length;
 
     // 👇 EKLE — eksik olan bu!
-    const weekSubmissions = await TaskSubmission.find({ week: session.week });
+    // summary endpoint içi
+const weekSubmissions = await TaskSubmission.find({ week: session.week })
+  .populate("userId", "fullName email"); // 🧩 BU SATIRI EKLE
 
-    return {
-      week: session.week,
-      total,
-      day1Attended,
-      day2Attended,
-      day1Rate: total > 0 ? Math.round((day1Attended / total) * 100) : 0,
-      day2Rate: total > 0 ? Math.round((day2Attended / total) * 100) : 0,
-      day1Active: session.activeDays?.day1 || false,
-      day2Active: session.activeDays?.day2 || false,
-      topic: session.topic || "",
-      videoUrl: session.videoUrl || "",
-      mediumUrl: session.mediumUrl || "",
-      tasks: session.tasks || [],
-      taskActive: session.taskActive || false,
-      submissions: weekSubmissions.map(s => ({
-        id: s._id,
-        fileUrl: s.fileUrl,
-        timestamp: s.createdAt
-      }))
-    };
+return {
+  week: session.week,
+  total,
+  day1Attended,
+  day2Attended,
+  day1Rate: total > 0 ? Math.round((day1Attended / total) * 100) : 0,
+  day2Rate: total > 0 ? Math.round((day2Attended / total) * 100) : 0,
+  day1Active: session.activeDays?.day1 || false,
+  day2Active: session.activeDays?.day2 || false,
+  topic: session.topic || "",
+  videoUrl: session.videoUrl || "",
+  mediumUrl: session.mediumUrl || "",
+  tasks: session.tasks || [],
+  taskActive: session.taskActive || false,
+  submissions: weekSubmissions.map(s => ({
+  id: s._id,
+  fileUrl: s.fileUrl,
+  submittedAt: s.createdAt,
+  name: s.userId?.fullName || "—",
+  email: s.userId?.email || "—",
+  status: s.status || "pending" // 🔧 BURASI EKLENİYOR
+}))
+
+};
+
   })
 );
 
@@ -194,6 +208,9 @@ router.get('/details/:week', async (req, res) => {
     const totalWeeks = await Session.countDocuments();
     const participants = await User.find({ role: 'participant' }).select('_id fullName email');
     const attendanceRecords = await Attendance.find({ attended: true, week: weekNum });
+    // 🔽 Ek: Bu haftaya ait tüm görev gönderimlerini al
+const taskSubmissions = await TaskSubmission.find({ week: weekNum }).populate("userId", "fullName email");
+
 
     // Gün bazlı ayır
     const result = { 1: [], 2: [] };
@@ -222,7 +239,16 @@ router.get('/details/:week', async (req, res) => {
       }
     }
 
-    res.json({ present: result });
+    res.json({
+  present: result,
+  taskSubmissions: taskSubmissions.map(s => ({
+    id: s._id,
+    fileUrl: s.fileUrl,
+    submittedAt: s.createdAt,
+    name: s.userId.fullName,
+    email: s.userId.email
+  }))
+});
   } catch (err) {
     console.error('❌ Detaylar alınamadı:', err);
     res.status(500).json({ error: 'Sunucu hatası' });
@@ -337,32 +363,53 @@ router.get('/general-summary', authenticate, async (req, res) => {
   try {
     const users = await User.find({ role: 'participant' });
     const sessions = await Session.find();
-    
+
+    // 👇 Toplam açılan görev sayısı (her hafta tanımlı görevler sayılır)
+    const totalTasksAssigned = sessions.reduce((acc, session) => {
+      return acc + (Array.isArray(session.tasks) ? session.tasks.length : 0);
+    }, 0);
+
     const generalSummary = await Promise.all(
       users.map(async (user) => {
         const attendances = await Attendance.find({ userId: user._id, attended: true });
-        const attendedWeeks = attendances.length;
+
+        const taskCount = await TaskSubmission.countDocuments({
+          userId: user._id,
+          status: 'approved' // ✅ sadece onaylananlar
+        });
+
+        const attendedCount = attendances.length;
         const totalWeeks = sessions.length;
-        const rate = totalWeeks > 0 ? Math.round((attendedWeeks / totalWeeks) * 100) : 0;
-        
+
+        const taskRate = totalTasksAssigned > 0
+          ? Math.round((taskCount / totalTasksAssigned) * 100)
+          : 0;
+
+        const attendanceRate = totalWeeks > 0
+          ? Math.round((attendedCount / (totalWeeks * 2)) * 100)
+          : 0;
+
         return {
           id: user._id,
           name: user.fullName,
           email: user.email,
-          attended: attendedWeeks,
-          totalWeeks,
-          rate
+          attended: attendedCount,
+          totalWeeks: totalWeeks * 2,
+          rate: attendanceRate,
+          taskSubmissions: taskCount,
+          totalTasks: totalTasksAssigned,
+          taskRate
         };
       })
     );
 
     generalSummary.sort((a, b) => b.rate - a.rate);
-
     res.json(generalSummary);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 router.put('/session/:week', authenticate, async (req, res) => {
   if (req.user.role !== 'instructor') {
@@ -481,18 +528,21 @@ router.post('/session/:week/task/stop', authenticate, async (req, res) => {
 
 // Görev gönderimi (katılımcı)
 router.post('/session/:week/task', authenticate, async (req, res) => {
-  const { fileUrl } = req.body;
+  const { fileUrl, taskIndex } = req.body;  // 🟢 taskIndex formdan alınmalı
   const week = Number(req.params.week);
 
-  if (!fileUrl) {
-    return res.status(400).json({ error: 'Dosya bağlantısı zorunlu' });
+  if (!fileUrl || typeof taskIndex !== 'number') {
+    return res.status(400).json({ error: 'Dosya bağlantısı ve görev numarası zorunludur' });
   }
 
   try {
     const newSubmission = new TaskSubmission({
       userId: req.user.id,
+      fullName: req.user.fullName,
+      email: req.user.email,
       week,
-      fileUrl
+      fileUrl,
+      taskIndex, // ✅ burada kayıt ediliyor
     });
 
     await newSubmission.save();
@@ -543,5 +593,33 @@ router.get("/announcements", authenticate, async (req, res) => {
   }
 });
 
+// Eğitmen görevi onaylar veya reddeder
+router.patch('/task-submissions/:id/status', authenticate, async (req, res) => {
+  if (req.user.role !== 'instructor') {
+    return res.status(403).json({ error: 'Yetkisiz erişim' });
+  }
+
+  const { id } = req.params;
+  const { status, feedback } = req.body;
+
+  if (!['approved', 'rejected'].includes(status)) {
+    return res.status(400).json({ error: 'Geçersiz durum' });
+  }
+
+  try {
+    const submission = await TaskSubmission.findByIdAndUpdate(
+      id,
+      { status, feedback },
+      { new: true }
+    );
+
+    if (!submission) return res.status(404).json({ error: 'Görev gönderimi bulunamadı' });
+
+    res.json({ success: true, updated: submission });
+  } catch (err) {
+    console.error('Görev durumu güncellenemedi:', err);
+    res.status(500).json({ error: 'Sunucu hatası' });
+  }
+});
 
 module.exports = router;

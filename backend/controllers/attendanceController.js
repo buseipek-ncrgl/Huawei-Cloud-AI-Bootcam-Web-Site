@@ -33,9 +33,11 @@ exports.getSessions = async (req, res) => {
   }
 };
 
+console.log("📩 Gelen veri:", req.params, req.body);
 
 exports.markAttendance = async (req, res) => {
-  const { week, day } = req.params;
+  const { week } = req.params;
+  const { day } = req.body;
 
   if (![1, 2].includes(Number(day))) {
     return res.status(400).json({ error: 'Geçersiz gün numarası' });
@@ -43,28 +45,29 @@ exports.markAttendance = async (req, res) => {
 
   try {
     const session = await Session.findOne({ week });
-    if (!session || !session.active) {
-      return res.status(400).json({ error: 'Aktif olmayan hafta' });
+
+    if (!session) {
+      return res.status(404).json({ error: 'Hafta bulunamadı' });
     }
 
-    const filter = { userId: req.user.id, week, day: Number(day) };
+    const active = session.activeDays?.[`day${day}`];
+    if (!active) {
+      return res.status(400).json({ error: 'Bu gün aktif değil' });
+    }
 
-    const existing = await Attendance.findOne(filter);
-    if (existing) {
-      existing.attended = true;
-      existing.timestamp = new Date();
-      await existing.save();
-    } else {
-      await Attendance.create({
-        ...filter,
+    const filter = { userId: req.user.id, week: Number(week), day: Number(day) };
+    const update = {
+      $set: {
         attended: true,
         timestamp: new Date(),
-      });
-    }
+      },
+    };
 
-    res.json({ message: `${week}. hafta, ${day}. gün yoklaması alındı.` });
+    await Attendance.updateOne(filter, update, { upsert: true }); // ✅ Eğer varsa güncelle, yoksa oluştur
+
+    res.json({ success: true, message: `${week}. hafta ${day}. gün katılım alındı.` });
   } catch (err) {
     console.error("❌ Yoklama hatası:", err);
-    res.status(500).json({ error: 'Yoklama alınamadı' });
+    res.status(500).json({ error: 'Sunucu hatası' });
   }
 };
