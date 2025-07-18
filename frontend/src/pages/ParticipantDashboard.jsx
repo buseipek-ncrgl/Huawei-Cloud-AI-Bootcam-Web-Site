@@ -668,26 +668,29 @@ useEffect(() => {
     .map((sub, idx) => (
       <li
         key={sub.id || sub._id}
-        className="flex justify-between items-center gap-2"
+        className="flex justify-between items-center gap-2 bg-white/5 px-3 py-2 rounded border border-white/10"
       >
         <div className="flex items-center gap-3 flex-1">
+          {/* Gönderim Linki */}
           <a
             href={sub.fileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-300 underline"
+            className="text-blue-300 underline font-semibold"
           >
             {idx + 1}. Gönderim
           </a>
 
+          {/* Durum Badge */}
           <span
-            className={`text-xs font-semibold ${
-              sub.status === "approved"
-                ? "text-green-400"
-                : sub.status === "rejected"
-                ? "text-red-400"
-                : "text-yellow-400"
-            }`}
+            className={`text-xs font-semibold px-2 py-0.5 rounded-full
+              ${
+                sub.status === "approved"
+                  ? "bg-green-500/20 text-green-300"
+                  : sub.status === "rejected"
+                  ? "bg-red-500/20 text-red-300"
+                  : "bg-yellow-500/20 text-yellow-200"
+              }`}
           >
             {sub.status === "approved"
               ? "Onaylandı"
@@ -697,16 +700,19 @@ useEffect(() => {
           </span>
         </div>
 
-        {/* ❌ Silme Butonu */}
+        {/* Sil Butonu */}
         <button
-          onClick={() => handleDeleteSubmission(sub.id || sub._id)}
-          className="text-red-400 hover:underline text-xs"
-        >
-          🗑 Sil
-        </button>
+  onClick={() => handleDeleteSubmission(sub.id || sub._id)}
+  className="bg-red-500/20 hover:bg-red-500/40 text-red-300 hover:text-white px-2 py-1 rounded-md text-xs font-semibold transition duration-200 flex items-center gap-1"
+  title="Gönderimi sil"
+>
+  🗑 <span>Sil</span>
+</button>
+
       </li>
     ))}
 </ul>
+
 
 
         {/* Yeni Gönderim Formu */}

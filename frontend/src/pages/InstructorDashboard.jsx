@@ -567,25 +567,31 @@ const updateSubmissionStatus = async (id, status) => {
             </span>
           </div>
 
-          {/* Görev listesi */}
-          <ul className="text-white text-sm space-y-1 mb-2">
-            {(tempTasks[s.week] || []).map((task, i) => (
-              <li key={i}>
-                {i + 1}. {task}
-                <button
-                  onClick={() =>
-                    setTempTasks((prev) => ({
-                      ...prev,
-                      [s.week]: prev[s.week].filter((_, idx) => idx !== i)
-                    }))
-                  }
-                  className="ml-2 text-red-400 text-xs hover:underline"
-                >
-                  🗑 Sil
-                </button>
-              </li>
-            ))}
-          </ul>
+         <ul className="text-white text-sm space-y-1 mb-2">
+  {(tempTasks[s.week] || []).map((task, i) => (
+    <li
+      key={i}
+      className="flex justify-between items-center bg-white/5 border border-white/10 px-3 py-2 rounded"
+    >
+      <span>
+        {i + 1}. {task}
+      </span>
+
+      <button
+        onClick={() =>
+          setTempTasks((prev) => ({
+            ...prev,
+            [s.week]: prev[s.week].filter((_, idx) => idx !== i)
+          }))
+        }
+        className="px-2 py-1 bg-red-500/20 hover:bg-red-500/40 text-red-300 hover:text-white text-xs rounded-md font-semibold transition flex items-center gap-1"
+      >
+        🗑 <span>Sil</span>
+      </button>
+    </li>
+  ))}
+</ul>
+
 
           {/* Yeni görev ekleme */}
           <div className="flex gap-2 mb-3">
